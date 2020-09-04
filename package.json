@@ -1,0 +1,22 @@
+{
+  "name": "square-foot-garden",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:CalebRoenigk/square-foot-garden.git",
+  "author": "Caleb Roenigk <caleb.roenigk@union.co>",
+  "license": "MIT",
+  "browserslist": [
+    "last 1 Chrome versions"
+  ],
+  "dependencies": {
+    "parcel": "^1.12.4"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "scripts": {
+    "dev": "parcel index.html --out-dir docs",
+    "build": "rm -rf docs && parcel build index.html --out-dir docs --no-minify --public-url ./",
+    "predeploy": "rm -rf docs && parcel build index.html --out-dir docs --no-minify --public-url ./"
+  }
+}
