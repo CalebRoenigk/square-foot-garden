@@ -37,7 +37,7 @@ function bedAddition() {
     // Another bed can be added
     if(totalBeds == 0) {
       // No beds exist, create the first one
-      newBedInput('a');
+      newBedInput('a', totalBeds);
     } else {
       // This function gives the next character from an input character
       function nextChar(c) {
@@ -47,15 +47,15 @@ function bedAddition() {
       // Dictate the new bed id based on the id of the most recent bed id
       let previousBedID = document.querySelectorAll('.content-bed-item')[document.querySelectorAll('.content-bed-item').length-1].getAttribute('data-bed-id').split('_')[1];
       // Create the new bed
-      newBedInput(nextChar(previousBedID));
+      newBedInput(nextChar(previousBedID), totalBeds);
     }
 
-    // Run a bed update on the viewport
-    updateViewportRender();
+    // Update the bounds of the viewport to show all beds
+    updateViewBounds()
   }
 
   // This function create input controls for a bed
-  function newBedInput(bedID) {
+  function newBedInput(bedID, bedCount) {
     // Add the bed parent
     document.querySelector('.content-bed-add').insertAdjacentHTML('beforebegin', '<div class="content-bed-item" data-bed-id="bed_' + bedID + '"></div>');
     let bedLabel = '<div class="bed-label"><div class="subtract-icon"></div><input type="text" class="input-text-nofill" value="Bed ' + bedID.toUpperCase() + '" id="bed_' + bedID + '_name"></input></div>';
@@ -78,11 +78,16 @@ function bedAddition() {
         document.querySelector('#' + this.id + '-value').innerHTML = this.value;
         if(this.getAttribute('data-label') == 'Height') {
           SVG('#bed_' + bedID).height(this.value*100);
+          //moveAlongHeight()
         } else {
+          //moveAlongRow(parseInt(SVG('#bed_' + bedID).attr('data-row')), parseInt(SVG('#bed_' + bedID).attr('data-column')), SVG('#bed_' + bedID).width(), this.value*100);
           SVG('#bed_' + bedID).width(this.value*100);
         }
-
+        // Redraw the shadow
         redrawShadow(bedID, SVG('#bed_' + bedID));
+
+        // Check to update the viewport
+        updateViewBounds();
 
       }, true);
     });
@@ -95,6 +100,10 @@ function bedAddition() {
       let filterID = SVG('#bed_' + bedID + '_shadow').attr('filter').split(')')[0].substr(4,SVG('#bed_' + bedID + '_shadow').attr('filter').length);
       SVG(filterID).remove();
       SVG('#bed_' + bedID + '_shadow').remove();
+      SVG('#bed_' + bedID + '_label').remove();
+
+      // Check to update the viewport
+      updateViewBounds();
     }, true);
     // Add event listener to the label name to update bed label name
     document.querySelector('#bed_' + bedID + '_name').addEventListener('input', function(e) {
@@ -124,36 +133,34 @@ function bedAddition() {
       xPlacement = previousBBox.x + previousBBox.width + 100;
       yPlacement = previousBBox.y;
     }
-    xPlacement = xPlacement || 300;
-    yPlacement = yPlacement || 300;
-    var newBed = draw.rect(newWidth*100, newHeight*100).attr({x: xPlacement, y: yPlacement, id: 'bed_' + bedID, 'data-name': document.querySelector('#bed_' + bedID + '_name').value, fill: '#dddee0'}).stroke({width: 6, color: '#ffffff'}).putIn(bedGroup);
-    drawShadow(bedID, newBed);
-  }
 
-  // This function updates the viewport render as it relates to the rendered beds
-  function updateViewportRender() {
-    // Re-render the grid
-    renderGrid(draw, 100);
-
-    // This function renders the viewport grid
-    function renderGrid(svgObject, cellSize) {
-      let viewportWidth = document.querySelector('.viewport').offsetWidth;
-      let viewportHeight = document.querySelector('.viewport').offsetHeight;
-      let gridGroup = draw.group().attr({'data-type': 'grid-floor'});
-      // Iterate over the width, placing lines vertically
-      for(var i=0; i < (viewportWidth/cellSize)+4; i++) {
-        let line = svgObject.line((i-2)*cellSize, -cellSize*2, (i-2)*cellSize, viewportHeight+(cellSize*2)).stroke({ width: 1, color: '#d8dadd', opacity: 1}).attr({'data-type': 'grid-line'});
-        gridGroup.add(line);
-      }
-
-      // Iterate over the height, placing lines horizontally
-      for(var i=0; i < (viewportHeight/cellSize)+4; i++) {
-        let line = svgObject.line(-cellSize*2, (i-2)*cellSize, viewportWidth+(cellSize*2), (i-2)*cellSize).stroke({ width: 1, color: '#d8dadd', opacity: 1}).attr({'data-type': 'grid-line'})
-        gridGroup.add(line);
-      }
-
-      gridGroup.after(bedGroup);
+    // If the bed is the 6th bed in the bed row, move the bed down to another row
+    if(bedCount%5 == 0 && bedCount !== 0) {
+      // Iterate over all the current bed rects and find the highest y2 value and the lowest x value
+      let maxY = 0;
+      let minX = 0;
+      document.querySelectorAll('#bed-group rect').forEach(function(e, i) {
+        let currentID = e.id;
+        if(i == 0) {
+          maxY = SVG('#' + currentID).bbox().y2;
+          minX = SVG('#' + currentID).bbox().x;
+        }
+        if(SVG('#' + currentID).bbox().y2 > maxY) {
+          maxY = SVG('#' + currentID).bbox().y2;
+        }
+        if(SVG('#' + currentID).bbox().x < minX) {
+          minX = SVG('#' + currentID).bbox().x;
+        }
+      })
+      // Set the placement to the next row
+      xPlacement = minX;
+      yPlacement = maxY + 100;
+    } else {
+      xPlacement = xPlacement || 300;
+      yPlacement = yPlacement || 300;
     }
+    var newBed = draw.rect(newWidth*100, newHeight*100).attr({x: xPlacement, y: yPlacement, id: 'bed_' + bedID, 'data-name': document.querySelector('#bed_' + bedID + '_name').value, fill: '#dddee0', 'data-row': Math.floor(((bedCount)/5)), 'data-col': (bedCount%5)}).stroke({width: 6, color: '#ffffff'}).putIn(bedGroup);
+    drawShadow(bedID, newBed);
   }
 
   // This function re-draws the plain shadow of the bed
@@ -194,7 +201,97 @@ function bedAddition() {
 
     // Place the label inside of the bed
     let newBedTitle = draw.plain(document.querySelector('#bed_' + bedID + '_name').value).font({family: 'Surt Exp', size: '1.75em', anchor: 'middle'}).attr({fill: '#ffffff', x: bedBBox.cx, y: bedBBox.cy, id: 'bed_' + bedID + '_label', style: 'transform: translate(0px, .4375em);'}).putIn(SVG('#bed-group'));
-    shadowPath.insertBefore(bedElement);
+
+    // Move the bed forward
+    SVG('#bed_' + bedID).forward()
+  }
+
+  // This function animates to a new viewport bounds to show all beds
+  function updateViewBounds() {
+    // Create a bounds object to store the min/max values
+    let bounds = {
+      min: {x: 0, y: 0},
+      max: {x: 0, y:0}
+    }
+
+  document.querySelectorAll('#bed-group *').forEach(function (e, i) {
+      // Text the lower and upper bounds for the object and store them in the bounds array if they are larger than the current values
+      let bbox = SVG('#' + e.id).bbox();
+      // If the element is the first in the iteration, set the bounds min/max values to its values
+      if(i == 0) {
+        bounds.min.x = bbox.x;
+        bounds.min.y = bbox.y;
+        bounds.max.x = bbox.x2;
+        bounds.max.y = bbox.y2;
+      }
+      if(bbox.x < bounds.min.x) {
+        bounds.min.x = bbox.x;
+      }
+      if(bbox.y < bounds.min.y) {
+        bounds.min.y = bbox.y;
+      }
+      if(bbox.x2 > bounds.max.x) {
+        bounds.max.x = bbox.x2;
+      }
+      if(bbox.y2 > bounds.max.y) {
+        bounds.max.y = bbox.y2;
+      }
+    });
+
+    // Add a 2 cell margin around the entire view bounds
+    bounds.min.x = bounds.min.x-(100*2);
+    bounds.min.y = bounds.min.y-(100*2);
+    bounds.max.x = bounds.max.x+(100*2);
+    bounds.max.y = bounds.max.y+(100*2);
+
+    // Animate the viewport to the new viewbox
+    draw.animate(375, 0, 'now').ease('<>').viewbox(bounds.min.x, bounds.min.y, bounds.max.x, bounds.max.y).attr({opacity: 1});
+
+    // Update the grid size
+    document.querySelectorAll('line[data-type="grid-line"]').forEach(function(e) {
+      e.remove();
+    })
+    updateGrid(draw, 100, bounds);
+
+    // This function renders the viewport grid
+    function updateGrid(svgObject, cellSize, boundsObj) {
+      // Determine the max size of the grid by adding 2 cell margins to the passed bounds
+      boundsObj.min.x = boundsObj.min.x-(cellSize*2);
+      boundsObj.min.y = boundsObj.min.y-(cellSize*2);
+      boundsObj.max.x = boundsObj.max.x+(cellSize*2);
+      boundsObj.max.y = boundsObj.max.y+(cellSize*2);
+
+      var grid = SVG('#grid-floor');
+      let lowBedBounds = {x: SVG('#bed_a').bbox().x, y: SVG('#bed_a').bbox().y};
+      let highBedBounds = {x: SVG('#bed_a').bbox().x2, y: SVG('#bed_a').bbox().y2};
+      // Iterate over all the beds to find the furthest to the left bed
+      document.querySelectorAll('#bed-group rect').forEach(function(e) {
+        if(e.getBBox().x < lowBedBounds.x) {
+          lowBedBounds = {x: e.getBBox().x, y: e.getBBox().y};
+        }
+        if((e.getBBox().x + e.getBBox().width) > highBedBounds.x) {
+          highBedBounds = {x: (e.getBBox().x + e.getBBox().width), y: (e.getBBox().y + e.getBBox().height)};
+        }
+      })
+      // Iterate over the width, placing lines vertically
+      for(var i=0; i < ((highBedBounds.x - lowBedBounds.x)/cellSize)+12; i++) {
+        let line = svgObject.line(lowBedBounds.x + ((i-6)*cellSize), lowBedBounds.y-(cellSize*20), lowBedBounds.x + ((i-6)*cellSize), lowBedBounds.y+(highBedBounds.x - lowBedBounds.x)+(cellSize*20)).stroke({ width: 1, color: '#d8dadd', opacity: 1}).attr({'data-type': 'grid-line'});
+        grid.add(line);
+      }
+
+      // Iterate over the height, placing lines horizontally
+      for(var i=0; i < ((highBedBounds.x - lowBedBounds.x)/cellSize)+60; i++) {
+        let line = svgObject.line(lowBedBounds.x-(cellSize*20), lowBedBounds.y + ((i-40)*cellSize), lowBedBounds.x+(highBedBounds.x - lowBedBounds.x)+(cellSize*20), lowBedBounds.y + ((i-40)*cellSize)).stroke({ width: 1, color: '#d8dadd', opacity: 1}).attr({'data-type': 'grid-line'})
+        grid.add(line);
+      }
+
+      grid.after(bedGroup);
+    }
+  }
+
+  // This function moves all items in the same row left or right based on width change
+  function moveAlongRow(row, col, previousWidth, currentWidth) {
+    // Iterate over the row
   }
 }
 
@@ -210,8 +307,9 @@ function removeByAttr(attr, value) {
 }
 
 // Create a viewport svg right off the bat
-var draw = SVG().addTo('.viewport').size('100%', '100%').attr({id: 'viewport-svg'});
+var draw = SVG().addTo('.viewport').size('100%', '100%').attr({id: 'viewport-svg', opacity: 0}).viewbox('0 150 850 500');
 var bedGroup = draw.group().attr({id: 'bed-group'});
+var gridGroup = draw.group().attr({id: 'grid-floor'});
 
 // Auto-saving function
 var autoSave = setTimeout(function() {
