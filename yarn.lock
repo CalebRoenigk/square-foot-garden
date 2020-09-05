@@ -936,6 +936,18 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@svgdotjs/svg.filter.js@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/@svgdotjs/svg.filter.js/-/svg.filter.js-3.0.7.tgz#206a670fd56a75d5e1d6c2899398c3fd11402b23"
+  integrity sha512-OxCDe37EEiHSfR+3y9k7oNAdx7SNEDKoD3nDSAQW9RG1nSeeMh/C0xKY1J61NrqDWa0GoFPtN5nVRxb5ecnBMg==
+  dependencies:
+    "@svgdotjs/svg.js" "^3.0.13"
+
+"@svgdotjs/svg.js@^3.0.13", "@svgdotjs/svg.js@^3.0.16":
+  version "3.0.16"
+  resolved "https://registry.yarnpkg.com/@svgdotjs/svg.js/-/svg.js-3.0.16.tgz#7044754e45daf62c8e2b115c45ca33ca5b967aff"
+  integrity sha512-yZ4jfP/SeLHEnCi9PIrzienKCrA4vW9+jm5uUV3N5DG2e9zgXLY5FgywK2u8/gMFIeKO0HuqTLFFfWJj+MfMLA==
+
 "@types/q@^1.5.1":
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"

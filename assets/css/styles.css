@@ -165,6 +165,15 @@ h3 {
 	height: 100%;
 }
 
+.viewport {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	--width-panel: calc(22em + 80px);
+	width: calc(100vw - var(--width-panel));
+	height: 100vh;
+}
+
 .add-icon {
 	position: relative;
 	width: 100%;

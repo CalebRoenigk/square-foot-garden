@@ -9,6 +9,8 @@
     "last 1 Chrome versions"
   ],
   "dependencies": {
+    "@svgdotjs/svg.filter.js": "^3.0.7",
+    "@svgdotjs/svg.js": "^3.0.16",
     "moment": "^2.27.0",
     "parcel": "^1.12.4",
     "svg.js": "^2.7.1"
