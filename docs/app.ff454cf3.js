@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"node_modules/moment/moment.js":[function(require,module,exports) {
+})({"iROh":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 //! moment.js
@@ -5789,7 +5789,7 @@ var global = arguments[3];
 
 })));
 
-},{}],"node_modules/@svgdotjs/svg.js/dist/svg.esm.js":[function(require,module,exports) {
+},{}],"FaDW":[function(require,module,exports) {
 var global = arguments[3];
 
 var define;
@@ -17368,7 +17368,7 @@ extend(Runner, getMethodsFor('Runner'));
 List.extend(getMethodNames());
 registerMorphableType([SVGNumber, Color, Box, Matrix, SVGArray, PointArray, PathArray]);
 makeMorphable();
-},{}],"node_modules/@svgdotjs/svg.filter.js/src/svg.filter.js":[function(require,module,exports) {
+},{}],"QCbq":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17773,7 +17773,7 @@ var chainingEffects = {
 Filter.filter = {
   sepiatone: [0.343, 0.669, 0.119, 0, 0, 0.249, 0.626, 0.130, 0, 0, 0.172, 0.334, 0.111, 0, 0, 0.000, 0.000, 0.000, 1, 0]
 };
-},{"@svgdotjs/svg.js":"node_modules/@svgdotjs/svg.js/dist/svg.esm.js"}],"assets/js/app.js":[function(require,module,exports) {
+},{"@svgdotjs/svg.js":"FaDW"}],"i5Wi":[function(require,module,exports) {
 "use strict";
 
 var _moment = _interopRequireDefault(require("moment"));
@@ -17797,12 +17797,17 @@ class SaveFile {
 
 
 function bedAddition() {
-  // Determine what the bed id will be
+  // Change the style of the forward button
+  document.querySelector('.button-forward').setAttribute('class', 'button-primary button-forward'); // Determine what the bed id will be
   // Get the total number of beds
+
   let totalBeds = document.querySelectorAll('.content-bed-item').length; // If adding another bed would put you over the 26 bed limit, notify the user no more beds can be made
 
   if (totalBeds > 25) {
-    // Create a new ID for the warning
+    // Grey out the add bed button
+    document.querySelector('.content-bed-add').setAttribute('style', 'color: #596475; opacity: .38; pointer-events: none; cursor: not-allowed;');
+    document.querySelector('.add-icon').setAttribute('class', 'add-icon-null'); // Create a new ID for the warning
+
     let warnID = new Date().getTime(); // Add the warning crumb
 
     document.querySelector('.viewport-ui').insertAdjacentHTML('beforeend', '<div class="warn-viewport warn-crumb warn-primary" id="warn-' + warnID + '">You can’t create any more beds.</div>'); // Animate the warning crumb
@@ -17821,10 +17826,17 @@ function bedAddition() {
       opacity: 0
     }, '+=1').call(removeByAttr, ['#', 'warn-' + warnID], '+=.5');
   } else {
-    // Another bed can be added
+    // Ungrey the add bed button
+    document.querySelector('.content-bed-add').removeAttribute("style");
+
+    if (document.querySelector('.add-icon-null') !== null) {
+      document.querySelector('.add-icon-null').setAttribute('class', 'add-icon');
+    } // Another bed can be added
+
+
     if (totalBeds == 0) {
       // No beds exist, create the first one
-      newBedInput('a', totalBeds);
+      addBed('a', totalBeds);
     } else {
       // This function gives the next character from an input character
       function nextChar(c) {
@@ -17834,16 +17846,18 @@ function bedAddition() {
 
       let previousBedID = document.querySelectorAll('.content-bed-item')[document.querySelectorAll('.content-bed-item').length - 1].getAttribute('data-bed-id').split('_')[1]; // Create the new bed
 
-      newBedInput(nextChar(previousBedID), totalBeds);
+      addBed(nextChar(previousBedID), totalBeds);
     } // Update the bounds of the viewport to show all beds
 
 
     updateViewBounds();
-  } // This function create input controls for a bed
+  } // This function creates a new bed
 
 
-  function newBedInput(bedID, bedCount) {
+  function addBed(bedID, bedCount) {
+    let cellSize = 100; // Add the DOM elements
     // Add the bed parent
+
     document.querySelector('.content-bed-add').insertAdjacentHTML('beforebegin', '<div class="content-bed-item" data-bed-id="bed_' + bedID + '"></div>');
     let bedLabel = '<div class="bed-label"><div class="subtract-icon"></div><input type="text" class="input-text-nofill" value="Bed ' + bedID.toUpperCase() + '" id="bed_' + bedID + '_name"></input></div>';
     let bedWidthSlider = '<div class="bed-slider"><div class="container"><input type="range" min="1" max="12" value="2" step="1" class="width-range" id="bed_' + bedID + '_width" data-label="Width" list="bed_' + bedID + '_width-tick-list"><datalist id="bed_' + bedID + '_width-tick-list"></datalist></div><div class="slider-value" id="bed_' + bedID + '_width-value">2</div></div>';
@@ -17858,44 +17872,45 @@ function bedAddition() {
       for (var i = 0; i < 12; i++) {
         document.querySelector('#' + e.id).insertAdjacentHTML('beforeend', '<option></option>');
       }
-    }); // Add event listeners to each range to update the slider value display on input
-
-    document.querySelectorAll('div[data-bed-id="bed_' + bedID + '"] input[type="range"]').forEach(function (e) {
-      e.addEventListener('input', function (r) {
-        document.querySelector('#' + this.id + '-value').innerHTML = this.value;
-
-        if (this.getAttribute('data-label') == 'Height') {
-          (0, _svg.SVG)('#bed_' + bedID).height(this.value * 100); //moveAlongHeight()
-        } else {
-          //moveAlongRow(parseInt(SVG('#bed_' + bedID).attr('data-row')), parseInt(SVG('#bed_' + bedID).attr('data-column')), SVG('#bed_' + bedID).width(), this.value*100);
-          (0, _svg.SVG)('#bed_' + bedID).width(this.value * 100);
-        } // Redraw the shadow
-
-
-        redrawShadow(bedID, (0, _svg.SVG)('#bed_' + bedID)); // Check to update the viewport
-
-        updateViewBounds();
-      }, true);
-    }); // Add event listener to the minus button to allow for bed removal
+    }); // Functionality
+    // Add event listener to the minus button to allow for bed removal
 
     document.querySelector('div[data-bed-id="bed_' + bedID + '"] .subtract-icon').addEventListener('click', function (e) {
       // Delete the DOM element
-      document.querySelector('div[data-bed-id="bed_' + bedID + '"]').remove(); // Delete the SVG elements
+      document.querySelector('div[data-bed-id="bed_' + bedID + '"]').remove(); // If there are no more beds, grey out the forward button
 
-      (0, _svg.SVG)('#bed_' + bedID).remove();
+      if (document.querySelectorAll('.panel-content > div').length == 1) {
+        // Change the style of the forward button
+        document.querySelector('.button-forward').setAttribute('class', 'button-no-select button-forward');
+      } // Delete the SVG elements
+
+
       let filterID = (0, _svg.SVG)('#bed_' + bedID + '_shadow').attr('filter').split(')')[0].substr(4, (0, _svg.SVG)('#bed_' + bedID + '_shadow').attr('filter').length);
+      let missingCol = (0, _svg.SVG)('#bed_' + bedID).attr('data-col'); // Add the col value to the parent row in the missing data tag
+
+      let currentMissing = (0, _svg.SVG)('#row-' + (0, _svg.SVG)('#bed_' + bedID).attr('data-row')).attr('data-missing');
+
+      if (currentMissing == null || currentMissing == 'undefined') {
+        (0, _svg.SVG)('#row-' + (0, _svg.SVG)('#bed_' + bedID).attr('data-row')).attr('data-missing', missingCol);
+      } else {
+        // Add the new element to the existing tag
+        let existingValue = (0, _svg.SVG)('#row-' + (0, _svg.SVG)('#bed_' + bedID).attr('data-row')).attr('data-missing');
+        let unsortedArray = existingValue + ',' + missingCol;
+        unsortedArray = unsortedArray.split(',');
+        let sortedArray = unsortedArray.sort();
+        (0, _svg.SVG)('#row-' + (0, _svg.SVG)('#bed_' + bedID).attr('data-row')).attr('data-missing', sortedArray.join(','));
+      }
+
       (0, _svg.SVG)(filterID).remove();
-      (0, _svg.SVG)('#bed_' + bedID + '_shadow').remove();
-      (0, _svg.SVG)('#bed_' + bedID + '_label').remove(); // Check to update the viewport
+      (0, _svg.SVG)('#bed_' + bedID).remove(); // Check to update the viewport
 
-      updateViewBounds();
-    }, true); // Add event listener to the label name to update bed label name
+      updateViewBounds(); // Ungrey the add bed button
 
-    document.querySelector('#bed_' + bedID + '_name').addEventListener('input', function (e) {
-      (0, _svg.SVG)('#bed_' + bedID).attr({
-        'data-name': this.value
-      });
-      document.querySelector('#bed_' + bedID + '_label').textContent = this.value;
+      document.querySelector('.content-bed-add').removeAttribute("style");
+
+      if (document.querySelector('.add-icon-null') !== null) {
+        document.querySelector('.add-icon-null').setAttribute('class', 'add-icon');
+      }
     }, true); // Add event listener to the label name to set the default name if the label has no value after user leaves input
 
     document.querySelector('#bed_' + bedID + '_name').addEventListener('change', function (e) {
@@ -17904,124 +17919,249 @@ function bedAddition() {
         this.value = this.id.split('_').splice(0, 2).join(' ').replace(/\w\S*/g, function (txt) {
           return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
-        document.querySelector('#bed_' + bedID + '_label').textContent = this.value;
+        manageBed(bedID);
       }
-    }, true); // Add the new bed to the viewport
+    }, true); // Add event listeners to each range to update the slider value display on input
 
-    let newWidth = document.querySelector('#bed_' + bedID + '_width').value;
-    let newHeight = document.querySelector('#bed_' + bedID + '_height').value; // Determine where the new bed will go
+    document.querySelectorAll('div[data-bed-id="bed_' + bedID + '"] input[type="range"]').forEach(function (e) {
+      e.addEventListener('input', function (r) {
+        document.querySelector('#' + this.id + '-value').innerHTML = this.value;
+        manageBed(bedID); // Check to update the viewport
 
-    let xPlacement;
-    let yPlacement;
+        updateViewBounds();
+      }, true);
+    }); // Add event listener to the label name to update bed label name
 
-    if (bedID !== 'a') {
-      // This is not the first bed
-      let previousBedID = document.querySelectorAll('.content-bed-item')[document.querySelectorAll('.content-bed-item').length - 2].getAttribute('data-bed-id').split("_")[1];
-      let previousBBox = (0, _svg.SVG)('#bed_' + previousBedID).bbox(); // Place the bed 1 cell away on the x from the previous bed
+    document.querySelector('#bed_' + bedID + '_name').addEventListener('input', function (e) {
+      manageBed(bedID);
+    }, true); // Calculate what row and column the bed will reside in
+    // Check to make sure the number of total beds is the same as the amount of beds that exist
 
-      xPlacement = previousBBox.x + previousBBox.width + 100;
-      yPlacement = previousBBox.y;
-    } // If the bed is the 6th bed in the bed row, move the bed down to another row
+    let bedRow = 0;
+    let bedCol = 0;
+    let missingBeds = document.querySelectorAll('g[data-missing]').length;
 
-
-    if (bedCount % 5 == 0 && bedCount !== 0) {
-      // Iterate over all the current bed rects and find the highest y2 value and the lowest x value
-      let maxY = 0;
-      let minX = 0;
-      document.querySelectorAll('#bed-group rect').forEach(function (e, i) {
-        let currentID = e.id;
-
-        if (i == 0) {
-          maxY = (0, _svg.SVG)('#' + currentID).bbox().y2;
-          minX = (0, _svg.SVG)('#' + currentID).bbox().x;
-        }
-
-        if ((0, _svg.SVG)('#' + currentID).bbox().y2 > maxY) {
-          maxY = (0, _svg.SVG)('#' + currentID).bbox().y2;
-        }
-
-        if ((0, _svg.SVG)('#' + currentID).bbox().x < minX) {
-          minX = (0, _svg.SVG)('#' + currentID).bbox().x;
-        }
-      }); // Set the placement to the next row
-
-      xPlacement = minX;
-      yPlacement = maxY + 100;
+    if (missingBeds == 0) {
+      bedRow = Math.floor(bedCount / 5);
+      bedCol = bedCount % 5;
     } else {
-      xPlacement = xPlacement || 300;
-      yPlacement = yPlacement || 300;
-    }
+      bedRow = parseInt(document.querySelectorAll('g[data-missing]')[0].getAttribute('id').split('-')[1]);
 
-    var newBed = draw.rect(newWidth * 100, newHeight * 100).attr({
-      x: xPlacement,
-      y: yPlacement,
+      if (document.querySelectorAll('g[data-missing]')[0].getAttribute('data-missing').length !== 1) {
+        parseInt(bedCol = document.querySelectorAll('g[data-missing]')[0].getAttribute('data-missing'));
+      } else {
+        bedCol = parseInt(document.querySelectorAll('g[data-missing]')[0].getAttribute('data-missing').split(',')[0]);
+      } // Remove the item from the missing tag
+
+
+      if (document.querySelectorAll('g[data-missing]')[0].getAttribute('data-missing').split(',').length == 1) {
+        document.querySelectorAll('g[data-missing]')[0].removeAttribute('data-missing');
+      } else {
+        document.querySelectorAll('g[data-missing]')[0].setAttribute('data-missing', document.querySelectorAll('g[data-missing]')[0].getAttribute('data-missing').substr(2, document.querySelectorAll('g[data-missing]')[0].getAttribute('data-missing').length));
+      }
+    } // Add the row group if it does not already exist
+
+
+    if (document.querySelector('#row-' + bedRow) == null) {
+      draw.group().attr({
+        id: 'row-' + bedRow
+      }).putIn((0, _svg.SVG)('#bed-group'));
+    } // Add a group for the current bed into the correct row
+
+
+    let bedItem = draw.group().attr({
       id: 'bed_' + bedID,
       'data-name': document.querySelector('#bed_' + bedID + '_name').value,
+      'data-row': bedRow,
+      'data-col': bedCol
+    }).putIn((0, _svg.SVG)('#row-' + bedRow));
+    let xPlace = 0;
+    let yPlace = 0; // Determine the current x/y placement for the new bed
+
+    if (bedCount !== 0 && bedCol !== 0) {
+      // The bed is in an existing row
+      xPlace = (0, _svg.SVG)('#row-' + bedRow + ' g[data-col="' + (bedCol - 1) + '"] rect').bbox().x2 + cellSize;
+      yPlace = (0, _svg.SVG)('g[data-row="' + bedRow + '"] rect').bbox().y;
+    } else if (bedCol == 0 && bedRow !== 0) {
+      // The bed is in a new row, thus xPlace = 0
+      // Iterate through the previous row of beds to get the max y value
+      let maxY = 0;
+      document.querySelectorAll('#row-' + (bedRow - 1) + ' g').forEach(function (e) {
+        let cID = e.id;
+        let thisMaxY = (0, _svg.SVG)('#' + cID + '_base').bbox().y2;
+
+        if (thisMaxY > maxY) {
+          maxY = thisMaxY;
+        }
+      });
+      yPlace = maxY + cellSize;
+    } // Add the bed rect, label, and shadow to the bed group
+
+
+    let bed = draw.rect(2 * 100, 2 * 100).attr({
+      x: xPlace,
+      y: yPlace,
       fill: '#dddee0',
-      'data-row': Math.floor(bedCount / 5),
-      'data-col': bedCount % 5
+      id: 'bed_' + bedID + '_base'
     }).stroke({
       width: 6,
       color: '#ffffff'
-    }).putIn(bedGroup);
-    drawShadow(bedID, newBed);
-  } // This function re-draws the plain shadow of the bed
-
-
-  function redrawShadow(bedID, bedElement) {
-    let shadowFilter = (0, _svg.SVG)('#bed_' + bedID + '_shadow').filterer();
-    (0, _svg.SVG)('#bed_' + bedID + '_shadow').remove();
-    let cellSize = 100;
-    let bedBBox = (0, _svg.SVG)('#bed_' + bedID).bbox(); // Draw the shadow
-
-    let shadowPoints = [bedBBox.x + ',' + bedBBox.y, bedBBox.x + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y2 - cellSize / 2), bedBBox.x2 + ',' + bedBBox.y2, bedBBox.x + ',' + bedBBox.y2]; // Sets of x,y pairs
-
-    let shadowPath = draw.polygon(shadowPoints.join(' ')).fill('#596475').attr({
-      id: 'bed_' + bedID + '_shadow',
-      opacity: .2
-    }); // Blur the shadow
-
-    shadowPath.filterWith(shadowFilter); // Place the bed shadow behind the bed
-
-    shadowPath.insertBefore(bedElement); // Place the text label infront of the bed
-
-    (0, _svg.SVG)('#bed_' + bedID + '_label').attr({
-      x: bedBBox.cx,
-      y: bedBBox.cy
-    }).insertAfter(bedElement);
-  } // This function draws the shadow for the first time
-
-
-  function drawShadow(bedID, bedElement) {
-    let cellSize = 100;
-    let bedBBox = (0, _svg.SVG)('#bed_' + bedID).bbox(); // Draw the shadow
-
-    let shadowPoints = [bedBBox.x + ',' + bedBBox.y, bedBBox.x + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y2 - cellSize / 2), bedBBox.x2 + ',' + bedBBox.y2, bedBBox.x + ',' + bedBBox.y2]; // Sets of x,y pairs
-
-    let shadowPath = draw.polygon(shadowPoints.join(' ')).fill('#596475').attr({
-      id: 'bed_' + bedID + '_shadow',
-      opacity: .2
-    }); // Blur the shadow
-
-    shadowPath.filterWith(function (add) {
-      add.gaussianBlur(5);
-    }); // Place the bed shadow in bed group
-
-    shadowPath.putIn((0, _svg.SVG)('#bed-group')); // Place the label inside of the bed
-
-    let newBedTitle = draw.plain(document.querySelector('#bed_' + bedID + '_name').value).font({
+    }).putIn((0, _svg.SVG)('#bed_' + bedID));
+    let label = draw.plain(document.querySelector('#bed_' + bedID + '_name').value).font({
       family: 'Surt Exp',
       size: '1.75em',
       anchor: 'middle'
     }).attr({
       fill: '#ffffff',
-      x: bedBBox.cx,
-      y: bedBBox.cy,
+      x: (0, _svg.SVG)('#bed_' + bedID).bbox().cx,
+      y: (0, _svg.SVG)('#bed_' + bedID).bbox().cy,
       id: 'bed_' + bedID + '_label',
       style: 'transform: translate(0px, .4375em);'
-    }).putIn((0, _svg.SVG)('#bed-group')); // Move the bed forward
+    }).putIn((0, _svg.SVG)('#bed_' + bedID));
+    let bedBBox = (0, _svg.SVG)('#bed_' + bedID + '_base').bbox(); // Draw the shadow
 
-    (0, _svg.SVG)('#bed_' + bedID).forward();
+    let shadowPoints = [bedBBox.x + ',' + bedBBox.y, bedBBox.x + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y2 - cellSize / 2), bedBBox.x2 + ',' + bedBBox.y2, bedBBox.x + ',' + bedBBox.y2]; // Sets of x,y pairs
+
+    let shadow = draw.polygon(shadowPoints.join(' ')).fill('#596475').attr({
+      id: 'bed_' + bedID + '_shadow',
+      opacity: .2
+    }); // Blur the shadow
+
+    shadow.filterWith(function (add) {
+      add.gaussianBlur(5);
+    }); // Place the bed shadow in bed group, at back
+
+    shadow.putIn((0, _svg.SVG)('#bed_' + bedID));
+    shadow.back();
+  } // This function manages the bed's height, width, and label
+
+
+  function manageBed(bedID) {
+    let cellSize = 100; // Label Check
+
+    let inputText = document.querySelector('#bed_' + bedID + '_name').value;
+    let labelText = document.querySelector('#bed_' + bedID + '_label').textContent; // Test if the label needs an update
+
+    if (inputText !== labelText) {
+      (0, _svg.SVG)('#bed_' + bedID).attr({
+        'data-name': inputText
+      });
+      document.querySelector('#bed_' + bedID + '_label').textContent = inputText;
+    } // Width Check
+
+
+    let inputWidth = document.querySelector('#bed_' + bedID + '_width').value * cellSize;
+    let bedWidth = (0, _svg.SVG)('#bed_' + bedID + '_base').bbox().width;
+
+    if (inputWidth !== bedWidth) {
+      let widthChange = inputWidth - bedWidth; // Update Width
+
+      (0, _svg.SVG)('#bed_' + bedID + '_base').width(inputWidth);
+      let bedBBox = (0, _svg.SVG)('#bed_' + bedID + '_base').bbox(); // Update Text Position
+
+      (0, _svg.SVG)('#bed_' + bedID + '_label').attr({
+        x: bedBBox.cx,
+        y: bedBBox.cy
+      }); // Create new Shadow Points
+
+      let shadowPoints = [bedBBox.x + ',' + bedBBox.y, bedBBox.x + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y2 - cellSize / 2), bedBBox.x2 + ',' + bedBBox.y2, bedBBox.x + ',' + bedBBox.y2]; // Sets of x,y pairs
+      // Update the shadow
+
+      (0, _svg.SVG)('#bed_' + bedID + '_shadow').attr({
+        points: shadowPoints.join(' ')
+      }); // Update the other beds to the right
+
+      updatePositionRight(widthChange, parseInt((0, _svg.SVG)('#bed_' + bedID).attr('data-row')), parseInt((0, _svg.SVG)('#bed_' + bedID).attr('data-col')));
+    } // Height Check
+
+
+    let inputHeight = document.querySelector('#bed_' + bedID + '_height').value * cellSize;
+    let bedHeight = (0, _svg.SVG)('#bed_' + bedID + '_base').bbox().height;
+
+    if (inputHeight !== bedHeight) {
+      // Update Height
+      (0, _svg.SVG)('#bed_' + bedID + '_base').height(inputHeight);
+      let bedBBox = (0, _svg.SVG)('#bed_' + bedID + '_base').bbox(); // Update Text Position
+
+      (0, _svg.SVG)('#bed_' + bedID + '_label').attr({
+        x: bedBBox.cx,
+        y: bedBBox.cy
+      }); // Create new Shadow Points
+
+      let shadowPoints = [bedBBox.x + ',' + bedBBox.y, bedBBox.x + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y2 - cellSize / 2), bedBBox.x2 + ',' + bedBBox.y2, bedBBox.x + ',' + bedBBox.y2]; // Sets of x,y pairs
+      // Update the shadow
+
+      (0, _svg.SVG)('#bed_' + bedID + '_shadow').attr({
+        points: shadowPoints.join(' ')
+      }); // Update the other beds below
+      // Find the largest height in the current row
+
+      let currentRow = parseInt((0, _svg.SVG)('#bed_' + bedID).attr('data-row'));
+      let maxY = 0;
+      document.querySelectorAll('#row-' + currentRow + ' g').forEach(function (e) {
+        if ((0, _svg.SVG)('#' + e.id).bbox().y2 > maxY) {
+          maxY = (0, _svg.SVG)('#' + e.id).bbox().y2;
+        }
+      });
+      updatePositionBelow(maxY, parseInt((0, _svg.SVG)('#bed_' + bedID).attr('data-row')));
+    } // This function updates the position of everything to the right of a bed in a row
+
+
+    function updatePositionRight(xChange, rowIn, colOn) {
+      let cellSize = 100; // Only make further changes if the column is below 4, as this column is the last in any row
+
+      if (colOn < 4) {
+        // Iterate over every bed in the row
+        document.querySelectorAll('g[data-row="' + rowIn + '"]').forEach(function (e) {
+          // Only effect items in columns after the passed column
+          if (parseInt(e.getAttribute('data-col')) > colOn) {
+            // Move the matched elements
+            (0, _svg.SVG)('#' + e.id + '_base').dx(xChange);
+            (0, _svg.SVG)('#' + e.id + '_label').dx(xChange);
+            let bedBBox = (0, _svg.SVG)('#' + e.id + '_base').bbox(); // Update the shadow
+
+            let shadowPoints = [bedBBox.x + ',' + bedBBox.y, bedBBox.x + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y2 - cellSize / 2), bedBBox.x2 + ',' + bedBBox.y2, bedBBox.x + ',' + bedBBox.y2]; // Sets of x,y pairs
+
+            (0, _svg.SVG)('#' + e.id + '_shadow').attr({
+              points: shadowPoints.join(' ')
+            });
+          }
+        });
+      }
+    } // This function updates the position of everything below the bed in a row
+
+
+    function updatePositionBelow(yMax, rowIn) {
+      let cellSize = 100;
+
+      if (rowIn < 5 && (0, _svg.SVG)('#row-' + (rowIn + 1)) !== null) {
+        // Determine the y-offset given the max y of the previous row
+        let nextRowMinY = 0;
+        document.querySelectorAll('#row-' + (rowIn + 1) + ' g').forEach(function (e) {
+          if ((0, _svg.SVG)('#' + e.id + '_base').bbox().y > nextRowMinY) {
+            nextRowMinY = (0, _svg.SVG)('#' + e.id + '_base').bbox().y;
+          }
+        });
+        let changeHeight = yMax + cellSize - nextRowMinY; // Iterate over every bed in the row
+
+        document.querySelectorAll('#bed-group > g').forEach(function (e) {
+          if (parseInt(e.id.split('-')[1]) > rowIn) {
+            // Move the matched elements
+            document.querySelectorAll('#' + e.id + ' g').forEach(function (a) {
+              (0, _svg.SVG)('#' + a.id + '_base').dy(changeHeight);
+              (0, _svg.SVG)('#' + a.id + '_label').dy(changeHeight);
+              let bedBBox = (0, _svg.SVG)('#' + a.id + '_base').bbox(); // Update the shadow
+
+              let shadowPoints = [bedBBox.x + ',' + bedBBox.y, bedBBox.x + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y - cellSize / 2), bedBBox.x2 + cellSize / 2 + ',' + (bedBBox.y2 - cellSize / 2), bedBBox.x2 + ',' + bedBBox.y2, bedBBox.x + ',' + bedBBox.y2]; // Sets of x,y pairs
+
+              (0, _svg.SVG)('#' + a.id + '_shadow').attr({
+                points: shadowPoints.join(' ')
+              });
+            });
+          }
+        });
+      }
+    }
   } // This function animates to a new viewport bounds to show all beds
 
 
@@ -18037,9 +18177,9 @@ function bedAddition() {
         y: 0
       }
     };
-    document.querySelectorAll('#bed-group *').forEach(function (e, i) {
+    document.querySelectorAll('#bed-group g g').forEach(function (e, i) {
       // Text the lower and upper bounds for the object and store them in the bounds array if they are larger than the current values
-      let bbox = (0, _svg.SVG)('#' + e.id).bbox(); // If the element is the first in the iteration, set the bounds min/max values to its values
+      let bbox = (0, _svg.SVG)('#' + e.id + ' rect').bbox(); // If the element is the first in the iteration, set the bounds min/max values to its values
 
       if (i == 0) {
         bounds.min.x = bbox.x;
@@ -18065,8 +18205,8 @@ function bedAddition() {
       }
     }); // Add a 2 cell margin around the entire view bounds
 
-    bounds.min.x = bounds.min.x - 100 * 2;
-    bounds.min.y = bounds.min.y - 100 * 2;
+    bounds.min.x = bounds.min.x - 100;
+    bounds.min.y = bounds.min.y - 100;
     bounds.max.x = bounds.max.x + 100 * 2;
     bounds.max.y = bounds.max.y + 100 * 2; // Animate the viewport to the new viewbox
 
@@ -18087,15 +18227,15 @@ function bedAddition() {
       boundsObj.max.y = boundsObj.max.y + cellSize * 2;
       var grid = (0, _svg.SVG)('#grid-floor');
       let lowBedBounds = {
-        x: (0, _svg.SVG)('#bed_a').bbox().x,
-        y: (0, _svg.SVG)('#bed_a').bbox().y
+        x: (0, _svg.SVG)('#bed_a_base').bbox().x,
+        y: (0, _svg.SVG)('#bed_a_base').bbox().y
       };
       let highBedBounds = {
-        x: (0, _svg.SVG)('#bed_a').bbox().x2,
-        y: (0, _svg.SVG)('#bed_a').bbox().y2
+        x: (0, _svg.SVG)('#bed_a_base').bbox().x2,
+        y: (0, _svg.SVG)('#bed_a_base').bbox().y2
       }; // Iterate over all the beds to find the furthest to the left bed
 
-      document.querySelectorAll('#bed-group rect').forEach(function (e) {
+      document.querySelectorAll('#bed-group g').forEach(function (e) {
         if (e.getBBox().x < lowBedBounds.x) {
           lowBedBounds = {
             x: e.getBBox().x,
@@ -18151,12 +18291,24 @@ document.querySelector('.content-bed-add').addEventListener('click', function ()
 
 function removeByAttr(attr, value) {
   document.querySelector(attr + value).remove();
+} // This function transitions from one state to another
+
+
+function transitionStep(stepFrom, stepTo) {
+  switch (true) {
+    case stepFrom == 'bed-layout' && stepTo == 'plant-selection':
+      // From bed layout to plant selection
+      break;
+
+    default: // code block
+
+  }
 } // Create a viewport svg right off the bat
 
 
 var draw = (0, _svg.SVG)().addTo('.viewport').size('100%', '100%').attr({
   id: 'viewport-svg',
-  opacity: 0
+  opacity: 1
 }).viewbox('0 150 850 500');
 var bedGroup = draw.group().attr({
   id: 'bed-group'
@@ -18344,209 +18496,5 @@ function localStorageCategorySearch(category) {
     return false;
   }
 }
-},{"moment":"node_modules/moment/moment.js","@svgdotjs/svg.js":"node_modules/@svgdotjs/svg.js/dist/svg.esm.js","@svgdotjs/svg.filter.js":"node_modules/@svgdotjs/svg.filter.js/src/svg.filter.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
-var global = arguments[3];
-var OVERLAY_ID = '__parcel__error__overlay__';
-var OldModule = module.bundle.Module;
-
-function Module(moduleName) {
-  OldModule.call(this, moduleName);
-  this.hot = {
-    data: module.bundle.hotData,
-    _acceptCallbacks: [],
-    _disposeCallbacks: [],
-    accept: function (fn) {
-      this._acceptCallbacks.push(fn || function () {});
-    },
-    dispose: function (fn) {
-      this._disposeCallbacks.push(fn);
-    }
-  };
-  module.bundle.hotData = null;
-}
-
-module.bundle.Module = Module;
-var checkedAssets, assetsToAccept;
-var parent = module.bundle.parent;
-
-if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
-  var hostname = "" || location.hostname;
-  var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55580" + '/');
-
-  ws.onmessage = function (event) {
-    checkedAssets = {};
-    assetsToAccept = [];
-    var data = JSON.parse(event.data);
-
-    if (data.type === 'update') {
-      var handled = false;
-      data.assets.forEach(function (asset) {
-        if (!asset.isNew) {
-          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
-
-          if (didAccept) {
-            handled = true;
-          }
-        }
-      }); // Enable HMR for CSS by default.
-
-      handled = handled || data.assets.every(function (asset) {
-        return asset.type === 'css' && asset.generated.js;
-      });
-
-      if (handled) {
-        console.clear();
-        data.assets.forEach(function (asset) {
-          hmrApply(global.parcelRequire, asset);
-        });
-        assetsToAccept.forEach(function (v) {
-          hmrAcceptRun(v[0], v[1]);
-        });
-      } else if (location.reload) {
-        // `location` global exists in a web worker context but lacks `.reload()` function.
-        location.reload();
-      }
-    }
-
-    if (data.type === 'reload') {
-      ws.close();
-
-      ws.onclose = function () {
-        location.reload();
-      };
-    }
-
-    if (data.type === 'error-resolved') {
-      console.log('[parcel] ✨ Error resolved');
-      removeErrorOverlay();
-    }
-
-    if (data.type === 'error') {
-      console.error('[parcel] 🚨  ' + data.error.message + '\n' + data.error.stack);
-      removeErrorOverlay();
-      var overlay = createErrorOverlay(data);
-      document.body.appendChild(overlay);
-    }
-  };
-}
-
-function removeErrorOverlay() {
-  var overlay = document.getElementById(OVERLAY_ID);
-
-  if (overlay) {
-    overlay.remove();
-  }
-}
-
-function createErrorOverlay(data) {
-  var overlay = document.createElement('div');
-  overlay.id = OVERLAY_ID; // html encode message and stack trace
-
-  var message = document.createElement('div');
-  var stackTrace = document.createElement('pre');
-  message.innerText = data.error.message;
-  stackTrace.innerText = data.error.stack;
-  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
-  return overlay;
-}
-
-function getParents(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return [];
-  }
-
-  var parents = [];
-  var k, d, dep;
-
-  for (k in modules) {
-    for (d in modules[k][1]) {
-      dep = modules[k][1][d];
-
-      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
-        parents.push(k);
-      }
-    }
-  }
-
-  if (bundle.parent) {
-    parents = parents.concat(getParents(bundle.parent, id));
-  }
-
-  return parents;
-}
-
-function hmrApply(bundle, asset) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (modules[asset.id] || !bundle.parent) {
-    var fn = new Function('require', 'module', 'exports', asset.generated.js);
-    asset.isNew = !modules[asset.id];
-    modules[asset.id] = [fn, asset.deps];
-  } else if (bundle.parent) {
-    hmrApply(bundle.parent, asset);
-  }
-}
-
-function hmrAcceptCheck(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (!modules[id] && bundle.parent) {
-    return hmrAcceptCheck(bundle.parent, id);
-  }
-
-  if (checkedAssets[id]) {
-    return;
-  }
-
-  checkedAssets[id] = true;
-  var cached = bundle.cache[id];
-  assetsToAccept.push([bundle, id]);
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    return true;
-  }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAcceptCheck(global.parcelRequire, id);
-  });
-}
-
-function hmrAcceptRun(bundle, id) {
-  var cached = bundle.cache[id];
-  bundle.hotData = {};
-
-  if (cached) {
-    cached.hot.data = bundle.hotData;
-  }
-
-  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
-    cached.hot._disposeCallbacks.forEach(function (cb) {
-      cb(bundle.hotData);
-    });
-  }
-
-  delete bundle.cache[id];
-  bundle(id);
-  cached = bundle.cache[id];
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    cached.hot._acceptCallbacks.forEach(function (cb) {
-      cb();
-    });
-
-    return true;
-  }
-}
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","assets/js/app.js"], null)
-//# sourceMappingURL=/app.56908c73.js.map
+},{"moment":"iROh","@svgdotjs/svg.js":"FaDW","@svgdotjs/svg.filter.js":"QCbq"}]},{},["i5Wi"], null)
+//# sourceMappingURL=app.ff454cf3.js.map
