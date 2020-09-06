@@ -67,16 +67,16 @@ function bedAddition() {
     let cellSize = 100;
     // Add the DOM elements
     // Add the bed parent
-    document.querySelector('.content-bed-add').insertAdjacentHTML('beforebegin', '<div class="content-bed-item" data-bed-id="bed_' + bedID + '"></div>');
+    document.querySelector('.content-bed-add').insertAdjacentHTML('beforebegin', '<div class="content-bed-item" data-bed-id="bed_' + bedID + '"><div class="container"></div></div>');
     let bedLabel = '<div class="bed-label"><div class="subtract-icon"></div><input type="text" class="input-text-nofill" value="Bed ' + bedID.toUpperCase() + '" id="bed_' + bedID + '_name"></input></div>';
     let bedWidthSlider = '<div class="bed-slider"><div class="container"><input type="range" min="1" max="12" value="2" step="1" class="width-range" id="bed_' + bedID + '_width" data-label="Width" list="bed_' + bedID + '_width-tick-list"><datalist id="bed_' + bedID + '_width-tick-list"></datalist></div><div class="slider-value" id="bed_' + bedID + '_width-value">2</div></div>';
     let bedHeightSlider = '<div class="bed-slider"><div class="container"><input type="range" min="1" max="12" value="2" step="1" class="height-range" id="bed_' + bedID + '_height" data-label="Height" list="bed_' + bedID + '_height-tick-list"><datalist id="bed_' + bedID + '_height-tick-list"></datalist></div><div class="slider-value" id="bed_' + bedID + '_height-value">2</div></div>';
     // Add the 3 main elements to the bed item
-    document.querySelector('div[data-bed-id="bed_' + bedID + '"]').insertAdjacentHTML('beforeend', bedLabel);
-    document.querySelector('div[data-bed-id="bed_' + bedID + '"]').insertAdjacentHTML('beforeend', bedWidthSlider);
-    document.querySelector('div[data-bed-id="bed_' + bedID + '"]').insertAdjacentHTML('beforeend', bedHeightSlider);
+    document.querySelector('div[data-bed-id="bed_' + bedID + '"] > .container').insertAdjacentHTML('beforeend', bedLabel);
+    document.querySelector('div[data-bed-id="bed_' + bedID + '"] > .container').insertAdjacentHTML('beforeend', bedWidthSlider);
+    document.querySelector('div[data-bed-id="bed_' + bedID + '"] > .container').insertAdjacentHTML('beforeend', bedHeightSlider);
     // Add the ticks to each range slider
-    document.querySelectorAll('div[data-bed-id="bed_' + bedID + '"] datalist').forEach(function(e) {
+    document.querySelectorAll('div[data-bed-id="bed_' + bedID + '"]  > .container datalist').forEach(function(e) {
       // Add 12 ticks (1 for every value in the slider)
       for(var i=0; i < 12; i++) {
         document.querySelector('#' + e.id).insertAdjacentHTML('beforeend', '<option></option>');
@@ -411,17 +411,21 @@ function bedAddition() {
       grid.after(bedGroup);
     }
   }
-
-  // This function moves all items in the same row left or right based on width change
-  function moveAlongRow(row, col, previousWidth, currentWidth) {
-    // Iterate over the row
-  }
 }
 
 // TEMP CODE
 // Add event listener to Add Bed button when clicked
 document.querySelector('.content-bed-add').addEventListener('click', function() {
   bedAddition();
+}, true);
+
+// TEMP CODE
+// When clicking the forward button move to the next step
+document.querySelector('.button-forward').addEventListener('click', function() {
+  // Test that the button is active
+  if(this.classList.contains('button-no-select') !== true) {
+    transitionStep(document.querySelector('body').getAttribute('data-step'), this.getAttribute('data-next-step'))
+  }
 }, true);
 
 // This function removes a warning crumb based on the passed ID
@@ -434,7 +438,16 @@ function transitionStep(stepFrom, stepTo) {
   switch(true) {
     case stepFrom=='bed-layout' && stepTo=='plant-selection':
       // From bed layout to plant selection
-      
+      // Set the body step to plant selection
+      document.querySelector('body').setAttribute('data-step', 'plant-selection');
+      gsap.timeline()
+        .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '105%', opacity: 0})
+        .to('.content-bed-item > .container', {duration: .4, ease: "power1.inOut", y: '110%', opacity: 0, stagger: {each: 0.075,from: "start",grid: "auto", ease: "power3.in"}}, "-=.25")
+        .call(zoomViewboxOut, [500, 0, 'now', '<>'])
+        .to('.content-bed-add *', {duration: .375, ease: "power1.inOut", y: '250%', opacity: 0}, "-=.3")
+        .call(textChange, ['.side-panel > .container > h1', 'Choose Plants'])
+        .call(removeElement, ['.panel-content > div'])
+        .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '0%', opacity: 1});
       break;
     default:
       // code block
@@ -445,6 +458,26 @@ function transitionStep(stepFrom, stepTo) {
 var draw = SVG().addTo('.viewport').size('100%', '100%').attr({id: 'viewport-svg', opacity: 1}).viewbox('0 150 850 500');
 var bedGroup = draw.group().attr({id: 'bed-group'});
 var gridGroup = draw.group().attr({id: 'grid-floor'});
+
+// This function changes the text of a passed element to passed text
+function textChange(selector, text) {
+  document.querySelector(selector).textContent = text;
+}
+
+// This function removes all matched passed elements
+function removeElement(selector) {
+  document.querySelectorAll(selector).forEach(function(e) {
+    e.remove();
+  })
+}
+
+// This function zooms out the viewbox on the viewport SVG given passed values
+function zoomViewboxOut(duration, delay, when, ease) {
+  let cellSize = 100;
+  // Zoom out a bit
+  let currentViewbox = draw.viewbox()
+  draw.animate(duration, delay, when).ease(ease).viewbox(currentViewbox.x-cellSize, currentViewbox.y-cellSize, currentViewbox.width+(cellSize*2) , currentViewbox.height+(cellSize*2));
+}
 
 // Auto-saving function
 var autoSave = setTimeout(function() {
