@@ -3,6 +3,30 @@ import { SVG } from '@svgdotjs/svg.js';
 import filterWith from '@svgdotjs/svg.filter.js';
 
 
+// This object holds all the data for each plant type
+const plantData = {
+  {
+    plant_name: '',
+    plant_id: '0000',
+    calender_times: [
+      {
+        start: ,
+        end: ,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 00,
+        to_bloom: 00,
+        to_end: 00,
+        plant_varient: ''
+      }
+    ]
+  }
+}
+
+
 // This is the save file format
 class SaveFile {
   constructor(save_object, location_object, current_step_object, beds_array) {
@@ -415,9 +439,9 @@ function bedAddition() {
 
 // TEMP CODE
 // Add event listener to Add Bed button when clicked
-document.querySelector('.content-bed-add').addEventListener('click', function() {
-  bedAddition();
-}, true);
+// document.querySelector('.content-bed-add').addEventListener('click', function() {
+//   bedAddition();
+// }, true); UNCOMMENT THIS!!!!
 
 // TEMP CODE
 // When clicking the forward button move to the next step
@@ -458,6 +482,64 @@ function transitionStep(stepFrom, stepTo) {
 var draw = SVG().addTo('.viewport').size('100%', '100%').attr({id: 'viewport-svg', opacity: 1}).viewbox('0 150 850 500');
 var bedGroup = draw.group().attr({id: 'bed-group'});
 var gridGroup = draw.group().attr({id: 'grid-floor'});
+
+// This function generates a set of swap arrows between two points
+function generateSwapArrows(p1, p2) {
+  let cellSize = 100;
+  // If swap arrows exist, remove them
+  if(SVG('#swap_arrows') !== null) {
+    SVG('#swap_arrows').remove();
+  }
+
+  // Calculate distance between the two points
+  let dist = Math.sqrt(Math.pow((p1.x-p2.x), 2) + Math.pow((p1.y-p2.y), 2));
+
+  // Draw two 'lines' (rect) from p1 to p2, shortened by half the cell size, offset to the right by 1/4th the cell size, also offset it down/up by 3.5, also offset it left/right by 4px
+  let lineThickness = 3;
+  let topPoints = [(p1.x + cellSize/4) + ',' + (p1.y - (3.5+(lineThickness/2))), (p1.x + (dist-((cellSize/4) + 4))) + ',' + (p1.y - (3.5+(lineThickness/2))), (p1.x + (dist-((cellSize/4) + 4))) + ',' + (p1.y - (3.5-(lineThickness/2))), (p1.x + cellSize/4) + ',' + (p1.y - (3.5-(lineThickness/2)))];
+  let lineTop = draw.polygon(topPoints.join(' ')).attr({id: 'top_line'});
+  let lineTopStroke = draw.polygon(topPoints.join(' ')).attr({id: 'top_line_stroke'});
+  let bottomPoints = [(p1.x + ((cellSize/4)+4)) + ',' + (p1.y + (3.5+(lineThickness/2))), (p1.x + (dist-(cellSize/4))) + ',' + (p1.y + (3.5+(lineThickness/2))), (p1.x + (dist-(cellSize/4))) + ',' + (p1.y + (3.5-(lineThickness/2))), (p1.x + ((cellSize/4)+4)) + ',' + (p1.y + (3.5-(lineThickness/2)))];
+  let lineBottom = draw.polygon(bottomPoints.join(' ')).attr({id: 'bottom_line'});
+  let lineBottomStroke = draw.polygon(bottomPoints.join(' ')).attr({id: 'bottom_line_stroke'});
+
+  // Draw two arrowheads and position them at the ends of the lines
+  let arrowheadTopPoints = [(p1.x + ((dist-(cellSize/4))-8)) + ',' + (p1.y - (3.5 + 4.5)), (p1.x + (dist-(cellSize/4))+1) + ',' + (p1.y - 3.5), (p1.x + ((dist-(cellSize/4))-8)) + ',' + (p1.y - (3.5 - 4.5))];
+  let arrowheadTop = draw.polygon(arrowheadTopPoints.join(' ')).attr({id: 'top_arrow'});
+  let arrowheadTopStroke = draw.polygon(arrowheadTopPoints.join(' ')).attr({id: 'top_arrow_stroke'});
+  let arrowheadBottomPoints = [(p1.x + ((cellSize/4)+8)) + ',' + (p1.y + (3.5 + 4.5)), (p1.x + ((cellSize/4)-1)) + ',' + (p1.y + 3.5), (p1.x + ((cellSize/4)+8)) + ',' + (p1.y + (3.5 - 4.5))];
+  let arrowheadBottom = draw.polygon(arrowheadBottomPoints.join(' ')).attr({id: 'bottom_arrow'});
+  let arrowheadBottomStroke = draw.polygon(arrowheadBottomPoints.join(' ')).attr({id: 'bottom_arrow_stroke'});
+
+  // Group the objects
+  let swapGroup = draw.group().attr({id: 'swap_arrows', opacity: 0});
+  let swapGroupStroke = draw.group().attr({id: 'swap_stroke'});
+  let swapGroupFill = draw.group().attr({id: 'swap_fill'});
+  // Stroke
+  lineTopStroke.putIn(swapGroupStroke);
+  lineBottomStroke.putIn(swapGroupStroke);
+  arrowheadTopStroke.putIn(swapGroupStroke);
+  arrowheadBottomStroke.putIn(swapGroupStroke);
+  // Fill
+  lineTop.putIn(swapGroupFill);
+  lineBottom.putIn(swapGroupFill);
+  arrowheadTop.putIn(swapGroupFill);
+  arrowheadBottom.putIn(swapGroupFill);
+  // Group
+  swapGroupStroke.putIn(swapGroup);
+  swapGroupFill.putIn(swapGroup);
+
+  // Style
+  swapGroupFill.fill("#2D936C");
+  swapGroupStroke.stroke({width: 6, color: '#ffffff', linejoin: 'round'});
+
+  // Calculate rotation
+  let rot = Math.atan2((p2.y - p1.y),( p2.x - p1.x)) * 180 / Math.PI;
+  swapGroup.rotate(rot, p1.x, p1.y);
+
+  // Animate in
+  swapGroup.animate(200, '<>', 0).attr({opacity: 1})
+}
 
 // This function changes the text of a passed element to passed text
 function textChange(selector, text) {
