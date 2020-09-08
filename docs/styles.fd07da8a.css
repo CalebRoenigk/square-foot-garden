@@ -58,6 +58,7 @@ table {
 	/* Primary Opacities */
 	--primary-color-mid: rgba(45,147,108,.5);
 	/* Secondary Opacities */
+	--secondary-color-off: rgba(89,100,117,.0);
 	--secondary-color-min: rgba(89,100,117,.15);
 	--secondary-color-low: rgba(89,100,117,.38);
 	--secondary-color-mid: rgba(89,100,117,.5);
@@ -267,12 +268,12 @@ h3 {
 
 .button-forward .button-arrow {
 	margin-left: 4px;
-	background-image: url('/arrow-forward.8661c731.svg');
+	background-image: url('arrow-forward.9248ee5d.svg');
 }
 
 .button-backward .button-arrow {
 	margin-right: 4px;
-	background-image: url('/arrow-backward.24f62639.svg');
+	background-image: url('arrow-backward.bf38f73d.svg');
 }
 
 .viewport {
@@ -365,11 +366,11 @@ h3 {
 .add-option {
 	height: 100%;
 	width: 30px;
-	background-color: var(--primary-color);
+	background-color: var(--tertiary-color);
 	border-radius: 4px;
 	padding: 4px;
 	box-sizing: border-box;
-	background-image: url('/plus.f1633c30.svg');
+	background-image: url('plus.bf077b83.svg');
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: 70%;
@@ -780,17 +781,21 @@ datalist option {
 }
 
 .search-box input[type=text]:focus + .search-suggestions {
-	height: auto;
 	background-color: #ffffff;
 	box-shadow: 0px 4px 16px 2px var(--secondary-color-min);
 	padding-top: 36px;
 }
 
+.grab-item, .blank-item {
+	box-shadow: 0px 0px 0px 0px var(--secondary-color-off);
+}
+
 .grab-item {
 	position: relative;
-	padding: 4px;
-	padding-left: 22px;
+	padding-left: 26px;
 	padding-right: 32px;
+	padding-top: 8px;
+	padding-bottom: 5px;
 	width: 100%;
 	box-sizing: border-box;
 	font-family: 'Surt Exp', sans-serif;
@@ -800,6 +805,7 @@ datalist option {
 	letter-spacing: 0.025em;
 	user-select: none;
 	cursor: move;
+	border-radius: 4px;
 }
 
 .grab-item::before {
@@ -807,11 +813,11 @@ datalist option {
 	display: block;
 	content: '';
 	top: 50%;
-	left: 0px;
-	transform: translate(0%, calc(-50% - 2px));
+	left: 6px;
+	transform: translate(0%, calc(-50% - 1px));
 	height: 12px;
 	width: 10px;
-	background-image: url('/grabber.fbdd40cb.svg');
+	background-image: url('grabber.fd6616ae.svg');
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: 100%;
@@ -822,12 +828,60 @@ datalist option {
 	display: block;
 	content: '';
 	top: 50%;
-	right: 0px;
-	transform: translate(0%, calc(-50% - 2px));
+	right: 12px;
+	transform: translate(0%, calc(-50% - 0px));
 	height: 15px;
 	width: 15px;
 	border-radius: 4px;
 	background-color: black;
+	opacity: 1;
+	transition: .2s ease;
+}
+
+.blank-item {
+	position: relative;
+	padding-left: 26px;
+	padding-right: 32px;
+	padding-top: 8px;
+	padding-bottom: 5px;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: 'Surt Exp', sans-serif;
+	font-size: 1.1em;
+	font-weight: 300;
+	color: var(--secondary-color-low);
+	letter-spacing: 0.025em;
+	user-select: none;
+	cursor: move;
+	border-radius: 4px;
+}
+
+.blank-item::before {
+	position: absolute;
+	display: block;
+	content: '';
+	top: 50%;
+	left: 6px;
+	transform: translate(0%, calc(-50% - 1px));
+	height: 12px;
+	width: 10px;
+	background-image: url('grabber.fd6616ae.svg');
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+.blank-item::after {
+	position: absolute;
+	display: block;
+	content: '';
+	top: 50%;
+	right: 12px;
+	transform: translate(0%, calc(-50% - 0px));
+	height: 15px;
+	width: 15px;
+	border-radius: 4px;
+	background-color: var(--secondary-color-min);
 	opacity: 1;
 	transition: .2s ease;
 }
@@ -932,5 +986,43 @@ datalist option {
 	background-color: #724CF9;
 }
 
+.plant-items, .bed-wrapper {
+	position: relative;
+	width: 100%;
+	box-sizing: border-box;
+	padding-left: 12px;
+	padding-right: 32px;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	gap: 6px;
+}
 
-/*# sourceMappingURL=/styles.5072464b.css.map */
+.plant-items {
+	margin-bottom: 1em;
+}
+
+.bed-wrapper {
+	padding-top: 3.25em;
+}
+
+.bed-wrapper::before {
+	position: absolute;
+	display: block;
+	top: 0px;
+	left: 0px;
+	content: attr(data-name);
+	box-sizing: border-box;
+	padding-top: .25em;
+	padding-left: 12px;
+	font-family: 'Surt Exp', sans-serif;
+	font-size: 1.75em;
+	color: #596475;
+	letter-spacing: 0.01em;
+	height: 1.1em;
+	transform: translateY(.15em);
+}
+
+
+/*# sourceMappingURL=styles.fd07da8a.css.map */

@@ -4,27 +4,1075 @@ import filterWith from '@svgdotjs/svg.filter.js';
 
 
 // This object holds all the data for each plant type
-const plantData = {
+const plantData = [
   {
-    plant_name: '',
+    plant_name: 'Artichokes, globe',
     plant_id: '0000',
     calender_times: [
       {
-        start: ,
-        end: ,
+        start: 0,
+        end: 0,
         plant_varient: ''
       }
     ],
     harvest_times: [
       {
-        days: 00,
-        to_bloom: 00,
-        to_end: 00,
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Artichokes, Jerusalem',
+    plant_id: '0001',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Arugula',
+    plant_id: '0002',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Asparagus',
+    plant_id: '0003',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Basil',
+    plant_id: '0004',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Lima Beans, bush',
+    plant_id: '0005',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Lima Beans, pole',
+    plant_id: '0006',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Snap Beans, bush',
+    plant_id: '0007',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Snap Beans, pole',
+    plant_id: '0008',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Beets',
+    plant_id: '0009',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Broccoli',
+    plant_id: '0010',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Brussels sprouts',
+    plant_id: '0011',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Cabbage',
+    plant_id: '0012',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Cabbage, Chinese',
+    plant_id: '0013',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Carrots',
+    plant_id: '0014',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Cauliflower',
+    plant_id: '0015',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Celery',
+    plant_id: '0016',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Chard, Swiss',
+    plant_id: '0017',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Cilantro',
+    plant_id: '0018',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Collard greens',
+    plant_id: '0019',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Corn, sweet',
+    plant_id: '0020',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Cucumbers',
+    plant_id: '0021',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Dill',
+    plant_id: '0022',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Eggplant',
+    plant_id: '0023',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Fennel, Florence',
+    plant_id: '0024',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Garlic',
+    plant_id: '0025',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Kale',
+    plant_id: '0026',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Kohlrabi',
+    plant_id: '0027',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Leek',
+    plant_id: '0028',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Lettuce, head',
+    plant_id: '0029',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Lettuce, leaf',
+    plant_id: '0030',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Cantaloupe',
+    plant_id: '0031',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Watermelon',
+    plant_id: '0032',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Mustard',
+    plant_id: '0033',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Okra',
+    plant_id: '0034',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Onions, bulb',
+    plant_id: '0035',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Onions, green',
+    plant_id: '0036',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Pac choi',
+    plant_id: '0037',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Parsley',
+    plant_id: '0038',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Parsnips',
+    plant_id: '0039',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Peanuts',
+    plant_id: '0040',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Peanuts',
+    plant_id: '0040',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Peas, bush',
+    plant_id: '0041',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Peas, vining',
+    plant_id: '0042',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Peas, field',
+    plant_id: '0043',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Peppers',
+    plant_id: '0044',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Potatoes, Irish',
+    plant_id: '0045',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Sweetpotatoes',
+    plant_id: '0046',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Pumpkin',
+    plant_id: '0047',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Radishes',
+    plant_id: '0048',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Rutabega',
+    plant_id: '0049',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Spinach',
+    plant_id: '0050',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Squash, summer',
+    plant_id: '0051',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Squash, winter',
+    plant_id: '0052',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Sunflower',
+    plant_id: '0053',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
+        plant_varient: ''
+      }
+    ]
+  },
+  {
+    plant_name: 'Tomatoes',
+    plant_id: '0054',
+    calender_times: [
+      {
+        start: 0,
+        end: 0,
+        plant_varient: ''
+      }
+    ],
+    harvest_times: [
+      {
+        days: 0,
+        to_bloom: 0,
+        to_end: 0,
         plant_varient: ''
       }
     ]
   }
-}
+]
+
+// This array contains all the label colors for any of the cell labling systems
+const labelColors = ["#5FAD41", "#28AFB0", "#FF7D00", "#F0A202", "#FC6DAB", "#E94F37", "#CA7DF9", "#8261FA", "#398CD0", "#F45B69", "#FFDA22", "#004F2D", "#052FC7", "#25F88F", "#604488", "#982649", "#A0DDFF", "#FF6F59", "#B80000", "#145C9E", "#0A100D", "#B30089", "#F896D8", "#724CF9"];
 
 
 // This is the save file format
@@ -560,6 +1608,262 @@ function zoomViewboxOut(duration, delay, when, ease) {
   let currentViewbox = draw.viewbox()
   draw.animate(duration, delay, when).ease(ease).viewbox(currentViewbox.x-cellSize, currentViewbox.y-cellSize, currentViewbox.width+(cellSize*2) , currentViewbox.height+(cellSize*2));
 }
+
+// PLANT SELECTION
+
+
+// TEMP CODE, may need to move the creation of this list into the plant search step
+// Will also need to add filtering to allow for plants that can be grown in the current hardiness zone
+// This array is created for search results
+let searchArray = [];
+for(var i=0; i < plantData.length; i++) {
+  searchArray.push(plantData[i].plant_name);
+}
+
+// Add the update plant search result to the plant search box
+document.querySelector("#search-plants").addEventListener("input", function() {
+  let query = document.querySelector("#search-plants").value;
+  updatePlantSearchResult(query);
+
+  // When there is any value in the search box and it matches an item in the search array, color the add button
+  if(query.length > 0 && searchArray.indexOf(query) !== -1) {
+    gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', backgroundColor: 'var(--primary-color)'})
+  } else {
+    gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
+  }
+});
+
+// This function updates the search results
+function updatePlantSearchResult(query) {
+  let resultList = document.querySelector(".search-suggestions");
+  resultList.innerHTML = "";
+
+  searchArray.map(function(algo){
+      query.split(" ").map(function (word){
+          if(algo.toLowerCase().indexOf(word.toLowerCase()) != -1 && resultList.childNodes.length < 5){
+              resultList.innerHTML += `<li>${algo}</li>`;
+          }
+      })
+  });
+
+  // Add event listener to each search item
+  document.querySelectorAll(".search-suggestions > li").forEach(function(e) {
+    e.addEventListener("click", function() {
+      // Fill the search box in with the clicked value
+      document.querySelector("#search-plants").value = e.textContent;
+
+      // When there is any value in the search box and it matches an item in the search array, color the add button
+      if(e.textContent.length > 0 && searchArray.indexOf(e.textContent) !== -1) {
+        gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', backgroundColor: 'var(--primary-color)'})
+      } else {
+        gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
+      }
+    });
+  })
+};
+
+// This adds an event listener to the search box so that when it is in focus the search results are open
+document.querySelector("#search-plants").addEventListener("focusin", function(e) {
+  gsap.to('.search-suggestions', {duration: .1, ease: 'linear', height: 'auto', backgroundColor: '#ffffff', boxShadow: '0px 4px 16px 2px var(--secondary-color-min)', paddingTop: '36px'});
+  let query = document.querySelector("#search-plants").value;
+  updatePlantSearchResult(query)
+});
+// And when focus is out
+document.querySelector("#search-plants").addEventListener("focusout", function(e) {
+  gsap.to('.search-suggestions', {duration: .1, ease: 'linear', clearProps: 'all'});
+
+  // When there is any value in the search box and it matches an item in the search array, color the add button
+  let query = document.querySelector("#search-plants").value;
+  if(query.length > 0 && searchArray.indexOf(query) !== -1) {
+    gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', backgroundColor: 'var(--primary-color)'})
+  } else {
+    gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
+  }
+});
+
+// Add plant item to no-parent area if the add icon is active
+document.querySelector(".plant-search > .add-option").addEventListener("click", function(e) {
+  // Add the option to the no-parent area
+  addPlantOption(plantData[searchArray.indexOf(document.querySelector("#search-plants").value)])
+
+  // Clear search
+  gsap.to('.add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
+  document.querySelector("#search-plants").value = '';
+});
+
+// This function adds a search item to the no-parent container for new search items
+function addPlantOption(plantObj) {
+  let itemCount = document.querySelectorAll('.grab-item').length;
+
+  // Select a color from the label color array given the total items % the number of items in the label color array
+  let labelColor = labelColors[itemCount%labelColors.length];
+
+  // Add the item to the no-parent container
+  let newPlantCount = (document.querySelector('#no-bed-plants').childElementCount-1) + 1;
+  let newItem = '<div class="grab-item" data-plant-parent="none" data-label-color="' + labelColor + '" draggable="true" id="plant_' + newPlantCount + '">' + plantObj.plant_name + '</div>';
+
+  // Add the drag and drop event listeners to the new item
+  document.querySelector('#no-bed-plants').insertAdjacentHTML('beforeend', newItem);
+  addDragAndDrop('#plant_' + newPlantCount);
+}
+
+// These function handle the styling of dragged item when drag starts and ends
+function handleDragEnd(e) {
+  gsap.to(this, {duration: .2, ease: 'power2.inOut', opacity: 1});
+  gsap.set(this, {delay: .2, clearProps: 'opacity'});
+}
+
+function handleDragIn(e) {
+  e.preventDefault();
+  gsap.to(this, {duration: .2, ease: 'power2.inOut', boxShadow: '0px 4px 12px 0px var(--secondary-color-low)'});
+  return true;
+}
+
+function handleDragOver(e) {
+  return false;
+}
+
+function handleDragOut(e) {
+  gsap.to(this, {duration: .2, ease: 'power2.inOut', boxShadow: '0px 0px 0px 0px var(--secondary-color-off)'});
+  gsap.set(this, {delay: .2, clearProps: 'boxShadow'});
+
+}
+
+// This is the drag and drop data transfer format
+class DnDObject {
+  constructor(id, parent, cell, text, label, classes, draggable) {
+    this.id = id;
+    this.parent = parent;
+    this.cell = cell || false;
+    this.text = text;
+    this.label = label || false;
+    this.classes = classes;
+    this.draggable = draggable || false;
+  }
+}
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function handleDragStart(ev) {
+  ev.dataTransfer.setData("id", ev.target.id);
+  ev.dataTransfer.setData("bed", ev.target.getAttribute('data-plant-parent'));
+  ev.dataTransfer.setData("cell", ev.target.getAttribute('data-cell'));
+  ev.dataTransfer.setData("text", ev.target.textContent);
+  ev.dataTransfer.setData("label_color", ev.target.getAttribute('data-label-color'));
+  ev.dataTransfer.setData("classes", ev.target.classList);
+  ev.dataTransfer.setData("draggable", ev.target.getAttribute('draggable'));
+
+  gsap.to(this, {duration: .2, ease: 'power2.inOut', opacity: .5});
+}
+
+function handleDrop(ev) {
+  ev.preventDefault();
+  // Store both items as element selections
+  let itemBeingDropped = document.querySelector('#' + ev.dataTransfer.getData("id"));
+  let itemSitting = document.querySelector('#' + ev.target.id);
+
+  // Make data objects for both sitting and dropping items
+  let droppingData = new DnDObject(itemBeingDropped.id, itemBeingDropped.getAttribute('data-plant-parent').toString(), itemBeingDropped.getAttribute('data-cell'), itemBeingDropped.textContent, itemBeingDropped.getAttribute('data-label-color'), itemBeingDropped.classList.toString(), itemBeingDropped.getAttribute('draggable'));
+  let sittingData = new DnDObject(itemSitting.id, itemSitting.getAttribute('data-plant-parent').toString(), itemSitting.getAttribute('data-cell'), itemSitting.textContent, itemSitting.getAttribute('data-label-color'), itemSitting.classList.toString(), itemSitting.getAttribute('draggable'));
+
+  // Swap the data
+  swapData(droppingData, sittingData);
+
+  // If the now swapped sitting item is an empty item and its parent is .plant-items, delete it
+  if(itemBeingDropped.parentElement.classList.contains('plant-items') == true && itemBeingDropped.classList.contains('blank-item') == true) {
+    document.querySelector('#' + itemBeingDropped.id).remove()
+  }
+
+  gsap.to(this, {duration: .2, ease: 'power2.inOut', boxShadow: '0px 0px 0px 0px var(--secondary-color-off)'});
+  gsap.set(this, {delay: .2, clearProps: 'boxShadow'});
+
+  // This function swaps the data between the two drag and drop items
+  function swapData(dData, sData) {
+    // Fix the old drop item with the new sitting data
+    let oldDropItem = document.querySelector('#' + dData.id);
+    oldDropItem.removeAttribute('class');
+    oldDropItem.setAttribute('class', sData.classes);
+    oldDropItem.id = 'TEMPID';
+    oldDropItem.textContent = sData.text;
+    oldDropItem.setAttribute('data-plant-parent', dData.parent);
+    if(sData.draggable !== false) {
+      oldDropItem.setAttribute('draggable', sData.draggable);
+    } else {
+      oldDropItem.removeAttribute('draggable');
+    }
+    if(sData.label !== false) {
+      oldDropItem.setAttribute('data-label-color', sData.label);
+    } else {
+      oldDropItem.removeAttribute('data-label-color');
+    }
+    if(sData.cell !== false) {
+      oldDropItem.setAttribute('data-cell', sData.cell);
+    } else {
+      oldDropItem.removeAttribute('data-cell');
+    }
+
+    // Fix the old sitting item with the new dropping data
+    let oldSitItem = document.querySelector('#' + sData.id);
+    oldSitItem.removeAttribute('class');
+    oldSitItem.setAttribute('class', dData.classes);
+    oldSitItem.id = dData.id;
+    oldSitItem.textContent = dData.text;
+    oldSitItem.setAttribute('data-plant-parent', sData.parent);
+    if(dData.draggable !== false) {
+      oldSitItem.setAttribute('draggable', dData.draggable);
+    } else {
+      oldSitItem.removeAttribute('draggable');
+    }
+    if(dData.label !== false) {
+      oldSitItem.setAttribute('data-label-color', dData.label);
+    } else {
+      oldSitItem.removeAttribute('data-color-label');
+    }
+    if(dData.cell !== false) {
+      oldSitItem.setAttribute('data-cell', dData.cell);
+    } else {
+      oldSitItem.removeAttribute('data-cell');
+    }
+
+    // After old sitting item id has been changed, remove the temp id from the old drop item and replace it with the new sitting id
+    oldDropItem.id = sData.id;
+  }
+}
+
+// This function adds the standard set of event listeners to a drag and drop item
+function addDragAndDrop(elements) {
+  let dragableItems = document.querySelectorAll(elements);
+    dragableItems.forEach(function(item) {
+      item.addEventListener('dragstart', handleDragStart, false);
+      item.addEventListener('dragend', handleDragEnd, false);
+      item.addEventListener('dragenter', handleDragIn, false);
+      item.addEventListener('dragover', allowDrop, false);
+      item.addEventListener('dragleave', handleDragOut, false);
+      item.addEventListener('drop', handleDrop, false);
+  });
+}
+
+// This function removes the standard set of event listeners from a drag and drop item
+function removeDragAndDrop(elements) {
+  let dragableItems = document.querySelectorAll(elements);
+    dragableItems.forEach(function(item) {
+      item.removeEventListener('dragstart', handleDragStart, false);
+      item.removeEventListener('dragend', handleDragEnd, false);
+      item.removeEventListener('dragenter', handleDragIn, false);
+      item.removeEventListener('dragover', allowDrop, false);
+      item.removeEventListener('dragleave', handleDragOut, false);
+      item.removeEventListener('drop', handleDrop, false);
+  });
+}
+
+// TEMP CODE
+addDragAndDrop('.grab-item')
+addDragAndDrop('.blank-item')
+
+
+// END PLANT SELECTION
 
 // Auto-saving function
 var autoSave = setTimeout(function() {
