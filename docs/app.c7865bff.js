@@ -18569,7 +18569,15 @@ const plantData = [{
     to_end: 0,
     plant_varient: ''
   }]
-}]; // This array contains all the label colors for any of the cell labling systems
+}]; // This array is created for search results
+// Will also need to add filtering to allow for plants that can be grown in the current hardiness zone
+
+const plantSearchArray = [];
+
+for (var i = 0; i < plantData.length; i++) {
+  plantSearchArray.push(plantData[i].plant_name);
+} // This array contains all the label colors for any of the cell labling systems
+
 
 const labelColors = ["#5FAD41", "#28AFB0", "#FF7D00", "#F0A202", "#FC6DAB", "#E94F37", "#CA7DF9", "#8261FA", "#398CD0", "#F45B69", "#FFDA22", "#004F2D", "#052FC7", "#25F88F", "#604488", "#982649", "#A0DDFF", "#FF6F59", "#B80000", "#145C9E", "#0A100D", "#B30089", "#F896D8", "#724CF9"]; // This is the save file format
 
@@ -19067,12 +19075,12 @@ function bedAddition() {
   }
 } // TEMP CODE
 // Add event listener to Add Bed button when clicked
-// document.querySelector('.content-bed-add').addEventListener('click', function() {
-//   bedAddition();
-// }, true); UNCOMMENT THIS!!!!
-// TEMP CODE
-// When clicking the forward button move to the next step
 
+
+document.querySelector('.content-bed-add').addEventListener('click', function () {
+  bedAddition();
+}, true); // TEMP CODE
+// When clicking the forward button move to the next step
 
 document.querySelector('.button-forward').addEventListener('click', function () {
   // Test that the button is active
@@ -19120,7 +19128,7 @@ function transitionStep(stepFrom, stepTo) {
         ease: "power2.inOut",
         y: '0%',
         opacity: 1
-      });
+      }).call(generateCells).call(cellTransition).call(populatePanel, [stepTo]);
       break;
 
     default: // code block
@@ -19238,42 +19246,290 @@ function zoomViewboxOut(duration, delay, when, ease) {
 
   let currentViewbox = draw.viewbox();
   draw.animate(duration, delay, when).ease(ease).viewbox(currentViewbox.x - cellSize, currentViewbox.y - cellSize, currentViewbox.width + cellSize * 2, currentViewbox.height + cellSize * 2);
-} // PLANT SELECTION
-// TEMP CODE, may need to move the creation of this list into the plant search step
-// Will also need to add filtering to allow for plants that can be grown in the current hardiness zone
-// This array is created for search results
+} // This function creates cells and dividers for each bed
 
 
-let searchArray = [];
+function generateCells() {
+  let cellSize = 100; // Iterate over each row
 
-for (var i = 0; i < plantData.length; i++) {
-  searchArray.push(plantData[i].plant_name);
-} // Add the update plant search result to the plant search box
+  document.querySelectorAll('#bed-group > g').forEach(function (row) {
+    let rowNumb = row.id.split('-')[1];
+    console.log('rownumb: ' + rowNumb); // Iterate over each bed in this row
+
+    document.querySelectorAll('#' + row.id + ' g').forEach(function (bed) {
+      console.log('bed: ' + bed.id); // Get the height and width of the current bed
+
+      let thisHeight = (0, _svg.SVG)('#' + bed.id + '_base').height();
+      let thisWidth = (0, _svg.SVG)('#' + bed.id + '_base').width(); // Create a group for the cells and dividers to go in
+
+      let cellGroup = draw.group().attr({
+        id: bed.id + '_cells'
+      });
+      let dividerGroup = draw.group().attr({
+        id: bed.id + '_dividers'
+      });
+      let contentGroup = draw.group().attr({
+        id: bed.id + '_content'
+      }); // Place the groups in order
+
+      cellGroup.putIn(contentGroup);
+      dividerGroup.putIn(contentGroup);
+      contentGroup.putIn((0, _svg.SVG)('#' + bed.id)); // Store the bbox for the current bed
+
+      let bedBBox = (0, _svg.SVG)('#' + bed.id + '_base').bbox();
+      console.log(bedBBox); // Iterate over the width of the bed, creating vertical dividers
+
+      for (var i = 0; i < thisWidth / cellSize - 1; i++) {
+        // Start placement at x1 + cellSize
+        let vDivider = draw.line(bedBBox.x + cellSize * (i + 1), bedBBox.y, bedBBox.x + cellSize * (i + 1), bedBBox.y2).stroke({
+          width: 2,
+          color: '#ffffff',
+          dasharray: bedBBox.y2 - bedBBox.y + ' ' + (bedBBox.y2 - bedBBox.y + 10),
+          dashoffset: bedBBox.y2 - bedBBox.y + 10
+        }).attr({
+          class: 'vert-divider'
+        }); // Place the divder in the divider group
+
+        vDivider.putIn(dividerGroup);
+      } // Iterate over the height of the bed, creating horizontal dividers
 
 
-document.querySelector("#search-plants").addEventListener("input", function () {
-  let query = document.querySelector("#search-plants").value;
-  updatePlantSearchResult(query); // When there is any value in the search box and it matches an item in the search array, color the add button
+      for (var i = 0; i < thisHeight / cellSize - 1; i++) {
+        // Start placement at x1 + cellSize
+        let hDivider = draw.line(bedBBox.x, bedBBox.y + cellSize * (i + 1), bedBBox.x2, bedBBox.y + cellSize * (i + 1)).stroke({
+          width: 2,
+          color: '#ffffff',
+          dasharray: bedBBox.x2 - bedBBox.x + ' ' + (bedBBox.x2 - bedBBox.x + 10),
+          dashoffset: bedBBox.x2 - bedBBox.x + 10
+        }).attr({
+          class: 'horz-divider'
+        });
+        hDivider.putIn(dividerGroup);
+      } // Add a border-rect to the divder group
 
-  if (query.length > 0 && searchArray.indexOf(query) !== -1) {
-    gsap.to('.plant-search > .add-option', {
-      duration: .2,
-      ease: 'power2.inOut',
-      backgroundColor: 'var(--primary-color)'
+
+      let border = draw.rect(bedBBox.width, bedBBox.height).cx(bedBBox.cx).cy(bedBBox.cy).attr({
+        class: 'bed-border',
+        fill: 'none'
+      }).stroke({
+        width: 6,
+        color: '#ffffff'
+      });
+      border.putIn(dividerGroup); // Create the cells
+      // Iterate over the height
+
+      let totalCellCount = 0;
+
+      for (var h = 0; h < thisHeight / cellSize; h++) {
+        // Iterate over the width
+        for (var w = 0; w < thisWidth / cellSize; w++) {
+          // Create a cell at the right height and width coordinate
+          let cellID = 'cell_' + bed.id.split('_')[1] + '_' + totalCellCount;
+          let cell = draw.rect(cellSize, cellSize).x(bedBBox.x + w * cellSize).y(bedBBox.y + h * cellSize).attr({
+            id: cellID,
+            class: 'bed-cell'
+          }).fill({
+            color: '#596475',
+            opacity: 0
+          });
+          cell.putIn(cellGroup);
+          totalCellCount++;
+        }
+      } // Move the cell group behind the divider group
+
+
+      cellGroup.back();
     });
-  } else {
-    gsap.to('.plant-search > .add-option', {
-      duration: .2,
-      ease: 'power2.inOut',
-      clearProps: 'backgroundColor'
+  });
+} // This function transitions the beds from the bed view to the cell view
+
+
+function cellTransition() {
+  let cellSize = 100; // Order of timeline
+  // Move each bed label up and change its color and opacity
+  // Draw in each horizontal divider
+  // Draw in each vertical divder
+  // Iterate over the beds, setting the y position of the text label to above the bed
+
+  document.querySelectorAll('#bed-group > g > g').forEach(function (bed, i) {
+    console.log(bed);
+    console.log(i); // Calculate what y position the label will be at
+
+    let minBedY = (0, _svg.SVG)('#' + bed.id + '_base').bbox().y;
+    let delay = 50 * i; // Animate the text label
+
+    (0, _svg.SVG)('#' + bed.id + '_label').animate(500, delay, 'now').ease('<>').attr({
+      fill: '#596475',
+      opacity: .38,
+      y: minBedY - cellSize / 2
     });
+  }); // Animate the dividers
+
+  gsap.timeline().to('#bed-group > g > g > g > g > line', {
+    duration: .5,
+    delay: .2,
+    ease: 'power2.inOut',
+    strokeDashoffset: 0,
+    stagger: {
+      each: .025,
+      from: 'start',
+      ease: 'power1.inOut'
+    }
+  });
+} // PANEL STATE CHANGE
+// This function populates the panel based on passed states
+
+
+function populatePanel(state) {
+  switch (true) {
+    case state == 'plant-selection':
+      // Add Plant Search to panel content
+      document.querySelector('.panel-content').insertAdjacentHTML('afterbegin', '<div class="plant-search" style="overflow: hidden;"><div class="search-box" style="transform: translateY(150%);"><input type="text" placeholder="Start Typing" id="search-plants"><div class="search-suggestions"></div></div><div class="add-option" style="transform: translateY(150%);"></div></div>'); // Add plant items search-paste area to panel content
+
+      document.querySelector('.panel-content').insertAdjacentHTML('beforeend', '<div class="plant-items" id="no-bed-plants"></div>'); // Event Listeners for Search
+      // This adds an event listener to the search box so that when it is in focus the search results are open
+
+      document.querySelector("#search-plants").addEventListener("focusin", function (e) {
+        gsap.to('.search-suggestions', {
+          duration: .1,
+          ease: 'linear',
+          height: 'auto',
+          backgroundColor: '#ffffff',
+          boxShadow: '0px 4px 16px 2px var(--secondary-color-min)',
+          paddingTop: '36px'
+        });
+        let query = document.querySelector("#search-plants").value;
+        updatePlantSearchResult(query);
+      }); // And when focus is out
+
+      document.querySelector("#search-plants").addEventListener("focusout", function (e) {
+        gsap.to('.search-suggestions', {
+          duration: .1,
+          ease: 'linear',
+          clearProps: 'all'
+        }); // When there is any value in the search box and it matches an item in the search array, color the add button
+
+        let query = document.querySelector("#search-plants").value;
+
+        if (query.length > 0 && plantSearchArray.indexOf(query) !== -1) {
+          gsap.to('.plant-search > .add-option', {
+            duration: .2,
+            ease: 'power2.inOut',
+            backgroundColor: 'var(--primary-color)'
+          });
+        } else {
+          gsap.to('.plant-search > .add-option', {
+            duration: .2,
+            ease: 'power2.inOut',
+            clearProps: 'backgroundColor'
+          });
+        }
+      }); // Add plant item to no-parent area if the add icon is active
+
+      document.querySelector(".plant-search > .add-option").addEventListener("click", function (e) {
+        // Add the option to the no-parent area
+        addPlantOption(plantData[plantSearchArray.indexOf(document.querySelector("#search-plants").value)]); // Clear search
+
+        gsap.to('.add-option', {
+          duration: .2,
+          ease: 'power2.inOut',
+          clearProps: 'backgroundColor'
+        });
+        document.querySelector("#search-plants").value = '';
+      }); // Add the update plant search result to the plant search box
+
+      document.querySelector("#search-plants").addEventListener("input", function () {
+        let query = document.querySelector("#search-plants").value;
+        updatePlantSearchResult(query); // When there is any value in the search box and it matches an item in the search array, color the add button
+
+        if (query.length > 0 && plantSearchArray.indexOf(query) !== -1) {
+          gsap.to('.plant-search > .add-option', {
+            duration: .2,
+            ease: 'power2.inOut',
+            backgroundColor: 'var(--primary-color)'
+          });
+        } else {
+          gsap.to('.plant-search > .add-option', {
+            duration: .2,
+            ease: 'power2.inOut',
+            clearProps: 'backgroundColor'
+          });
+        }
+      }); // Iterate over each bed
+
+      document.querySelectorAll('#bed-group > g > g').forEach(function (bed) {
+        // Create a bed wrapper for the current bed in the panel content
+        document.querySelector('.panel-content').insertAdjacentHTML('beforeend', '<div class="bed-wrapper" id="' + bed.id + '_plants" data-name="' + bed.getAttribute('data-name') + '" style="opacity: 0; transform: translateY(10%);"></div>'); // Iterate over each cell in the bed
+
+        document.querySelectorAll('#' + bed.id + '_cells > rect').forEach(function (cell) {
+          // Store info about the current cell
+          let cellBed = cell.id.split('_')[1];
+          let cellNum = cell.id.split('_')[2]; // Insert an empty item into the bed wrapper for this cell
+
+          document.querySelector('#' + bed.id + '_plants').insertAdjacentHTML('beforeend', '<div class="blank-item" data-plant-parent="' + bed.id + '" data-cell="' + cellNum + '" id="empty_' + cellBed + '_' + cellNum + '" style="opacity: 0; transform: translateY(7.5%);">Empty</div>'); // Add event listeners to the empty item for DnD functionality
+
+          addDragAndDrop('#empty_' + cellBed + '_' + cellNum);
+        });
+      }); // Animate the content in
+
+      gsap.timeline().to('.plant-search > div', {
+        duration: .375,
+        ease: "power2.inOut",
+        y: '0%'
+      }, "-=.125").to('.plant-search', {
+        duration: .05,
+        ease: 'linear',
+        clearProps: 'all'
+      }, '+=.375').to('.plant-search > div', {
+        duration: .05,
+        ease: 'linear',
+        clearProps: 'all'
+      }).to('.bed-wrapper', {
+        duration: .4,
+        ease: "power2.out",
+        y: '0%',
+        opacity: 1,
+        stagger: {
+          each: .075,
+          from: 'start',
+          grid: 'auto',
+          ease: 'power1.out'
+        }
+      }, "-=.5").to('.bed-wrapper > div', {
+        duration: .25,
+        ease: "power2.out",
+        y: '0%',
+        opacity: 1,
+        stagger: {
+          each: .025,
+          from: 'start',
+          grid: 'auto',
+          ease: 'linear'
+        }
+      }, "-=.5").to('.bed-wrapper', {
+        duration: .05,
+        ease: 'linear',
+        clearProps: 'all',
+        stagger: {
+          each: .075,
+          from: 'start',
+          grid: 'auto',
+          ease: 'power1.out'
+        }
+      }, "+=.45");
+      break;
+
+    default: // ADD DEFAULT HOME SCREEN HERE
+
   }
-}); // This function updates the search results
+} // PLANT SELECTION
+// This function updates the search results
+
 
 function updatePlantSearchResult(query) {
   let resultList = document.querySelector(".search-suggestions");
   resultList.innerHTML = "";
-  searchArray.map(function (algo) {
+  plantSearchArray.map(function (algo) {
     query.split(" ").map(function (word) {
       if (algo.toLowerCase().indexOf(word.toLowerCase()) != -1 && resultList.childNodes.length < 5) {
         resultList.innerHTML += `<li>${algo}</li>`;
@@ -19286,7 +19542,7 @@ function updatePlantSearchResult(query) {
       // Fill the search box in with the clicked value
       document.querySelector("#search-plants").value = e.textContent; // When there is any value in the search box and it matches an item in the search array, color the add button
 
-      if (e.textContent.length > 0 && searchArray.indexOf(e.textContent) !== -1) {
+      if (e.textContent.length > 0 && plantSearchArray.indexOf(e.textContent) !== -1) {
         gsap.to('.plant-search > .add-option', {
           duration: .2,
           ease: 'power2.inOut',
@@ -19303,56 +19559,7 @@ function updatePlantSearchResult(query) {
   });
 }
 
-; // This adds an event listener to the search box so that when it is in focus the search results are open
-
-document.querySelector("#search-plants").addEventListener("focusin", function (e) {
-  gsap.to('.search-suggestions', {
-    duration: .1,
-    ease: 'linear',
-    height: 'auto',
-    backgroundColor: '#ffffff',
-    boxShadow: '0px 4px 16px 2px var(--secondary-color-min)',
-    paddingTop: '36px'
-  });
-  let query = document.querySelector("#search-plants").value;
-  updatePlantSearchResult(query);
-}); // And when focus is out
-
-document.querySelector("#search-plants").addEventListener("focusout", function (e) {
-  gsap.to('.search-suggestions', {
-    duration: .1,
-    ease: 'linear',
-    clearProps: 'all'
-  }); // When there is any value in the search box and it matches an item in the search array, color the add button
-
-  let query = document.querySelector("#search-plants").value;
-
-  if (query.length > 0 && searchArray.indexOf(query) !== -1) {
-    gsap.to('.plant-search > .add-option', {
-      duration: .2,
-      ease: 'power2.inOut',
-      backgroundColor: 'var(--primary-color)'
-    });
-  } else {
-    gsap.to('.plant-search > .add-option', {
-      duration: .2,
-      ease: 'power2.inOut',
-      clearProps: 'backgroundColor'
-    });
-  }
-}); // Add plant item to no-parent area if the add icon is active
-
-document.querySelector(".plant-search > .add-option").addEventListener("click", function (e) {
-  // Add the option to the no-parent area
-  addPlantOption(plantData[searchArray.indexOf(document.querySelector("#search-plants").value)]); // Clear search
-
-  gsap.to('.add-option', {
-    duration: .2,
-    ease: 'power2.inOut',
-    clearProps: 'backgroundColor'
-  });
-  document.querySelector("#search-plants").value = '';
-}); // This function adds a search item to the no-parent container for new search items
+; // This function adds a search item to the no-parent container for new search items
 
 function addPlantOption(plantObj) {
   let itemCount = document.querySelectorAll('.grab-item').length; // Select a color from the label color array given the total items % the number of items in the label color array
@@ -19379,13 +19586,63 @@ function handleDragEnd(e) {
   });
 }
 
-function handleDragIn(e) {
-  e.preventDefault();
+function handleDragIn(ev) {
+  ev.preventDefault();
   gsap.to(this, {
     duration: .2,
     ease: 'power2.inOut',
     boxShadow: '0px 4px 12px 0px var(--secondary-color-low)'
-  });
+  }); // document.querySelector('.panel-content').setAttribute('data-label-color-drag', ev.target.getAttribute('data-label-color'))
+  // Test the two DnD items for classes
+
+  let itemBeingDroppedClassList = document.querySelector('#' + document.querySelector('.panel-content').getAttribute('data-id-drag')).classList;
+  let itemSittingClassList = ev.target.classList; // If the item being dragged is from the no-bed container
+
+  if (document.querySelector('#' + document.querySelector('.panel-content').getAttribute('data-id-drag')).getAttribute('data-cell') == null) {
+    // The item being dragged is from the no bed container
+    // The sitting item is a plant cell
+    // Color change will need to happen on the sitting cell
+    let hoverBedParent = ev.target.getAttribute('data-plant-parent').split('_')[1];
+    let hoverCell = (0, _svg.SVG)('#cell_' + hoverBedParent + '_' + ev.target.getAttribute('data-cell')); // Store the old fill color temporarily to the cell
+
+    let oldHoverFill = hoverCell.attr('fill');
+    let oldHoverOpacity = hoverCell.attr('fill-opacity');
+    hoverCell.data('old-fill', oldHoverFill, true);
+    hoverCell.data('old-opacity', oldHoverOpacity, true); // Change the color of the cell to the label color of the hovering plant item with .5 opacity
+
+    hoverCell.animate(250, 0, 'now').ease('<>').fill({
+      color: document.querySelector('.panel-content').getAttribute('data-label-color-drag'),
+      opacity: 0.5
+    });
+  } else {
+    // The item being dragged is from one of the bed containers
+    // The swap arrows will need to draw on
+    // Color change will need to happen
+    // Sitting Cell Color
+    let hoverBedParent = ev.target.getAttribute('data-plant-parent').split('_')[1];
+    let hoverCell = (0, _svg.SVG)('#cell_' + hoverBedParent + '_' + ev.target.getAttribute('data-cell')); // Store the old fill color temporarily to the cell
+
+    let oldHoverFill = hoverCell.attr('fill');
+    let oldHoverOpacity = hoverCell.attr('fill-opacity');
+    hoverCell.data('old-fill', oldHoverFill, true);
+    hoverCell.data('old-opacity', oldHoverOpacity, true); // Change the color of the cell to the label color of the hovering plant item with .5 opacity
+
+    hoverCell.animate(250, 0, 'now').ease('<>').fill({
+      color: document.querySelector('.panel-content').getAttribute('data-label-color-drag'),
+      opacity: 0.5
+    }); // Dragging Cell Color
+
+    let draggingBedParent = document.querySelector('#' + document.querySelector('.panel-content').getAttribute('data-id-drag')).getAttribute('data-plant-parent').split('_')[1];
+    let draggingCell = (0, _svg.SVG)('#cell_' + hoverBedParent + '_' + document.querySelector('#' + document.querySelector('.panel-content').getAttribute('data-id-drag')).getAttribute('data-cell')); // Store the old fill color temporarily to the cell
+
+    draggingCell.data('old-fill', draggingCell.attr('fill'), true); // Change the color of the cell to the label color of the hovering plant item with .5 opacity
+
+    draggingCell.animate(250, 0, 'now').ease('<>').fill({
+      color: oldHoverFill,
+      opacity: 0.5
+    });
+  }
+
   return true;
 }
 
@@ -19393,7 +19650,7 @@ function handleDragOver(e) {
   return false;
 }
 
-function handleDragOut(e) {
+function handleDragOut(ev) {
   gsap.to(this, {
     duration: .2,
     ease: 'power2.inOut',
@@ -19403,6 +19660,23 @@ function handleDragOut(e) {
     delay: .2,
     clearProps: 'boxShadow'
   });
+  console.log('dragout: ' + this.id);
+
+  if (this.getAttribute('data-cell') !== null) {
+    // The element the dragged element is leaving has a cell connected to it
+    let leavingBedParent = this.getAttribute('data-plant-parent').split('_')[1];
+    let leavingCell = (0, _svg.SVG)('#cell_' + leavingBedParent + '_' + this.getAttribute('data-cell'));
+    let oldFill = leavingCell.data('old-fill');
+    let oldOpacity = leavingCell.data('old-opacity'); // Change the color of the cell back to its old fill
+
+    leavingCell.animate(250, 0, 'now').ease('<>').fill({
+      color: oldFill,
+      opacity: oldOpacity
+    }); // Remove the old fill color data
+
+    leavingCell.data('old-fill', null);
+    leavingCell.data('old-opacity', null);
+  }
 } // This is the drag and drop data transfer format
 
 
@@ -19430,7 +19704,10 @@ function handleDragStart(ev) {
   ev.dataTransfer.setData("text", ev.target.textContent);
   ev.dataTransfer.setData("label_color", ev.target.getAttribute('data-label-color'));
   ev.dataTransfer.setData("classes", ev.target.classList);
-  ev.dataTransfer.setData("draggable", ev.target.getAttribute('draggable'));
+  ev.dataTransfer.setData("draggable", ev.target.getAttribute('draggable')); // Pass some data to temporary data attritubes on panel-content, this allows for data read on hover over
+
+  document.querySelector('.panel-content').setAttribute('data-label-color-drag', ev.target.getAttribute('data-label-color'));
+  document.querySelector('.panel-content').setAttribute('data-id-drag', ev.target.id);
   gsap.to(this, {
     duration: .2,
     ease: 'power2.inOut',
@@ -19482,12 +19759,6 @@ function handleDrop(ev) {
       oldDropItem.setAttribute('data-label-color', sData.label);
     } else {
       oldDropItem.removeAttribute('data-label-color');
-    }
-
-    if (sData.cell !== false) {
-      oldDropItem.setAttribute('data-cell', sData.cell);
-    } else {
-      oldDropItem.removeAttribute('data-cell');
     } // Fix the old sitting item with the new dropping data
 
 
@@ -19508,16 +19779,49 @@ function handleDrop(ev) {
       oldSitItem.setAttribute('data-label-color', dData.label);
     } else {
       oldSitItem.removeAttribute('data-color-label');
-    }
+    } // Cell Data transfer
+    // D data is for the sit item
+
 
     if (dData.cell !== false) {
-      oldSitItem.setAttribute('data-cell', dData.cell);
+      oldDropItem.setAttribute('data-cell', dData.cell);
+    } else {
+      oldDropItem.removeAttribute('data-cell');
+    } // S data is for the drop item
+
+
+    if (sData.cell !== false) {
+      oldSitItem.setAttribute('data-cell', sData.cell);
     } else {
       oldSitItem.removeAttribute('data-cell');
     } // After old sitting item id has been changed, remove the temp id from the old drop item and replace it with the new sitting id
 
 
-    oldDropItem.id = sData.id;
+    oldDropItem.id = sData.id; // Set the color of the cells
+    // Sitting Cell
+
+    if ((0, _svg.SVG)('#cell_' + sData.parent.split('_')[1] + '_' + sData.cell) !== null) {
+      (0, _svg.SVG)('#cell_' + sData.parent.split('_')[1] + '_' + sData.cell).animate(250, 0, 'now').ease('<>').fill({
+        color: dData.label_color,
+        opacity: 1
+      });
+      (0, _svg.SVG)('#cell_' + sData.parent.split('_')[1] + '_' + sData.cell).data('old-fill', null);
+      (0, _svg.SVG)('#cell_' + sData.parent.split('_')[1] + '_' + sData.cell).data('old-opacity', null);
+    } // Dropping Cell
+
+
+    if ((0, _svg.SVG)('#cell_' + dData.parent.split('_')[1] + '_' + dData.cell) !== null) {
+      (0, _svg.SVG)('#cell_' + dData.parent.split('_')[1] + '_' + dData.cell).animate(250, 0, 'now').ease('<>').fill({
+        color: sData.label_color,
+        opacity: 1
+      });
+      (0, _svg.SVG)('#cell_' + dData.parent.split('_')[1] + '_' + dData.cell).data('old-fill', null);
+      (0, _svg.SVG)('#cell_' + dData.parent.split('_')[1] + '_' + dData.cell).data('old-opacity', null);
+    } // Remove the temporary data attritubes on panel-content
+
+
+    document.querySelector('.panel-content').removeAttribute('data-label-color-drag');
+    document.querySelector('.panel-content').removeAttribute('data-id-drag');
   }
 } // This function adds the standard set of event listeners to a drag and drop item
 
@@ -19545,12 +19849,9 @@ function removeDragAndDrop(elements) {
     item.removeEventListener('dragleave', handleDragOut, false);
     item.removeEventListener('drop', handleDrop, false);
   });
-} // TEMP CODE
-
-
-addDragAndDrop('.grab-item');
-addDragAndDrop('.blank-item'); // END PLANT SELECTION
+} // END PLANT SELECTION
 // Auto-saving function
+
 
 var autoSave = setTimeout(function () {
   saveState();
@@ -19732,4 +20033,4 @@ function localStorageCategorySearch(category) {
   }
 }
 },{"moment":"iROh","@svgdotjs/svg.js":"FaDW","@svgdotjs/svg.filter.js":"QCbq"}]},{},["i5Wi"], null)
-//# sourceMappingURL=app.2ee1b519.js.map
+//# sourceMappingURL=app.c7865bff.js.map

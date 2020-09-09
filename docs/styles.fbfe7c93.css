@@ -541,7 +541,7 @@ datalist option {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--secondary-color-low);
+  background: var(--secondary-color-min);
 	border-radius: 2px;
 }
 
@@ -566,6 +566,7 @@ datalist option {
 	height: 100%;
 	overflow-y: scroll;
 	overflow-x: visible;
+	padding-right: 12px;
 }
 
 .side-panel > .container {
@@ -852,7 +853,6 @@ datalist option {
 	color: var(--secondary-color-low);
 	letter-spacing: 0.025em;
 	user-select: none;
-	cursor: move;
 	border-radius: 4px;
 }
 
@@ -1024,5 +1024,10 @@ datalist option {
 	transform: translateY(.15em);
 }
 
+.bed-wrapper:last-child {
+	/* This adds a margin to the bottom of the last bed wrapper in the panel so that the scroll still leaves whitespace at the bottom */
+	margin-bottom: 80px;
+}
 
-/*# sourceMappingURL=styles.fd07da8a.css.map */
+
+/*# sourceMappingURL=styles.fbfe7c93.css.map */
