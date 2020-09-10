@@ -24,36 +24,42 @@
           <h1>Choose Plants</h1>
         </div>
         <div class="panel-content">
-          <div class="plant-search">
-            <div class="search-box">
-              <input type="text" placeholder="Start Typing" id="search-plants">
-              <div class="search-suggestions">
+          <div class="search-wrapper">
+            <div class="container">
+              <div class="plant-search">
+                <div class="search-box">
+                  <input type="text" placeholder="Start Typing" id="search-plants">
+                  <div class="search-suggestions">
+                  </div>
+                </div>
+                <div class="add-option"></div>
+              </div>
+              <div class="plant-items" id="no_bed_plants">
+                <div class="search-container-dropzone"></div>
               </div>
             </div>
-            <div class="add-option"></div>
           </div>
-          <div class="plant-items" id="no-bed-plants">
+          <div class="bed-area">
+            <div class="container">
+              <div class="bed-wrapper" id="bed_a_plants" data-name="Bed A" data-bed-id="bed_a">
+                <div class="blank-item" data-cell="0"></div>
+                <div class="blank-item" data-cell="1"></div>
+                <div class="blank-item" data-cell="2"></div>
+                <div class="blank-item" data-cell="3"></div>
+                <div class="blank-item" data-cell="4"></div>
+                <div class="blank-item" data-cell="5"></div>
+                <div class="blank-item" data-cell="6"></div>
+                <div class="blank-item" data-cell="7"></div>
+              </div>
+              <div class="bed-wrapper" id="bed_b_plants" data-name="Bed B" data-bed-id="bed_b">
+                <div class="blank-item" data-cell="0"></div>
+                <div class="blank-item" data-cell="1"></div>
+                <div class="blank-item" data-cell="2"></div>
+                <div class="blank-item" data-cell="3"></div>
+              </div>
+            </div>
           </div>
-          <div class="bed-wrapper" id="bed_a_plants" data-name="Bed A">
-            <div class="blank-item" data-plant-parent="bed_a" data-cell="0" id="empty_a_0">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_a" data-cell="1" id="empty_a_1">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_a" data-cell="2" id="empty_a_2">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_a" data-cell="3" id="empty_a_3">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_a" data-cell="4" id="empty_a_4">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_a" data-cell="5" id="empty_a_5">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_a" data-cell="6" id="empty_a_6">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_a" data-cell="7" id="empty_a_7">Empty</div>
-          </div>
-          <div class="bed-wrapper" id="bed_b_plants" data-name="Bed B">
-            <div class="blank-item" data-plant-parent="bed_b" data-cell="0" id="empty_b_0">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_b" data-cell="1" id="empty_b_1">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_b" data-cell="2" id="empty_b_2">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_b" data-cell="3" id="empty_b_3">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_b" data-cell="4" id="empty_b_4">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_b" data-cell="5" id="empty_b_5">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_b" data-cell="6" id="empty_b_6">Empty</div>
-            <div class="blank-item" data-plant-parent="bed_b" data-cell="7" id="empty_b_7">Empty</div>
-          </div>
+          <div id="drag-info"></div>
         </div>
       </div> -->
       <div class="viewport-ui">
