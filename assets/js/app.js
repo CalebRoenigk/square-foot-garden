@@ -1881,7 +1881,7 @@ function dragStart(ev) {
 
 function dragEnd(ev) {
   // Style this element to indicate it is being dragged
-  gsap.to(this, {duration: .2, ease: 'power2.inOut', opacity: 1});
+  gsap.to(this, {duration: .2, ease: 'power2.inOut', clearProps: 'opacity'});
 
   // Style the search area components
   styleSearch('default');
@@ -1905,6 +1905,56 @@ function dragEnd(ev) {
 
       if(dragData.place !== null && dragData.place !== '-1') {
         // The drag item is also a cell reference
+
+        if(targetData.text !== '') {
+          // The target is a cell reference and is not empty
+
+
+        } else {
+          // The target is a cell reference but is empty
+          // Set the target cell color to the drag item color
+
+          // Determine the cell id of the target item
+          let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
+          // Determine the cell id of the drag item
+          let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
+
+          // Set the target cell fill
+          SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: 1});
+          // Set the target cell fill
+          SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: '#596475', opacity: 0});
+
+          // Replace the target item with the drag item
+          document.querySelector('#' + targetData.id).setAttribute('class', 'grab-item');
+          document.querySelector('#' + targetData.id).setAttribute('data-label-color', dragData.color);
+          document.querySelector('#' + targetData.id).setAttribute('draggable', 'true');
+          document.querySelector('#' + targetData.id).textContent = dragData.text;
+          document.querySelector('#' + targetData.id).setAttribute('id', 'NEWDRAG');
+
+          // Replace the drag item with the target item
+          document.querySelector('#' + dragData.id).setAttribute('class', 'blank-item');
+          document.querySelector('#' + dragData.id).removeAttribute('data-label-color');
+          document.querySelector('#' + dragData.id).removeAttribute('draggable');
+          document.querySelector('#' + dragData.id).textContent = '';
+          document.querySelector('#' + dragData.id).setAttribute('id', 'empty_' + dragData.container.split('_')[1] + '_' + dragData.place);
+
+          document.querySelector('#NEWDRAG').setAttribute('id', dragData.id);
+
+          // Remove all event listeners
+          removeDragAndDrop('#' + dragData.id)
+          removeDragAndDrop('#' + targetData.id)
+
+          // Add new event listeners
+          addDragAndDrop('#' + dragData.id)
+          document.querySelector('#empty_' + dragData.container.split('_')[1] + '_' + dragData.place).addEventListener('dragenter', handleDragEnter, false);
+          document.querySelector('#empty_' + dragData.container.split('_')[1] + '_' + dragData.place).addEventListener('dragover', allowDrop, false);
+          document.querySelector('#empty_' + dragData.container.split('_')[1] + '_' + dragData.place).addEventListener('dragleave', handleDragLeave, false);
+
+          // Remove swap arrows
+          if(SVG('#swap_arrows') !== null) {
+            SVG('#swap_arrows').remove();
+          }
+        }
 
       } else {
         // The drag item is not a cell reference
@@ -1933,6 +1983,24 @@ function dragEnd(ev) {
         document.querySelector('#' + dragData.id).remove();
       }
     }
+
+    // Once finished, remove all the drag and target data
+    // document.querySelector('#drag-info').removeAttribute('data-drag')
+    // document.querySelector('#drag-info').removeAttribute('data-target')
+  }
+
+  // Once all is finished
+  // If any items in the viewport have a data-ghost tag on them, set their fills to their old fill data
+  if(document.querySelectorAll('rect[data-ghost="true"]').length !== null || document.querySelectorAll('rect[data-ghost="true"]').length !== 0) {
+    console.log('Clearing ghost items');
+    // Iterate over the items
+    document.querySelectorAll('rect[data-ghost="true"]').forEach(function(e) {
+      let currentID = '#' + e.id;
+
+      // Remove the ghost and old fill attributes
+      document.querySelector(currentID).removeAttribute('data-ghost');
+      document.querySelector(currentID).removeAttribute('data-old-fill');
+    })
   }
 }
 
@@ -1964,6 +2032,39 @@ function handleDragEnter(ev) {
     // The target item is a cell reference
     if(dragData.place !== null && dragData.place !== '-1') {
       // The drag item is also a cell reference
+      if(targetData.text !== '') {
+        // The target is a cell reference and is not empty
+        // Preview the drag item color in the target cell and the target cell color in the drag cell
+
+        // Draw swap arrows
+
+      } else {
+        // The target is a cell reference but is empty
+        // Preview the drag item color in the cell
+
+        // Determine the cell id of the target item
+        let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
+        // Store the old fill data
+        SVG(targetCellID).data('ghost', 'true', true);
+        let oldTargetFillData = JSON.stringify({fill: SVG(targetCellID).attr('fill'), opacity: SVG(targetCellID).attr('fill-opacity')});
+        SVG(targetCellID).data('old-fill', oldTargetFillData, true);
+
+        // Determine the cell id of the drag item
+        let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
+        // Store the old fill data
+        SVG(dragCellID).data('ghost', 'true', true);
+        let oldDragFillData = JSON.stringify({fill: SVG(dragCellID).attr('fill'), opacity: SVG(dragCellID).attr('fill-opacity')});
+        SVG(dragCellID).data('old-fill', oldDragFillData, true);
+
+        // Set the preview fill
+        SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: .5});
+        SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: 0});
+
+        // Add swap arrows
+        let dragCellCenter = {x: SVG(dragCellID).bbox().cx, y: SVG(dragCellID).bbox().cy};
+        let targetCellCenter = {x: SVG(targetCellID).bbox().cx, y: SVG(targetCellID).bbox().cy};
+        generateSwapArrows(dragCellCenter, targetCellCenter)
+      }
     } else {
       // The drag item is not a cell reference
       // Preview the drag item color in the cell
@@ -2007,13 +2108,18 @@ function handleDragLeave(ev) {
       document.querySelector(currentID).removeAttribute('data-old-fill');
     })
   }
+
+  // Remove swap arrows
+  if(SVG('#swap_arrows') !== null) {
+    SVG('#swap_arrows').remove();
+  }
 }
 
 // This function adds the standard set of event listeners to a drag and drop item
 function addDragAndDrop(elements) {
   let dragableItems = document.querySelectorAll(elements);
     dragableItems.forEach(function(item) {
-      item.addEventListener('mousedown', dragStart, false);
+      item.addEventListener('dragstart', dragStart, false);
       item.addEventListener('dragend', dragEnd, false);
       // item.addEventListener('dragenter', handleDragIn, false);
       item.addEventListener('dragover', allowDrop, false);
@@ -2026,7 +2132,7 @@ function addDragAndDrop(elements) {
 function removeDragAndDrop(elements) {
   let dragableItems = document.querySelectorAll(elements);
     dragableItems.forEach(function(item) {
-      item.removeEventListener('mousedown', dragStart);
+      item.removeEventListener('dragstart', dragStart);
       item.removeEventListener('dragend', dragEnd);
       item.removeEventListener('dragenter', handleDragEnter);
       item.removeEventListener('dragover', allowDrop);
