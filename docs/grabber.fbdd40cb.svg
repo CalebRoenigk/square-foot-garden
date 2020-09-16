@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" x="0" y="0" version="1.1" viewBox="0 0 10 12" xml:space="preserve">
+  <style>
+    .st1,.st2{fill:none;stroke:#596475;stroke-width:1.5;stroke-linecap:round;stroke-miterlimit:10}.st2{stroke-dasharray:0,5}
+  </style>
+  <g opacity=".38">
+    <line x1="2.5" x2="2.5" y1="1" y2="1" class="st1"/>
+    <line x1="2.5" x2="2.5" y1="6" y2="8.5" class="st2"/>
+    <line x1="2.5" x2="2.5" y1="11" y2="11" class="st1"/>
+    <g>
+      <line x1="7.5" x2="7.5" y1="1" y2="1" class="st1"/>
+      <line x1="7.5" x2="7.5" y1="6" y2="8.5" class="st2"/>
+      <line x1="7.5" x2="7.5" y1="11" y2="11" class="st1"/>
+    </g>
+  </g>
+</svg>

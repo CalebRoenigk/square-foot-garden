@@ -265,7 +265,7 @@ h3 {
 
 .save-state-icon {
 	width: 40px;
-	background-image: url('../img/autosaving.svg');
+	background-image: url('/autosaving.56581723.svg');
 	background-position: center center;
 	background-size: contain;
 	background-repeat: no-repeat;
@@ -360,12 +360,12 @@ h3 {
 
 .button-forward .button-arrow {
 	margin-left: 4px;
-	background-image: url('../img/arrow-forward.svg');
+	background-image: url('/arrow-forward.8661c731.svg');
 }
 
 .button-backward .button-arrow {
 	margin-right: 4px;
-	background-image: url('../img/arrow-backward.svg');
+	background-image: url('/arrow-backward.24f62639.svg');
 }
 
 .viewport {
@@ -478,7 +478,7 @@ h3 {
 	border-radius: 4px;
 	padding: 4px;
 	box-sizing: border-box;
-	background-image: url('../img/plus.svg');
+	background-image: url('/plus.f1633c30.svg');
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: 70%;
@@ -519,7 +519,7 @@ h3 {
 	border-radius: 4px;
 	padding: 4px;
 	box-sizing: border-box;
-	background-image: url('../img/plus.svg');
+	background-image: url('/plus.f1633c30.svg');
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: 70%;
@@ -980,7 +980,7 @@ datalist option {
 	transform: translate(0%, calc(-50% - 1px));
 	height: 12px;
 	width: 10px;
-	background-image: url('../img/grabber.svg');
+	background-image: url('/grabber.fbdd40cb.svg');
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: 100%;
@@ -1240,3 +1240,6 @@ datalist option {
 #drag-info {
 	display: none;
 }
+
+
+/*# sourceMappingURL=/styles.5072464b.css.map */
