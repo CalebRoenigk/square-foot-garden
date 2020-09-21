@@ -17788,786 +17788,1162 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const plantData = [{
   plant_name: 'Artichokes, globe',
   plant_id: '0000',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  size: {
+    height: 36,
+    width: 48
+  },
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [12],
+      end: [16],
+      harvest: {
+        grown: 365,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Artichokes, Jerusalem',
   plant_id: '0001',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  size: {
+    height: 48,
+    width: 32
+  },
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'tuber',
+      start: [12],
+      end: [16],
+      harvest: {
+        grown: 210,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Arugula',
   plant_id: '0002',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  size: {
+    height: 8,
+    width: 16
+  },
+  per_cell: 5,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [5, 31],
+      end: [12, 38],
+      harvest: {
+        grown: 45,
+        bloom: '',
+        period: 50
+      }
+    }]
   }]
 }, {
   plant_name: 'Asparagus',
   plant_id: '0003',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  size: {
+    height: 48,
+    width: 1
+  },
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'crown',
+      start: [7],
+      end: [12],
+      harvest: {
+        grown: 730,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Basil',
   plant_id: '0004',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  size: {
+    height: 16,
+    width: 14
+  },
+  per_cell: 1,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [18],
+      end: [29],
+      harvest: {
+        grown: 28,
+        bloom: '',
+        period: 21
+      }
+    }, {
+      type: 'seed',
+      start: [18],
+      end: [29],
+      harvest: {
+        grown: 60,
+        bloom: '',
+        period: 21
+      }
+    }]
   }]
 }, {
   plant_name: 'Lima Beans, bush',
   plant_id: '0005',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  size: {
+    height: 24,
+    width: 6
+  },
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [16],
+      end: [29],
+      harvest: {
+        grown: 72,
+        bloom: '',
+        period: 18
+      }
+    }]
   }]
 }, {
   plant_name: 'Lima Beans, pole',
   plant_id: '0006',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  size: {
+    height: 96,
+    width: 8
+  },
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [16, 29],
+      end: [23, 30],
+      harvest: {
+        grown: 85,
+        bloom: '',
+        period: 18
+      }
+    }]
   }]
 }, {
   plant_name: 'Snap Beans, bush',
   plant_id: '0007',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 6,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [12],
+      end: [38],
+      harvest: {
+        grown: 52,
+        bloom: '',
+        period: 7
+      }
+    }]
   }]
 }, {
   plant_name: 'Snap Beans, pole',
   plant_id: '0008',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [14],
+      end: [38],
+      harvest: {
+        grown: 68,
+        bloom: '',
+        period: 4
+      }
+    }]
   }]
 }, {
   plant_name: 'Beets',
   plant_id: '0009',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 9,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [10, 29],
+      end: [14, 36],
+      harvest: {
+        grown: 57,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Broccoli',
   plant_id: '0010',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [7, 31],
+      end: [14, 36],
+      harvest: {
+        grown: 75,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Brussels sprouts',
   plant_id: '0011',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [27],
+      end: [33],
+      harvest: {
+        grown: 45,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Cabbage',
   plant_id: '0012',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [5, 29],
+      end: [14, 36],
+      harvest: {
+        grown: 70,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Cabbage, Chinese',
   plant_id: '0013',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [12, 38],
+      end: [14, 40],
+      harvest: {
+        grown: 50,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [12, 31],
+      end: [14, 33],
+      harvest: {
+        grown: 70,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Carrots',
   plant_id: '0014',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 9,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [5, 25],
+      end: [12, 36],
+      harvest: {
+        grown: 72,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Cauliflower',
   plant_id: '0015',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [7, 31],
+      end: [14, 38],
+      harvest: {
+        grown: 50,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'transplant',
+      start: [7, 31],
+      end: [14, 38],
+      harvest: {
+        grown: 90,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Celery',
   plant_id: '0016',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [7, 25],
+      end: [12, 31],
+      harvest: {
+        grown: 55,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Chard, Swiss',
   plant_id: '0017',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [10, 31],
+      end: [16, 36],
+      harvest: {
+        grown: 37,
+        bloom: '',
+        period: 9
+      }
+    }, {
+      type: 'seed',
+      start: [10, 31],
+      end: [16, 36],
+      harvest: {
+        grown: 65,
+        bloom: '',
+        period: 9
+      }
+    }]
   }]
 }, {
   plant_name: 'Cilantro',
   plant_id: '0018',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 8,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [5, 38],
+      end: [12, 39],
+      harvest: {
+        grown: 52,
+        bloom: '',
+        period: 9
+      }
+    }]
   }]
 }, {
   plant_name: 'Collard greens',
   plant_id: '0019',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [7, 29],
+      end: [25, 36],
+      harvest: {
+        grown: 52,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [29],
+      end: [36],
+      harvest: {
+        grown: 80,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Corn, sweet',
   plant_id: '0020',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [12],
+      end: [20],
+      harvest: {
+        grown: 82,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Cucumbers',
   plant_id: '0021',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [16],
+      end: [31],
+      harvest: {
+        grown: 32,
+        bloom: '',
+        period: 7
+      }
+    }, {
+      type: 'seed',
+      start: [16],
+      end: [31],
+      harvest: {
+        grown: 60,
+        bloom: '',
+        period: 7
+      }
+    }]
   }]
 }, {
   plant_name: 'Dill',
   plant_id: '0022',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 6,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [12, 31],
+      end: [13, 36],
+      harvest: {
+        grown: 47,
+        bloom: '',
+        period: 12
+      }
+    }]
   }]
 }, {
   plant_name: 'Eggplant',
   plant_id: '0023',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 1,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [16, 31],
+      end: [31, 33],
+      harvest: {
+        grown: 92,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Fennel, Florence',
   plant_id: '0024',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [10, 27],
+      end: [16, 33],
+      harvest: {
+        grown: 75,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Garlic',
   plant_id: '0025',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 5,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'bulb',
+      start: [38],
+      end: [47],
+      harvest: {
+        grown: 195,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Kale',
   plant_id: '0026',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [7, 31],
+      end: [25, 38],
+      harvest: {
+        grown: 18,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [7, 31],
+      end: [25, 38],
+      harvest: {
+        grown: 45,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Kohlrabi',
   plant_id: '0027',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 6,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [7, 31],
+      end: [25, 36],
+      harvest: {
+        grown: 27,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [7, 31],
+      end: [25, 36],
+      harvest: {
+        grown: 55,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Leek',
   plant_id: '0028',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 5,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [7],
+      end: [25],
+      harvest: {
+        grown: 65,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [7],
+      end: [25],
+      harvest: {
+        grown: 135,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Lettuce, head',
   plant_id: '0029',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [12, 38],
+      end: [16, 40],
+      harvest: {
+        grown: 52,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [5, 33],
+      end: [11, 37],
+      harvest: {
+        grown: 77,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Lettuce, leaf',
   plant_id: '0030',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 5,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [5, 31],
+      end: [16, 38],
+      harvest: {
+        grown: 20,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [5, 31],
+      end: [16, 38],
+      harvest: {
+        grown: 45,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Cantaloupe',
   plant_id: '0031',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 1,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [16],
+      end: [27],
+      harvest: {
+        grown: 60,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [16],
+      end: [27],
+      harvest: {
+        grown: 87,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Watermelon',
   plant_id: '0032',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 1,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [16],
+      end: [25],
+      harvest: {
+        grown: 67,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [16],
+      end: [25],
+      harvest: {
+        grown: 95,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Mustard',
   plant_id: '0033',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 9,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [7, 31],
+      end: [25, 38],
+      harvest: {
+        grown: 35,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Okra',
   plant_id: '0034',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [18],
+      end: [20],
+      harvest: {
+        grown: 23,
+        bloom: '',
+        period: 5
+      }
+    }, {
+      type: 'seed',
+      start: [18, 31],
+      end: [20, 33],
+      harvest: {
+        grown: 65,
+        bloom: '',
+        period: 5
+      }
+    }]
   }]
 }, {
   plant_name: 'Onions, bulb',
   plant_id: '0035',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 5,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'bulb',
+      start: [10],
+      end: [12],
+      harvest: {
+        grown: 90,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [1, 31],
+      end: [12, 51],
+      harvest: {
+        grown: 105,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Onions, green',
   plant_id: '0036',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 9,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [10, 33],
+      end: [12, 36],
+      harvest: {
+        grown: 49,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [5, 34],
+      end: [12, 36],
+      harvest: {
+        grown: 65,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Pac choi',
   plant_id: '0037',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [12, 33],
+      end: [13, 38],
+      harvest: {
+        grown: 52,
+        bloom: '',
+        period: 9
+      }
+    }]
   }]
 }, {
   plant_name: 'Parsley',
   plant_id: '0038',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [7, 31],
+      end: [14, 38],
+      harvest: {
+        grown: 33,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'seed',
+      start: [7, 31],
+      end: [14, 38],
+      harvest: {
+        grown: 75,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Parsnips',
   plant_id: '0039',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 6,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [7, 31],
+      end: [18, 38],
+      harvest: {
+        grown: 115,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Peanuts',
   plant_id: '0040',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
-  }]
-}, {
-  plant_name: 'Peanuts',
-  plant_id: '0040',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [18],
+      end: [20],
+      harvest: {
+        grown: 152,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Peas, bush',
   plant_id: '0041',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 5,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [1, 31],
+      end: [14, 38],
+      harvest: {
+        grown: 57,
+        bloom: '',
+        period: 4
+      }
+    }]
   }]
 }, {
   plant_name: 'Peas, vining',
   plant_id: '0042',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 6,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [1, 31],
+      end: [14, 38],
+      harvest: {
+        grown: 63,
+        bloom: '',
+        period: 4
+      }
+    }]
   }]
 }, {
   plant_name: 'Peas, field',
   plant_id: '0043',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 6,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [12, 31],
+      end: [25, 33],
+      harvest: {
+        grown: 60,
+        bloom: '',
+        period: 4
+      }
+    }]
   }]
 }, {
   plant_name: 'Peppers',
   plant_id: '0044',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 1,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [16, 31],
+      end: [23, 32],
+      harvest: {
+        grown: 77,
+        bloom: '',
+        period: 12
+      }
+    }]
   }]
 }, {
   plant_name: 'Potatoes, Irish',
   plant_id: '0045',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'tuber',
+      start: [7],
+      end: [12],
+      harvest: {
+        grown: 107,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Sweetpotatoes',
   plant_id: '0046',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [18],
+      end: [27],
+      harvest: {
+        grown: 110,
+        bloom: '',
+        period: 0
+      }
+    }, {
+      type: 'tuber',
+      start: [18],
+      end: [27],
+      harvest: {
+        grown: 107,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Pumpkin',
   plant_id: '0047',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 1,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [16],
+      end: [27],
+      harvest: {
+        grown: 117,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Radishes',
   plant_id: '0048',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 9,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [5, 31],
+      end: [25, 36],
+      harvest: {
+        grown: 22,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Rutabega',
   plant_id: '0049',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 5,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [5, 27],
+      end: [14, 38],
+      harvest: {
+        grown: 75,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Spinach',
   plant_id: '0050',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 4,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [7, 31],
+      end: [25, 40],
+      harvest: {
+        grown: 55,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Squash, summer',
   plant_id: '0051',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 1,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [14],
+      end: [31],
+      harvest: {
+        grown: 35,
+        bloom: '',
+        period: 10
+      }
+    }, {
+      type: 'seed',
+      start: [14],
+      end: [31],
+      harvest: {
+        grown: 55,
+        bloom: '',
+        period: 10
+      }
+    }]
   }]
 }, {
   plant_name: 'Squash, winter',
   plant_id: '0052',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 1,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [16],
+      end: [31],
+      harvest: {
+        grown: 54,
+        bloom: '',
+        period: 10
+      }
+    }, {
+      type: 'seed',
+      start: [16],
+      end: [31],
+      harvest: {
+        grown: 82,
+        bloom: '',
+        period: 10
+      }
+    }]
   }]
 }, {
   plant_name: 'Sunflower',
   plant_id: '0053',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 2,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [12],
+      end: [18],
+      harvest: {
+        grown: 82,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }, {
   plant_name: 'Tomatoes',
   plant_id: '0054',
-  calender_times: [{
-    start: 0,
-    end: 0,
-    plant_varient: ''
-  }],
-  harvest_times: [{
-    days: 0,
-    to_bloom: 0,
-    to_end: 0,
-    plant_varient: ''
+  per_cell: 1,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'transplant',
+      start: [16, 31],
+      end: [27, 32],
+      harvest: {
+        grown: 80,
+        bloom: '',
+        period: 0
+      }
+    }]
+  }]
+}, {
+  plant_name: 'Turnips',
+  plant_id: '0055',
+  per_cell: 9,
+  planting: [{
+    zone: 7,
+    variant: [{
+      type: 'seed',
+      start: [5, 31],
+      end: [25, 36],
+      harvest: {
+        grown: 57,
+        bloom: '',
+        period: 0
+      }
+    }]
   }]
 }]; // This array is created for search results
 // Will also need to add filtering to allow for plants that can be grown in the current hardiness zone
@@ -19087,6 +19463,14 @@ document.querySelector('.button-forward').addEventListener('click', function () 
   if (this.classList.contains('button-no-select') !== true) {
     transitionStep(document.querySelector('body').getAttribute('data-step'), this.getAttribute('data-next-step'));
   }
+}, true); // TEMP CODE
+// When clicking the backward button move to the previous step
+
+document.querySelector('.button-backward').addEventListener('click', function () {
+  // Test that the button is active
+  if (this.classList.contains('button-no-select') !== true) {
+    transitionStep(document.querySelector('body').getAttribute('data-step'), this.getAttribute('data-last-step'));
+  }
 }, true); // This function removes a warning crumb based on the passed ID
 
 function removeByAttr(attr, value) {
@@ -19096,6 +19480,7 @@ function removeByAttr(attr, value) {
 
 function transitionStep(stepFrom, stepTo) {
   switch (true) {
+    // Forward to plant selection from bed layout
     case stepFrom == 'bed-layout' && stepTo == 'plant-selection':
       // From bed layout to plant selection
       // Set the body step to plant selection
@@ -19122,13 +19507,163 @@ function transitionStep(stepFrom, stepTo) {
         ease: "power1.inOut",
         y: '250%',
         opacity: 0
-      }, "-=.3").call(textChange, ['.side-panel > .container > h1', 'Choose Plants']).call(removeElement, ['.panel-content > div']).to('.side-panel > .container > h1', {
+      }, "-=.3").call(textChange, ['.side-panel > .container > h1', 'Choose Plants']).call(removeElement, ['.panel-content > div']).set('.forward-action', {
+        overflow: 'hidden'
+      }).set('.back-action', {
+        overflow: 'hidden'
+      }).to('.back-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '150%',
+        opacity: 0
+      }).to('.forward-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '150%',
+        opacity: 0
+      }, "-=.25").to('.side-panel > .container > h1', {
         duration: .375,
         delay: .125,
         ease: "power2.inOut",
         y: '0%',
         opacity: 1
-      }).call(generateCells).call(cellTransition).call(populatePanel, [stepTo]);
+      }).call(generateCells).call(cellTransition).call(populatePanel, [stepTo]).to('.back-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '0%',
+        opacity: 1
+      }).to('.forward-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '0%',
+        opacity: 1
+      }, "-=.25").set('.back-action', {
+        clearProps: 'all'
+      }).set('.forward-action', {
+        clearProps: 'all'
+      });
+      break;
+    // Back to bed layout from plant selection
+
+    case stepFrom == 'plant-selection' && stepTo == 'bed-layout':
+      // From bed layout to plant selection
+      // Set the body step to plant selection
+      document.querySelector('body').setAttribute('data-step', 'plant-selection');
+      gsap.timeline().to('.side-panel > .container > h1', {
+        duration: .375,
+        delay: .125,
+        ease: "power2.inOut",
+        y: '105%',
+        opacity: 0
+      }).set('.panel-content > div', {
+        overflow: 'hidden'
+      }).to('.panel-content > div > div', {
+        duration: .4,
+        ease: "power1.inOut",
+        y: '110%',
+        opacity: 0,
+        stagger: {
+          each: 0.075,
+          from: "start",
+          grid: "auto",
+          ease: "power3.in"
+        }
+      }, "-=.25").call(zoomViewboxIn, [500, 0, 'now', '<>']) // .to('.content-bed-add *', {duration: .375, ease: "power1.inOut", y: '250%', opacity: 0}, "-=.3")
+      .call(textChange, ['.side-panel > .container > h1', 'Bed Layout']).call(removeElement, ['.panel-content > div']).set('.forward-action', {
+        overflow: 'hidden'
+      }).set('.back-action', {
+        overflow: 'hidden'
+      }).to('.back-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '150%',
+        opacity: 0
+      }).to('.forward-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '150%',
+        opacity: 0
+      }, "-=.25").to('.side-panel > .container > h1', {
+        duration: .375,
+        delay: .125,
+        ease: "power2.inOut",
+        y: '0%',
+        opacity: 1
+      }) // .call(generateCells)
+      .call(cellTransition).call(populatePanel, [stepTo]).to('.back-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '0%',
+        opacity: 1
+      }).to('.forward-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '0%',
+        opacity: 1
+      }, "-=.25").set('.back-action', {
+        clearProps: 'all'
+      }).set('.forward-action', {
+        clearProps: 'all'
+      });
+      break;
+    // Forward to plant-planner from plant selection
+
+    case stepFrom == 'plant-selection' && stepTo == 'plant-planner':
+      // Set the body step to plant planner
+      document.querySelector('body').setAttribute('data-step', 'plant-planner');
+      gsap.timeline().to('.side-panel > .container > h1', {
+        duration: .375,
+        delay: .125,
+        ease: "power2.inOut",
+        y: '105%',
+        opacity: 0
+      }).set('.search-wrapper', {
+        overflow: 'hidden'
+      }).to('.search-wrapper > .container', {
+        duration: .4,
+        ease: "power1.inOut",
+        y: '110%',
+        opacity: 0
+      }, "-=.25").to('.bed-area', {
+        duration: .375,
+        ease: "power1.inOut",
+        top: 0,
+        clearProps: 'height'
+      }, "-=.3").call(textChange, ['.side-panel > .container > h1', 'Planner']).set('.forward-action', {
+        overflow: 'hidden'
+      }).set('.back-action', {
+        overflow: 'hidden'
+      }).to('.back-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '150%',
+        opacity: 0
+      }).to('.forward-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '150%',
+        opacity: 0
+      }, "-=.25").to('.side-panel > .container > h1', {
+        duration: .375,
+        delay: .125,
+        ease: "power2.inOut",
+        y: '0%',
+        opacity: 1
+      }).call(populatePanel, [stepTo]).to('.back-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '0%',
+        opacity: 1
+      }).to('.forward-action > div', {
+        duration: .375,
+        ease: 'power2.inOut',
+        y: '0%',
+        opacity: 1
+      }, "-=.25").set('.back-action', {
+        clearProps: 'all'
+      }).set('.forward-action', {
+        clearProps: 'all'
+      });
       break;
 
     default: // code block
@@ -19310,6 +19845,14 @@ function zoomViewboxOut(duration, delay, when, ease) {
 
   let currentViewbox = draw.viewbox();
   draw.animate(duration, delay, when).ease(ease).viewbox(currentViewbox.x - cellSize, currentViewbox.y - cellSize, currentViewbox.width + cellSize * 2, currentViewbox.height + cellSize * 2);
+} // This function zooms in the viewbox on the viewport SVG given passed values
+
+
+function zoomViewboxIn(duration, delay, when, ease) {
+  let cellSize = 100; // Zoom out a bit
+
+  let currentViewbox = draw.viewbox();
+  draw.animate(duration, delay, when).ease(ease).viewbox(currentViewbox.x + cellSize, currentViewbox.y + cellSize, currentViewbox.width - cellSize * 2, currentViewbox.height - cellSize * 2);
 } // This function creates cells and dividers for each bed
 
 
@@ -19512,6 +20055,10 @@ function populatePanel(state) {
             clearProps: 'backgroundColor'
           });
         }
+      }); // Set the panel content to overflow-y hidden
+
+      gsap.set('.panel-content', {
+        overflowY: 'hidden'
       }); // Add the bed wrapper
 
       document.querySelector('.panel-content').insertAdjacentHTML('beforeend', '<div class="bed-area"><div class="container"></div></div>'); // Iterate over each bed
@@ -19541,15 +20088,14 @@ function populatePanel(state) {
 
       document.querySelector('#search-container-dropzone').addEventListener('dragenter', handleDragEnter, false);
       document.querySelector('#search-container-dropzone').addEventListener('dragover', allowDrop, false);
-      document.querySelector('#search-container-dropzone').addEventListener('dragleave', handleDragLeave, false); // Animate the content in
-      // gsap.timeline()
-      // .to('.plant-search > div', {duration: .375, ease: "power2.inOut", y: '0%'}, "-=.125")
-      // .to('.plant-search', {duration: .05, ease: 'linear', clearProps: 'all'}, '+=.375')
-      // .to('.plant-search > div', {duration: .05, ease: 'linear', clearProps: 'all'})
-      // .to('.bed-wrapper', {duration: .4, ease: "power2.out", y: '0%', opacity: 1, stagger: {each: .075, from: 'start', grid: 'auto', ease: 'power1.out'}}, "-=.5")
-      // .to('.bed-wrapper > div', {duration: .25, ease: "power2.out", y: '0%', opacity: 1, stagger: {each: .025, from: 'start', grid: 'auto', ease: 'linear'}}, "-=.5")
-      // .to('.bed-wrapper', {duration: .05, ease: 'linear', clearProps: 'all', stagger: {each: .075, from: 'start', grid: 'auto', ease: 'power1.out'}}, "+=.45")
+      document.querySelector('#search-container-dropzone').addEventListener('dragleave', handleDragLeave, false); // Change out the step buttons
 
+      document.querySelector('.forward-action > div').setAttribute('data-next-step', 'plan-creation');
+      document.querySelector('.forward-action > div').classList.remove('button-primary');
+      document.querySelector('.forward-action > div').classList.add('button-no-select');
+      document.querySelector('.forward-action > div').childNodes[0].nodeValue = "Create Plan";
+      document.querySelector('.back-action > div').setAttribute('data-last-step', 'bed-layout');
+      document.querySelector('.back-action > div').childNodes[1].nodeValue = "Bed Layout";
       break;
 
     default: // ADD DEFAULT HOME SCREEN HERE
@@ -19609,7 +20155,8 @@ function addPlantOption(plantObj) {
   gsap.to('.bed-area', {
     duration: .125,
     ease: 'power2-inOut',
-    top: document.querySelector('.search-wrapper').offsetHeight + 10 + 'px'
+    top: document.querySelector('.search-wrapper').offsetHeight + 10 + 'px',
+    height: document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 10) + 'px'
   });
 } // This is the drag and drop data transfer format
 
@@ -19723,7 +20270,8 @@ function dragEnd(ev) {
         gsap.to('.bed-area', {
           duration: .125,
           ease: 'power2-inOut',
-          top: document.querySelector('.search-wrapper').offsetHeight + 10 + 'px'
+          top: document.querySelector('.search-wrapper').offsetHeight + 10 + 'px',
+          height: document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 10) + 'px'
         }); // If remove x exists, remove it
 
         if ((0, _svg.SVG)('#x_icon') !== null) {
@@ -19893,7 +20441,15 @@ function dragEnd(ev) {
       document.querySelector(currentID).removeAttribute('data-old-fill');
     }); // Reset the search height offset for the beds
 
-    styleSearch('default');
+    styleSearch('default'); // If there are no plants in the beds, remove the primary forward style on the forward button
+
+    if (document.querySelectorAll('.bed-wrapper > .grab-item').length == 0) {
+      // Change the style of the forward button (Grey)
+      document.querySelector('.button-forward').setAttribute('class', 'button-no-select button-forward');
+    } else {
+      // Change the style of the forward button (Green)
+      document.querySelector('.button-forward').setAttribute('class', 'button-primary button-forward');
+    }
   }
 }
 
@@ -20139,7 +20695,8 @@ function styleSearch(state) {
     }, "-=.25").to('.bed-area', {
       duration: .375,
       ease: 'power2.inOut',
-      top: document.querySelector('.search-wrapper').offsetHeight + 30 + 'px'
+      top: document.querySelector('.search-wrapper').offsetHeight + 30 + 'px',
+      height: document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 30) + 'px'
     }, "-=1");
   } else {
     // Reset the search components
@@ -20163,7 +20720,8 @@ function styleSearch(state) {
     }, "-=.25").to('.bed-area', {
       duration: .375,
       ease: 'power2.inOut',
-      top: document.querySelector('.search-wrapper').offsetHeight + 10 + 'px'
+      top: document.querySelector('.search-wrapper').offsetHeight + 10 + 'px',
+      height: document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 10) + 'px'
     }, "-=.5");
   } // This function swaps the classes of the add-option/remove option button
 
@@ -20272,7 +20830,7 @@ function saveState(fileName) {
     hardiness
   }; // Current Step
 
-  let step = 'bed-layout';
+  let step = document.querySelector('body').getAttribute('data-step');
   let view = '';
   let currentStepObject = {
     step,
@@ -20319,7 +20877,7 @@ function saveState(fileName) {
     bedsArray.push(bedObject);
   });
   let saveFile = new SaveFile(saveObject, locationObject, currentStepObject, bedsArray);
-  console.log(saveFile);
+  return saveFile;
 } // This function writes data to local storage
 // Expire time is an array which contains an operation cue and a value given the operation
 

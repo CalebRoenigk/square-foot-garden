@@ -1199,7 +1199,7 @@ datalist option {
 
 .bed-area {
 	position: absolute;
-	top: 64px;
+	top: 78px;
 	left: 0px;
 	width: 100%;
 	box-sizing: border-box;
@@ -1213,6 +1213,7 @@ datalist option {
 
 .bed-wrapper {
 	padding-top: 3.25em;
+	margin-bottom: 16px;
 }
 
 .bed-wrapper::before {
