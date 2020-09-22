@@ -1487,6 +1487,78 @@ class SaveFile {
   }
 }
 
+// UI REFRESH CODE HERE
+
+// When the document is loaded build the bed layout view
+viewConstructor('bed-layout', false);
+
+
+// Build a view from scratch
+function viewConstructor(view, fromSave) {
+  switch(true) {
+      case view=='bed-layout':
+        // Clear and tag
+        document.querySelector('body').innerHTML = "";
+        document.querySelector('body').setAttribute('data-step', 'bed-layout');
+
+        // Craft side panel
+        document.querySelector('body').insertAdjacentHTML('afterbegin', '<div class="side-panel"><div class="container"><h1>Bed Layout</h1></div></div>');
+
+        // Craft the viewport UI
+        document.querySelector('body').insertAdjacentHTML('beforeend', '<div class="viewport-ui"></div>');
+        document.querySelector('.viewport-ui').insertAdjacentHTML('afterbegin', '<div class="view-actions"></div>');
+        document.querySelector('.view-actions').insertAdjacentHTML('afterbegin', '<div class="back-action"></div>');
+        document.querySelector('.view-actions').insertAdjacentHTML('afterbegin', '<div class="forward-action"></div>');
+        document.querySelector('.forward-action').insertAdjacentHTML('afterbegin', '<div class="button-no-select button-forward" data-next-step="plant-selection">Select Plants<div class="button-arrow"></div></div>');
+        document.querySelector('.view-actions').insertAdjacentHTML('afterbegin', '<div class="file-actions"></div>');
+        document.querySelector('.file-actions').insertAdjacentHTML('afterbegin', '<div class="file-button" data-file="load"></div><div class="file-button" data-file="save"></div>');
+
+        // Craft the viewport
+        document.querySelector('body').insertAdjacentHTML('beforeend', '<div class="viewport"></div>');
+        var draw = SVG().addTo('.viewport').size('100%', '100%').attr({id: 'viewport-svg', opacity: 1}).viewbox('0 150 850 500');
+        var bedGroup = draw.group().attr({id: 'bed-group'});
+        var gridGroup = draw.group().attr({id: 'grid-floor'});
+
+        // If loading from a save, populate elements
+        if(fromSave == true) {
+          // Save state load
+        } else {
+          // Add side panel content
+          document.querySelector('.side-panel').insertAdjacentHTML('beforeend', '<div class="panel-content"><div class="content-bed-add"><div class="add-icon"></div><h3>Add Bed</h3></div></div>');
+
+          // Add UI listeners
+          // Add event listener to Add Bed button when clicked
+          document.querySelector('.content-bed-add').addEventListener('click', function() {
+            bedAddition();
+          }, true);
+        }
+
+        // Set all UI elements up to transition in from nothing
+        gsap.timeline()
+          .set('.side-panel', {left: '-150%'})
+          .set('.file-button', {scale: .25, opacity: 0, transition: 0})
+          .set('.button-forward', {x: '-25%', opacity: 0, transition: 0})
+          .set('#viewport-svg', {opacity: 0})
+
+        // Bring in the UI elements
+        gsap.timeline()
+          .to('.side-panel', {duration: 1, ease: 'power4.out', left: '40px'})
+          .to('.file-button[data-file="load"]', {duration: .15, ease: 'linear', opacity: 1}, "-=.4")
+          .to('.file-button[data-file="load"]', {duration: .375, ease: 'circ', scale: 1}, "-=.45")
+          .to('.file-button[data-file="save"]', {duration: .15, ease: 'linear', opacity: 1}, "-=.3")
+          .to('.file-button[data-file="save"]', {duration: .375, ease: 'circ', scale: 1}, "-=.35")
+          .to('.button-forward', {duration: .25, ease: 'linear', opacity: 1}, "-=.25")
+          .to('.button-forward', {duration: .5, ease: 'circ', x: '0%'}, "-=.25")
+          .set('.file-button', {clearProps: 'all'})
+          .set('.button-forward', {clearProps: 'all'})
+        break;
+      default:
+        // ADD DEFAULT HOME SCREEN HERE
+    }
+}
+
+// BED UI HANDLERS
+
 // This function generates a new bed
 function bedAddition() {
   // Change the style of the forward button
@@ -1520,6 +1592,7 @@ function bedAddition() {
     if(totalBeds == 0) {
       // No beds exist, create the first one
       addBed('a', totalBeds);
+      gsap.to('#viewport-svg', {duration: .375, ease: 'linear', opacity: 1});
     } else {
       // This function gives the next character from an input character
       function nextChar(c) {
@@ -1538,10 +1611,11 @@ function bedAddition() {
 
   // This function creates a new bed
   function addBed(bedID, bedCount) {
+    var draw = SVG('#viewport-svg');
     let cellSize = 100;
     // Add the DOM elements
     // Add the bed parent
-    document.querySelector('.content-bed-add').insertAdjacentHTML('beforebegin', '<div class="content-bed-item" data-bed-id="bed_' + bedID + '"><div class="container"></div></div>');
+    document.querySelector('.content-bed-add').insertAdjacentHTML('beforebegin', '<div class="content-bed-item" data-bed-id="bed_' + bedID + '" id="bed_item_' + bedID + '"><div class="container"></div></div>');
     let bedLabel = '<div class="bed-label"><div class="subtract-icon"></div><input type="text" class="input-text-nofill" value="Bed ' + bedID.toUpperCase() + '" id="bed_' + bedID + '_name"></input></div>';
     let bedWidthSlider = '<div class="bed-slider"><div class="container"><input type="range" min="1" max="12" value="2" step="1" class="width-range" id="bed_' + bedID + '_width" data-label="Width" list="bed_' + bedID + '_width-tick-list"><datalist id="bed_' + bedID + '_width-tick-list"></datalist></div><div class="slider-value" id="bed_' + bedID + '_width-value">2</div></div>';
     let bedHeightSlider = '<div class="bed-slider"><div class="container"><input type="range" min="1" max="12" value="2" step="1" class="height-range" id="bed_' + bedID + '_height" data-label="Height" list="bed_' + bedID + '_height-tick-list"><datalist id="bed_' + bedID + '_height-tick-list"></datalist></div><div class="slider-value" id="bed_' + bedID + '_height-value">2</div></div>';
@@ -1690,6 +1764,12 @@ function bedAddition() {
     // Place the bed shadow in bed group, at back
     shadow.putIn(SVG('#bed_' + bedID));
     shadow.back();
+
+    // Scroll to the new bed's location
+    let bedItemContent = document.querySelector('#bed_item_' + bedID);
+    let bedScrollPos = bedItemContent.offsetTop;
+
+    scrollTo(document.querySelector('.panel-content'), bedScrollPos, 250);
   }
 
   // This function manages the bed's height, width, and label
@@ -1805,6 +1885,9 @@ function bedAddition() {
 
   // This function animates to a new viewport bounds to show all beds
   function updateViewBounds() {
+    var draw = SVG('#viewport-svg');
+    var bedGroup = SVG('#bed-group');
+    var gridGroup = SVG('#grid-floor');
     // Create a bounds object to store the min/max values
     let bounds = {
       min: {x: 0, y: 0},
@@ -1887,1177 +1970,1201 @@ function bedAddition() {
   }
 }
 
-// TEMP CODE
-// Add event listener to Add Bed button when clicked
-document.querySelector('.content-bed-add').addEventListener('click', function() {
-  bedAddition();
-}, true);
+// END BED UI HANDLERS
 
-// TEMP CODE
-// When clicking the forward button move to the next step
-document.querySelector('.button-forward').addEventListener('click', function() {
-  // Test that the button is active
-  if(this.classList.contains('button-no-select') !== true) {
-    transitionStep(document.querySelector('body').getAttribute('data-step'), this.getAttribute('data-next-step'))
-  }
-}, true);
+// Scroll to a scroll position
+function scrollTo(element, to, duration) {
+    var start = element.scrollTop,
+        change = to - start,
+        currentTime = 0,
+        increment = 20;
 
-// TEMP CODE
-// When clicking the backward button move to the previous step
-document.querySelector('.button-backward').addEventListener('click', function() {
-  // Test that the button is active
-  if(this.classList.contains('button-no-select') !== true) {
-    transitionStep(document.querySelector('body').getAttribute('data-step'), this.getAttribute('data-last-step'))
-  }
-}, true);
-
-// This function removes a warning crumb based on the passed ID
-function removeByAttr(attr, value) {
-  document.querySelector(attr + value).remove();
-}
-
-// This function transitions from one state to another
-function transitionStep(stepFrom, stepTo) {
-  switch(true) {
-    // Forward to plant selection from bed layout
-    case stepFrom=='bed-layout' && stepTo=='plant-selection':
-      // From bed layout to plant selection
-      // Set the body step to plant selection
-      document.querySelector('body').setAttribute('data-step', 'plant-selection');
-      gsap.timeline()
-        .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '105%', opacity: 0})
-        .to('.content-bed-item > .container', {duration: .4, ease: "power1.inOut", y: '110%', opacity: 0, stagger: {each: 0.075,from: "start",grid: "auto", ease: "power3.in"}}, "-=.25")
-        .call(zoomViewboxOut, [500, 0, 'now', '<>'])
-        .to('.content-bed-add *', {duration: .375, ease: "power1.inOut", y: '250%', opacity: 0}, "-=.3")
-        .call(textChange, ['.side-panel > .container > h1', 'Choose Plants'])
-        .call(removeElement, ['.panel-content > div'])
-        .set('.forward-action', {overflow: 'hidden'})
-        .set('.back-action', {overflow: 'hidden'})
-        .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0})
-        .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0}, "-=.25")
-        .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '0%', opacity: 1})
-        .call(generateCells)
-        .call(cellTransition)
-        .call(populatePanel, [stepTo])
-        .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1})
-        .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1}, "-=.25")
-        .set('.back-action',  {clearProps: 'all'})
-        .set('.forward-action',  {clearProps: 'all'})
-
-      break;
-    // Back to bed layout from plant selection
-    case stepFrom=='plant-selection' && stepTo=='bed-layout':
-      // From bed layout to plant selection
-      // Set the body step to plant selection
-      document.querySelector('body').setAttribute('data-step', 'plant-selection');
-      gsap.timeline()
-        .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '105%', opacity: 0})
-        .set('.panel-content > div', {overflow: 'hidden'})
-        .to('.panel-content > div > div', {duration: .4, ease: "power1.inOut", y: '110%', opacity: 0, stagger: {each: 0.075,from: "start",grid: "auto", ease: "power3.in"}}, "-=.25")
-        .call(zoomViewboxIn, [500, 0, 'now', '<>'])
-        // .to('.content-bed-add *', {duration: .375, ease: "power1.inOut", y: '250%', opacity: 0}, "-=.3")
-        .call(textChange, ['.side-panel > .container > h1', 'Bed Layout'])
-        .call(removeElement, ['.panel-content > div'])
-        .set('.forward-action', {overflow: 'hidden'})
-        .set('.back-action', {overflow: 'hidden'})
-        .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0})
-        .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0}, "-=.25")
-        .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '0%', opacity: 1})
-        // .call(generateCells)
-        .call(cellTransition)
-        .call(populatePanel, [stepTo])
-        .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1})
-        .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1}, "-=.25")
-        .set('.back-action',  {clearProps: 'all'})
-        .set('.forward-action',  {clearProps: 'all'})
-
-      break;
-
-    // Forward to plant-planner from plant selection
-    case stepFrom=='plant-selection' && stepTo=='plant-planner':
-      // Set the body step to plant planner
-      document.querySelector('body').setAttribute('data-step', 'plant-planner');
-      gsap.timeline()
-        .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '105%', opacity: 0})
-        .set('.search-wrapper', {overflow: 'hidden'})
-        .to('.search-wrapper > .container', {duration: .4, ease: "power1.inOut", y: '110%', opacity: 0}, "-=.25")
-        .to('.bed-area', {duration: .375, ease: "power1.inOut", top: 0, clearProps: 'height'}, "-=.3")
-        .call(textChange, ['.side-panel > .container > h1', 'Planner'])
-        .set('.forward-action', {overflow: 'hidden'})
-        .set('.back-action', {overflow: 'hidden'})
-        .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0})
-        .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0}, "-=.25")
-        .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '0%', opacity: 1})
-        .call(populatePanel, [stepTo])
-        .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1})
-        .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1}, "-=.25")
-        .set('.back-action',  {clearProps: 'all'})
-        .set('.forward-action',  {clearProps: 'all'})
-
-      break;
-    default:
-      // code block
-  }
-}
-
-// Create a viewport svg right off the bat
-var draw = SVG().addTo('.viewport').size('100%', '100%').attr({id: 'viewport-svg', opacity: 1}).viewbox('0 150 850 500');
-var bedGroup = draw.group().attr({id: 'bed-group'});
-var gridGroup = draw.group().attr({id: 'grid-floor'});
-
-// This function generates a set of swap arrows between two points
-function generateSwapArrows(p1, p2) {
-  let cellSize = 100;
-  // If swap arrows exist, remove them
-  if(SVG('#swap_arrows') !== null) {
-    SVG('#swap_arrows').remove();
-  }
-
-  // Calculate distance between the two points
-  let dist = Math.sqrt(Math.pow((p1.x-p2.x), 2) + Math.pow((p1.y-p2.y), 2));
-
-  // Draw two 'lines' (rect) from p1 to p2, shortened by half the cell size, offset to the right by 1/4th the cell size, also offset it down/up by 3.5, also offset it left/right by 4px
-  let lineThickness = 3;
-  let topPoints = [(p1.x + cellSize/4) + ',' + (p1.y - (3.5+(lineThickness/2))), (p1.x + (dist-((cellSize/4) + 4))) + ',' + (p1.y - (3.5+(lineThickness/2))), (p1.x + (dist-((cellSize/4) + 4))) + ',' + (p1.y - (3.5-(lineThickness/2))), (p1.x + cellSize/4) + ',' + (p1.y - (3.5-(lineThickness/2)))];
-  let lineTop = draw.polygon(topPoints.join(' ')).attr({id: 'top_line'});
-  let lineTopStroke = draw.polygon(topPoints.join(' ')).attr({id: 'top_line_stroke'});
-  let bottomPoints = [(p1.x + ((cellSize/4)+4)) + ',' + (p1.y + (3.5+(lineThickness/2))), (p1.x + (dist-(cellSize/4))) + ',' + (p1.y + (3.5+(lineThickness/2))), (p1.x + (dist-(cellSize/4))) + ',' + (p1.y + (3.5-(lineThickness/2))), (p1.x + ((cellSize/4)+4)) + ',' + (p1.y + (3.5-(lineThickness/2)))];
-  let lineBottom = draw.polygon(bottomPoints.join(' ')).attr({id: 'bottom_line'});
-  let lineBottomStroke = draw.polygon(bottomPoints.join(' ')).attr({id: 'bottom_line_stroke'});
-
-  // Draw two arrowheads and position them at the ends of the lines
-  let arrowheadTopPoints = [(p1.x + ((dist-(cellSize/4))-8)) + ',' + (p1.y - (3.5 + 4.5)), (p1.x + (dist-(cellSize/4))+1) + ',' + (p1.y - 3.5), (p1.x + ((dist-(cellSize/4))-8)) + ',' + (p1.y - (3.5 - 4.5))];
-  let arrowheadTop = draw.polygon(arrowheadTopPoints.join(' ')).attr({id: 'top_arrow'});
-  let arrowheadTopStroke = draw.polygon(arrowheadTopPoints.join(' ')).attr({id: 'top_arrow_stroke'});
-  let arrowheadBottomPoints = [(p1.x + ((cellSize/4)+8)) + ',' + (p1.y + (3.5 + 4.5)), (p1.x + ((cellSize/4)-1)) + ',' + (p1.y + 3.5), (p1.x + ((cellSize/4)+8)) + ',' + (p1.y + (3.5 - 4.5))];
-  let arrowheadBottom = draw.polygon(arrowheadBottomPoints.join(' ')).attr({id: 'bottom_arrow'});
-  let arrowheadBottomStroke = draw.polygon(arrowheadBottomPoints.join(' ')).attr({id: 'bottom_arrow_stroke'});
-
-  // Group the objects
-  let swapGroup = draw.group().attr({id: 'swap_arrows', opacity: 0});
-  let swapGroupStroke = draw.group().attr({id: 'swap_stroke'});
-  let swapGroupFill = draw.group().attr({id: 'swap_fill'});
-  // Stroke
-  lineTopStroke.putIn(swapGroupStroke);
-  lineBottomStroke.putIn(swapGroupStroke);
-  arrowheadTopStroke.putIn(swapGroupStroke);
-  arrowheadBottomStroke.putIn(swapGroupStroke);
-  // Fill
-  lineTop.putIn(swapGroupFill);
-  lineBottom.putIn(swapGroupFill);
-  arrowheadTop.putIn(swapGroupFill);
-  arrowheadBottom.putIn(swapGroupFill);
-  // Group
-  swapGroupStroke.putIn(swapGroup);
-  swapGroupFill.putIn(swapGroup);
-
-  // Style
-  swapGroupFill.fill("#2D936C");
-  swapGroupStroke.stroke({width: 6, color: '#ffffff', linejoin: 'round'});
-
-  // Calculate rotation
-  let rot = Math.atan2((p2.y - p1.y),( p2.x - p1.x)) * 180 / Math.PI;
-  swapGroup.rotate(rot, p1.x, p1.y);
-
-  // Animate in
-  swapGroup.animate(200, '<>', 0).attr({opacity: 1})
-}
-
-// This function generates a set of swap arrows between two points
-function generateRemoveX(p1) {
-  let cellSize = 100;
-  // If remove x exists, remove it
-  if(SVG('#x_icon') !== null) {
-    SVG('#x_icon').remove();
-  }
-
-  // Draw a polgon x
-  let lineThickness = 3;
-  let lineLength = 14;
-  let xValues = {
-    xMin: p1.x-lineLength,
-    xInMin: p1.x-(lineThickness/2),
-    xInMax: p1.x+(lineThickness/2),
-    xMax: p1.x+lineLength
-  }
-  let yValues = {
-    yMin: p1.y-lineLength,
-    yInMin: p1.y-(lineThickness/2),
-    yInMax: p1.y+(lineThickness/2),
-    yMax: p1.y+lineLength
-  }
-  let xPoints = [xValues.xInMax + ',' + yValues.yInMin, xValues.xMax + ',' + yValues.yInMin, xValues.xMax + ',' + yValues.yInMax, xValues.xInMax + ',' + yValues.yInMax, xValues.xInMax + ',' + yValues.yMax, xValues.xInMin + ',' + yValues.yMax, xValues.xInMin + ',' + yValues.yInMax, xValues.xMin + ',' + yValues.yInMax, xValues.xMin + ',' + yValues.yInMin, xValues.xInMin + ',' + yValues.yInMin, xValues.xInMin + ',' + yValues.yMin, xValues.xInMax + ',' + yValues.yMin];
-  let xPoly = draw.polygon(xPoints.join(' ')).attr({id: 'x_poly_poly'});
-  let xStroke = draw.polygon(xPoints.join(' ')).attr({id: 'x_stroke_poly'});
-
-  // Group the objects
-  let xGroup = draw.group().attr({id: 'x_icon', opacity: 0});
-  let xGroupStroke = draw.group().attr({id: 'x_stroke'});
-  let xGroupFill = draw.group().attr({id: 'x_fill'});
-  // Stroke
-  xStroke.putIn(xGroupStroke);
-  // Fill
-  xPoly.putIn(xGroupFill);
-  // Group
-  xGroupStroke.putIn(xGroup);
-  xGroupFill.putIn(xGroup);
-
-  // Style
-  xGroupFill.fill("#DB4535");
-  xGroupStroke.stroke({width: 6, color: '#ffffff', linejoin: 'round'});
-
-  // Calculate rotation
-  let rot = 45;
-  xGroup.rotate(rot, p1.x, p1.y);
-
-  // Animate in
-  xGroup.animate(200, '<>', 0).attr({opacity: 1})
-}
-
-// This function changes the text of a passed element to passed text
-function textChange(selector, text) {
-  document.querySelector(selector).textContent = text;
-}
-
-// This function removes all matched passed elements
-function removeElement(selector) {
-  document.querySelectorAll(selector).forEach(function(e) {
-    e.remove();
-  })
-}
-
-// This function zooms out the viewbox on the viewport SVG given passed values
-function zoomViewboxOut(duration, delay, when, ease) {
-  let cellSize = 100;
-  // Zoom out a bit
-  let currentViewbox = draw.viewbox()
-  draw.animate(duration, delay, when).ease(ease).viewbox(currentViewbox.x-cellSize, currentViewbox.y-cellSize, currentViewbox.width+(cellSize*2) , currentViewbox.height+(cellSize*2));
-}
-
-// This function zooms in the viewbox on the viewport SVG given passed values
-function zoomViewboxIn(duration, delay, when, ease) {
-  let cellSize = 100;
-  // Zoom out a bit
-  let currentViewbox = draw.viewbox()
-  draw.animate(duration, delay, when).ease(ease).viewbox(currentViewbox.x+cellSize, currentViewbox.y+cellSize, currentViewbox.width-(cellSize*2) , currentViewbox.height-(cellSize*2));
-}
-
-// This function creates cells and dividers for each bed
-function generateCells() {
-  let cellSize = 100;
-  // Iterate over each row
-  document.querySelectorAll('#bed-group > g').forEach(function(row) {
-    let rowNumb = row.id.split('-')[1];
-    // Iterate over each bed in this row
-    document.querySelectorAll('#' + row.id + ' g').forEach(function(bed) {
-      // Get the height and width of the current bed
-      let thisHeight = SVG('#' + bed.id + '_base').height();
-      let thisWidth = SVG('#' + bed.id + '_base').width();
-
-      // Create a group for the cells and dividers to go in
-      let cellGroup = draw.group().attr({id: bed.id + '_cells'});
-      let dividerGroup = draw.group().attr({id: bed.id + '_dividers'});
-      let contentGroup = draw.group().attr({id: bed.id + '_content'});
-
-      // Place the groups in order
-      cellGroup.putIn(contentGroup);
-      dividerGroup.putIn(contentGroup);
-      contentGroup.putIn(SVG('#' + bed.id));
-
-      // Store the bbox for the current bed
-      let bedBBox = SVG('#' + bed.id + '_base').bbox();
-      // Iterate over the width of the bed, creating vertical dividers
-      for(var i=0; i < (thisWidth/cellSize)-1; i++) {
-        // Start placement at x1 + cellSize
-        let vDivider = draw.line(bedBBox.x+(cellSize*(i+1)), bedBBox.y, bedBBox.x+(cellSize*(i+1)), bedBBox.y2).stroke({width: 2, color: '#ffffff', dasharray: (bedBBox.y2 - bedBBox.y) + ' ' + ((bedBBox.y2 - bedBBox.y)+10), dashoffset: ((bedBBox.y2 - bedBBox.y)+10)}).attr({class: 'vert-divider'});
-        // Place the divder in the divider group
-        vDivider.putIn(dividerGroup);
-      }
-      // Iterate over the height of the bed, creating horizontal dividers
-      for(var i=0; i < (thisHeight/cellSize)-1; i++) {
-        // Start placement at x1 + cellSize
-        let hDivider = draw.line(bedBBox.x, bedBBox.y+(cellSize*(i+1)), bedBBox.x2, bedBBox.y+(cellSize*(i+1))).stroke({width: 2, color: '#ffffff', dasharray: (bedBBox.x2 - bedBBox.x) + ' ' + ((bedBBox.x2 - bedBBox.x)+10), dashoffset: ((bedBBox.x2 - bedBBox.x)+10)}).attr({class: 'horz-divider'});
-        hDivider.putIn(dividerGroup);
-      }
-
-      // Add a border-rect to the divder group
-      let border = draw.rect(bedBBox.width, bedBBox.height).cx(bedBBox.cx).cy(bedBBox.cy).attr({class: 'bed-border', fill: 'none'}).stroke({width: 6, color: '#ffffff'});
-      border.putIn(dividerGroup);
-
-      // Create the cells
-      // Iterate over the height
-      let totalCellCount = 0;
-      for(var h=0; h < (thisHeight/cellSize); h++) {
-        // Iterate over the width
-        for(var w=0; w < (thisWidth/cellSize); w++) {
-          // Create a cell at the right height and width coordinate
-          let cellID = 'cell_' + bed.id.split('_')[1] + '_' + totalCellCount;
-          let cell = draw.rect(cellSize, cellSize).x((bedBBox.x + (w*cellSize))).y((bedBBox.y + (h*cellSize))).attr({id: cellID, class: 'bed-cell'}).fill({color: '#596475', opacity: 0});
-
-          cell.putIn(cellGroup);
-          totalCellCount++;
+    var animateScroll = function(){
+        currentTime += increment;
+        var val = easeInOutQuad(currentTime, start, change, duration);
+        element.scrollTop = val;
+        if(currentTime < duration) {
+            setTimeout(animateScroll, increment);
         }
-      }
+    };
+    animateScroll();
 
-      // Move the cell group behind the divider group
-      cellGroup.back();
-    })
-  })
+    //t = current time
+    //b = start value
+    //c = change in value
+    //d = duration
+    function easeInOutQuad(t, b, c, d) {
+      t /= d/2;
+    	if (t < 1) return c/4*t*t + b;
+    	t--;
+    	return -c/4 * (t*(t-2) - 1) + b;
+    };
 }
 
-// This function transitions the beds from the bed view to the cell view
-function cellTransition() {
-  let cellSize = 100;
-  // Order of timeline
-  // Move each bed label up and change its color and opacity
-  // Draw in each horizontal divider
-  // Draw in each vertical divder
-
-  // Iterate over the beds, setting the y position of the text label to above the bed
-  document.querySelectorAll('#bed-group > g > g').forEach(function(bed, i) {
-    // Calculate what y position the label will be at
-    let minBedY = SVG('#' + bed.id + '_base').bbox().y;
-    let delay = 50 * i;
-    // Animate the text label
-    SVG('#' + bed.id + '_label').animate(500, delay, 'now').ease('<>').attr({fill: '#596475', opacity: .38, y: minBedY-(cellSize/2)});
-  });
-
-  // Animate the dividers
-  gsap.timeline()
-    .to('#bed-group > g > g > g > g > line', {duration: .5, delay: .2, ease: 'power2.inOut', strokeDashoffset: 0, stagger: {each: .025, from: 'start', ease: 'power1.inOut'}})
-}
-
-// PANEL STATE CHANGE
-
-
-// This function populates the panel based on passed states
-function populatePanel(state) {
-  switch(true) {
-    case state=='plant-selection':
-      // Add Plant Search to panel content
-      document.querySelector('.panel-content').insertAdjacentHTML('afterbegin', '<div class="search-wrapper"><div class="container"><div class="plant-search"><div class="search-box"><input type="text" placeholder="Start Typing" id="search-plants"><div class="search-suggestions"></div></div><div class="add-option" id="remove-zone"></div></div><div class="plant-items" id="no_bed_plants"><div id="search-container-dropzone"></div></div></div></div>');
-
-      // Event Listeners for Search
-      // This adds an event listener to the search box so that when it is in focus the search results are open
-      document.querySelector("#search-plants").addEventListener("focusin", function(e) {
-        gsap.to('.search-suggestions', {duration: .1, ease: 'linear', height: 'auto', backgroundColor: '#ffffff', boxShadow: '0px 4px 16px 2px var(--secondary-color-min)', paddingTop: '36px'});
-        let query = document.querySelector("#search-plants").value;
-        updatePlantSearchResult(query)
-      });
-      // And when focus is out
-      document.querySelector("#search-plants").addEventListener("focusout", function(e) {
-        gsap.to('.search-suggestions', {duration: .1, ease: 'linear', clearProps: 'all'});
-
-        // When there is any value in the search box and it matches an item in the search array, color the add button
-        let query = document.querySelector("#search-plants").value;
-        if(query.length > 0 && plantSearchArray.indexOf(query) !== -1) {
-          gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', backgroundColor: 'var(--primary-color)'})
-        } else {
-          gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
-        }
-      });
-
-      // Add plant item to no-parent area if the add icon is active
-      document.querySelector(".plant-search > .add-option").addEventListener("click", function(e) {
-        // Add the option to the no-parent area
-        addPlantOption(plantData[plantSearchArray.indexOf(document.querySelector("#search-plants").value)])
-
-        // Clear search
-        gsap.to('.add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
-        document.querySelector("#search-plants").value = '';
-      });
-
-      // Add the update plant search result to the plant search box
-      document.querySelector("#search-plants").addEventListener("input", function() {
-        let query = document.querySelector("#search-plants").value;
-        updatePlantSearchResult(query);
-
-        // When there is any value in the search box and it matches an item in the search array, color the add button
-        if(query.length > 0 && plantSearchArray.indexOf(query) !== -1) {
-          gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', backgroundColor: 'var(--primary-color)'})
-        } else {
-          gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
-        }
-      });
-
-      // Set the panel content to overflow-y hidden
-      gsap.set('.panel-content', {overflowY: 'hidden'});
-
-      // Add the bed wrapper
-      document.querySelector('.panel-content').insertAdjacentHTML('beforeend', '<div class="bed-area"><div class="container"></div></div>');
-
-      // Iterate over each bed
-      document.querySelectorAll('#bed-group > g > g').forEach(function(bed) {
-        // Create a bed wrapper for the current bed in the panel content
-        document.querySelector('.panel-content > .bed-area > .container').insertAdjacentHTML('beforeend', '<div class="bed-wrapper" id="' + bed.id + '_plants" data-name="' + bed.getAttribute('data-name') + '" data-bed-id="' + bed.id + '"></div>');
-
-        // Iterate over each cell in the bed
-        document.querySelectorAll('#' + bed.id + '_cells > rect').forEach(function(cell) {
-          // Store info about the current cell
-          let cellBed = cell.id.split('_')[1];
-          let cellNum = cell.id.split('_')[2];
-
-          // Insert an empty item into the bed wrapper for this cell
-          document.querySelector('#' + bed.id + '_plants').insertAdjacentHTML('beforeend', '<div class="blank-item" data-cell="' + cellNum + '" id="empty_' + cellBed + '_' + cellNum + '"></div>');
-
-          // Add event listeners to the empty item for DnD functionality
-          document.querySelector('#empty_' + cellBed + '_' + cellNum).addEventListener('dragenter', handleDragEnter, false);
-          document.querySelector('#empty_' + cellBed + '_' + cellNum).addEventListener('dragover', allowDrop, false);
-          document.querySelector('#empty_' + cellBed + '_' + cellNum).addEventListener('dragleave', handleDragLeave, false);
-        })
-      });
-
-      // Add the drag info div
-      document.querySelector('.panel-content').insertAdjacentHTML('beforeend', '<div id="drag-info"></div>');
-
-      // Add event listeners to the remove item for DnD removal
-      document.querySelector('#remove-zone').addEventListener('dragenter', handleDragEnter, false);
-      document.querySelector('#remove-zone').addEventListener('dragover', allowDrop, false);
-      document.querySelector('#remove-zone').addEventListener('dragleave', handleDragLeave, false);
-
-      // Add event listeners to the add item for DnD addition
-      document.querySelector('#search-container-dropzone').addEventListener('dragenter', handleDragEnter, false);
-      document.querySelector('#search-container-dropzone').addEventListener('dragover', allowDrop, false);
-      document.querySelector('#search-container-dropzone').addEventListener('dragleave', handleDragLeave, false);
-
-      // Change out the step buttons
-      document.querySelector('.forward-action > div').setAttribute('data-next-step', 'plan-creation');
-      document.querySelector('.forward-action > div').classList.remove('button-primary');
-      document.querySelector('.forward-action > div').classList.add('button-no-select')
-      document.querySelector('.forward-action > div').childNodes[0].nodeValue = "Create Plan";
-      document.querySelector('.back-action > div').setAttribute('data-last-step', 'bed-layout');
-      document.querySelector('.back-action > div').childNodes[1].nodeValue = "Bed Layout";
-
-      break;
-    default:
-      // ADD DEFAULT HOME SCREEN HERE
-  }
-}
-
-
-// PLANT SELECTION
-
-
-// This function updates the search results
-function updatePlantSearchResult(query) {
-  let resultList = document.querySelector(".search-suggestions");
-  resultList.innerHTML = "";
-
-  plantSearchArray.map(function(algo){
-      query.split(" ").map(function (word){
-          if(algo.toLowerCase().indexOf(word.toLowerCase()) != -1 && resultList.childNodes.length < 5){
-              resultList.innerHTML += `<li>${algo}</li>`;
-          }
-      })
-  });
-
-  // Add event listener to each search item
-  document.querySelectorAll(".search-suggestions > li").forEach(function(e) {
-    e.addEventListener("click", function() {
-      // Fill the search box in with the clicked value
-      document.querySelector("#search-plants").value = e.textContent;
-
-      // When there is any value in the search box and it matches an item in the search array, color the add button
-      if(e.textContent.length > 0 && plantSearchArray.indexOf(e.textContent) !== -1) {
-        gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', backgroundColor: 'var(--primary-color)'})
-      } else {
-        gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
-      }
-    });
-  })
-};
-
-// This function adds a search item to the no-parent container for new search items
-function addPlantOption(plantObj) {
-  let itemCount = document.querySelectorAll('.grab-item').length;
-
-  // Select a color from the label color array given the total items % the number of items in the label color array
-  let labelColor = labelColors[itemCount%labelColors.length];
-
-  // Add the item to the no-parent container
-  let newPlantCount = document.querySelectorAll('.grab-item').length + 1;
-  let newItem = '<div class="grab-item" data-label-color="' + labelColor + '" id="plant_' + newPlantCount + '" data-cell="-1" draggable="true">' + plantObj.plant_name + '</div>';
-  console.log('plantCount: ' + newPlantCount)
-  // Add the drag and drop event listeners to the new item
-  document.querySelector('#no_bed_plants').insertAdjacentHTML('afterbegin', newItem);
-  addDragAndDrop('#plant_' + newPlantCount);
-
-  // Move the bed area to just below the search results
-  gsap.to('.bed-area',{duration: .125, ease: 'power2-inOut', top: ((document.querySelector('.search-wrapper').offsetHeight + 10) + 'px'), height: ((document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 10)) + 'px')});
-}
-
-// This is the drag and drop data transfer format
-class DnDItem {
-  constructor(id, container, place, text, color) {
-    this.id = id;
-    this.container = container;
-    this.place = place;
-    this.text = text;
-    this.color = color;
-  }
-}
-
-function dragStart(ev) {
-  // Style this element to indicate it is being dragged
-  gsap.to(this, {duration: .2, ease: 'power2.inOut', opacity: .5});
-
-  // Add the drag item's data to the drag-info div
-  let dragInfoElement = document.querySelector('#drag-info');
-
-  let dragItem = new DnDItem(this.id, this.parentNode.id, this.getAttribute('data-cell'), this.textContent, this.getAttribute('data-label-color'));
-  dragInfoElement.setAttribute('data-drag', JSON.stringify(dragItem));
-
-  // Style the search area components
-  styleSearch('dragging');
-}
-
-function dragEnd(ev) {
-  // Style this element to indicate it is being dragged
-  gsap.to(this, {duration: .2, ease: 'power2.inOut', clearProps: 'opacity'});
-
-  // Style the search area components
-  styleSearch('default');
-
-  // Grab drag data
-  let dragData = JSON.parse(document.querySelector('#drag-info').getAttribute('data-drag'));
-  let targetData = document.querySelector('#drag-info').getAttribute('data-target');
-
-  // Determine what action will be taken
-  // Check to see if anything happened
-  if(targetData !== null) {
-    // Something happened
-    targetData = JSON.parse(document.querySelector('#drag-info').getAttribute('data-target'));
-    if(targetData.id == 'remove-zone') {
-      // The drag item should be removed
-      if(dragData.place !== null && dragData.place !== '-1') {
-        // The drag item is in a cell, replace it with an empty item
-        // Replace the drag item with a blank item
-        document.querySelector('#' + dragData.id).setAttribute('class', 'blank-item');
-        document.querySelector('#' + dragData.id).removeAttribute('data-label-color');
-        document.querySelector('#' + dragData.id).removeAttribute('draggable');
-        document.querySelector('#' + dragData.id).textContent = '';
-
-        // Remove all event listeners
-        removeDragAndDrop('#' + dragData.id);
-
-        // Add new event listeners
-        addDragAndDrop('#' + dragData.id);
-
-        document.querySelector('#' + dragData.id).setAttribute('id', 'empty_' + dragData.container.split('_')[1] + '_' + dragData.place);
-
-        // Determine the cell id of the drag item
-        let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
-
-        // Set the drag cell fill
-        SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: '#596475', opacity: 0});
-
-        // If remove x exists, remove it
-        if(SVG('#x_icon') !== null) {
-          SVG('#x_icon').remove();
-        }
-
-      } else {
-        // Just remove the item
-        document.querySelector('#' + dragData.id).remove();
-      }
-    }
-
-    if(targetData.id == 'search-container-dropzone') {
-      // The drag item should be moved to the no bed list
-      if(dragData.place !== null && dragData.place !== '-1') {
-        // The drag item is in a cell, replace it with an empty item
-        // Replace the drag item with an empty cell
-        document.querySelector('#' + dragData.id).setAttribute('class', 'blank-item');
-        document.querySelector('#' + dragData.id).removeAttribute('data-label-color');
-        document.querySelector('#' + dragData.id).removeAttribute('draggable');
-        document.querySelector('#' + dragData.id).textContent = '';
-
-        // Determine the cell id of the drag item
-        let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
-
-        // Set the drag cell fill
-        SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: '#596475', opacity: 0});
-
-        // Remove all event listeners
-        removeDragAndDrop('#' + dragData.id);
-
-        // Add new event listeners
-        addDragAndDrop('#' + dragData.id);
-
-        document.querySelector('#' + dragData.id).setAttribute('id', 'empty_' + dragData.container.split('_')[1] + '_' + dragData.place);
-
-        // Add the plant item back into the no bed list
-        // Set the label color from the old drag item
-        let labelColor = dragData.color;
-
-        // Add the item to the no-parent container
-        let newPlantCount = (document.querySelector('#no_bed_plants').childElementCount-1) + 1;
-        let newItem = '<div class="grab-item" data-label-color="' + labelColor + '" id="plant_' + newPlantCount + '" data-cell="-1" draggable="true">' + dragData.text + '</div>';
-        // Add the drag and drop event listeners to the new item
-        document.querySelector('#no_bed_plants').insertAdjacentHTML('afterbegin', newItem);
-        addDragAndDrop('#plant_' + newPlantCount);
-
-        // Move the bed area to just below the search results
-        gsap.to('.bed-area',{duration: .125, ease: 'power2-inOut', top: ((document.querySelector('.search-wrapper').offsetHeight + 10) + 'px'), height: ((document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 10)) + 'px')});
-
-        // If remove x exists, remove it
-        if(SVG('#x_icon') !== null) {
-          SVG('#x_icon').remove();
-        }
-
-      } else {
-        // Do nothing as the plant is already in the list
-      }
-    }
-
-    if(targetData.place !== null && targetData.place !== '-1') {
-      // The target item is a cell reference
-
-      if(dragData.place !== null && dragData.place !== '-1') {
-        // The drag item is also a cell reference
-
-        if(targetData.text !== '') {
-          // The target is a cell reference and is not empty
-          // Set the target cell color to the drag item color and the drag cell to the target item color
-
-          // Determine the cell id of the target item
-          let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
-          // Determine the cell id of the drag item
-          let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
-
-          // Set the target cell fill
-          SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: 1});
-          // Set the drag cell fill
-          SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: targetData.color, opacity: 1});
-
-          // Replace the target item with the drag item
-          document.querySelector('#' + targetData.id).setAttribute('class', 'grab-item');
-          document.querySelector('#' + targetData.id).setAttribute('data-label-color', dragData.color);
-          document.querySelector('#' + targetData.id).setAttribute('draggable', 'true');
-          document.querySelector('#' + targetData.id).textContent = dragData.text;
-          document.querySelector('#' + targetData.id).setAttribute('id', 'NEWDRAG');
-
-          // Replace the drag item with the target item
-          document.querySelector('#' + dragData.id).setAttribute('class', 'grab-item');
-          document.querySelector('#' + dragData.id).setAttribute('data-label-color', targetData.color);
-          document.querySelector('#' + dragData.id).setAttribute('draggable', 'true');
-          document.querySelector('#' + dragData.id).textContent = targetData.text;
-          document.querySelector('#' + dragData.id).setAttribute('id',  targetData.id);
-
-          document.querySelector('#NEWDRAG').setAttribute('id', dragData.id);
-
-          // Remove all event listeners
-          removeDragAndDrop('#' + dragData.id)
-          removeDragAndDrop('#' + targetData.id)
-
-          // Add new event listeners
-          addDragAndDrop('#' + dragData.id)
-          addDragAndDrop('#' + targetData.id)
-
-
-          // Remove swap arrows
-          if(SVG('#swap_arrows') !== null) {
-            SVG('#swap_arrows').remove();
-          }
-
-          // If remove x exists, remove it
-          if(SVG('#x_icon') !== null) {
-            SVG('#x_icon').remove();
-          }
-
-        } else {
-          // The target is a cell reference but is empty
-          // Set the target cell color to the drag item color
-
-          // Determine the cell id of the target item
-          let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
-          // Determine the cell id of the drag item
-          let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
-
-          // Set the target cell fill
-          SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: 1});
-          // Set the drag cell fill
-          SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: '#596475', opacity: 0});
-
-          // Replace the target item with the drag item
-          document.querySelector('#' + targetData.id).setAttribute('class', 'grab-item');
-          document.querySelector('#' + targetData.id).setAttribute('data-label-color', dragData.color);
-          document.querySelector('#' + targetData.id).setAttribute('draggable', 'true');
-          document.querySelector('#' + targetData.id).textContent = dragData.text;
-          document.querySelector('#' + targetData.id).setAttribute('id', 'NEWDRAG');
-
-          // Replace the drag item with the target item
-          document.querySelector('#' + dragData.id).setAttribute('class', 'blank-item');
-          document.querySelector('#' + dragData.id).removeAttribute('data-label-color');
-          document.querySelector('#' + dragData.id).removeAttribute('draggable');
-          document.querySelector('#' + dragData.id).textContent = '';
-          document.querySelector('#' + dragData.id).setAttribute('id', 'empty_' + dragData.container.split('_')[1] + '_' + dragData.place);
-
-          document.querySelector('#NEWDRAG').setAttribute('id', dragData.id);
-
-          // Remove all event listeners
-          removeDragAndDrop('#' + dragData.id)
-          removeDragAndDrop('#' + targetData.id)
-
-          // Add new event listeners
-          addDragAndDrop('#' + dragData.id)
-          document.querySelector('#empty_' + dragData.container.split('_')[1] + '_' + dragData.place).addEventListener('dragenter', handleDragEnter, false);
-          document.querySelector('#empty_' + dragData.container.split('_')[1] + '_' + dragData.place).addEventListener('dragover', allowDrop, false);
-          document.querySelector('#empty_' + dragData.container.split('_')[1] + '_' + dragData.place).addEventListener('dragleave', handleDragLeave, false);
-
-          // Remove swap arrows
-          if(SVG('#swap_arrows') !== null) {
-            SVG('#swap_arrows').remove();
-          }
-
-          // If remove x exists, remove it
-          if(SVG('#x_icon') !== null) {
-            SVG('#x_icon').remove();
-          }
-        }
-
-      } else {
-        // The drag item is not a cell reference
-        // Set the cell color to the drag item color
-
-        // Determine the cell id of the target item
-        let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
-
-        // Set the cell fill
-        SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: 1});
-
-        // Replace the target item with the drag item
-        document.querySelector('#' + targetData.id).setAttribute('class', 'grab-item');
-        document.querySelector('#' + targetData.id).setAttribute('data-label-color', dragData.color);
-        document.querySelector('#' + targetData.id).setAttribute('draggable', 'true');
-        document.querySelector('#' + targetData.id).textContent = dragData.text;
-        document.querySelector('#' + targetData.id).setAttribute('id', 'NEWDRAG');
-
-        // Replace the drag item with the target item
-        document.querySelector('#' + dragData.id).setAttribute('class', 'grab-item');
-        document.querySelector('#' + dragData.id).setAttribute('data-label-color', targetData.color);
-        document.querySelector('#' + dragData.id).setAttribute('draggable', 'true');
-        document.querySelector('#' + dragData.id).textContent = targetData.text;
-        document.querySelector('#' + dragData.id).setAttribute('id',  targetData.id);
-
-        document.querySelector('#NEWDRAG').setAttribute('id', dragData.id);
-
-        // Remove all event listeners
-        removeDragAndDrop('#' + dragData.id)
-        removeDragAndDrop('#' + targetData.id)
-
-        // Add new event listeners
-        addDragAndDrop('#' + dragData.id)
-        addDragAndDrop('#' + targetData.id)
-
-        // Remove swap arrows
-        if(SVG('#swap_arrows') !== null) {
-          SVG('#swap_arrows').remove();
-        }
-
-        // If remove x exists, remove it
-        if(SVG('#x_icon') !== null) {
-          SVG('#x_icon').remove();
-        }
-
-        if(targetData.id.split('_')[0] == 'empty') {
-          // The target item was an empty cell, remove it from the no bed list
-          document.querySelector('#' + targetData.id).remove();
-        }
-
-      }
-    }
-
-    // Once finished, remove all the drag and target data
-    document.querySelector('#drag-info').removeAttribute('data-drag');
-    document.querySelector('#drag-info').removeAttribute('data-target');
-  }
-
-  // Once all is finished
-  // If any items in the viewport have a data-ghost tag on them, set their fills to their old fill data
-  if(document.querySelectorAll('rect[data-ghost="true"]').length !== null || document.querySelectorAll('rect[data-ghost="true"]').length !== 0) {
-    console.log('Clearing ghost items');
-    // Iterate over the items
-    document.querySelectorAll('rect[data-ghost="true"]').forEach(function(e) {
-      let currentID = '#' + e.id;
-
-      // Remove the ghost and old fill attributes
-      document.querySelector(currentID).removeAttribute('data-ghost');
-      document.querySelector(currentID).removeAttribute('data-old-fill');
-    });
-
-    // Reset the search height offset for the beds
-    styleSearch('default');
-
-    // If there are no plants in the beds, remove the primary forward style on the forward button
-    if(document.querySelectorAll('.bed-wrapper > .grab-item').length == 0) {
-      // Change the style of the forward button (Grey)
-      document.querySelector('.button-forward').setAttribute('class', 'button-no-select button-forward');
-    } else {
-      // Change the style of the forward button (Green)
-      document.querySelector('.button-forward').setAttribute('class', 'button-primary button-forward');
-    }
-  }
-}
-
-function allowDrop(ev) {
-  ev.preventDefault();
-  return false;
-}
-
-function handleDragEnter(ev) {
-  ev.preventDefault();
-  // A dragging item has entered a target
-
-  // Add the target item's data to the drag-info div
-  let dragInfoElement = document.querySelector('#drag-info');
-
-  let targetItem = new DnDItem(this.id, this.parentNode.id, this.getAttribute('data-cell'), this.textContent, this.getAttribute('data-label-color'));
-  dragInfoElement.setAttribute('data-target', JSON.stringify(targetItem));
-
-  // Here if the drag target is a cell reference, display the cell change in the viewport
-  // If the drag item is also from a cell, include reference arrows and style the drag cell as well
-  // If a cell is showing data preview, add a data-ghost tag to it
-  // Store the old fill data to a fill data tag
-
-  // Grab drag data
-  let dragData = JSON.parse(document.querySelector('#drag-info').getAttribute('data-drag'));
-  let targetData = JSON.parse(document.querySelector('#drag-info').getAttribute('data-target'));
-
-  if(targetData.id == dragData.id && targetData.place == dragData.place) {
-    // The items are the same, do nothing
-  } else {
-    // The items are not the same
-    if(targetData.id == 'remove-zone') {
-      // The drag item should be removed
-      if(dragData.place !== null && dragData.place !== '-1') {
-        // The drag item is in a cell, show a remove x
-        // Add a remove x
-        let cellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
-        let cellCenter = {x: SVG(cellID).bbox().cx, y: SVG(cellID).bbox().cy};
-        generateRemoveX(cellCenter);
-      }
-    }
-
-    if(targetData.id == 'search-container-dropzone') {
-      // The drag item should be moved to the no bed list
-      if(dragData.place !== null && dragData.place !== '-1') {
-        // The drag item is in a cell, show a remove x
-        // Add a remove x
-        let cellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
-        let cellCenter = {x: SVG(cellID).bbox().cx, y: SVG(cellID).bbox().cy};
-        generateRemoveX(cellCenter);
-      }
-    }
-
-    if(targetData.place !== null && targetData.place !== '-1') {
-      // The target item is a cell reference
-      if(dragData.place !== null && dragData.place !== '-1') {
-        // The drag item is also a cell reference
-        if(targetData.text !== '') {
-          // The target is a cell reference and is not empty
-          // Preview the drag item color in the target cell and the target cell color in the drag cell
-          // Determine the cell id of the target item
-          let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
-          // Store the old fill data
-          SVG(targetCellID).data('ghost', 'true', true);
-          let oldTargetFillData = JSON.stringify({fill: SVG(targetCellID).attr('fill'), opacity: SVG(targetCellID).attr('fill-opacity')});
-          SVG(targetCellID).data('old-fill', oldTargetFillData, true);
-
-          // Determine the cell id of the drag item
-          let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
-          // Store the old fill data
-          SVG(dragCellID).data('ghost', 'true', true);
-          let oldDragFillData = JSON.stringify({fill: SVG(dragCellID).attr('fill'), opacity: SVG(dragCellID).attr('fill-opacity')});
-          SVG(dragCellID).data('old-fill', oldDragFillData, true);
-
-          // Set the preview fill
-          SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: .5});
-          SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: targetData.color, opacity: .5});
-
-          // Add swap arrows
-          let dragCellCenter = {x: SVG(dragCellID).bbox().cx, y: SVG(dragCellID).bbox().cy};
-          let targetCellCenter = {x: SVG(targetCellID).bbox().cx, y: SVG(targetCellID).bbox().cy};
-          generateSwapArrows(dragCellCenter, targetCellCenter)
-
-        } else {
-          // The target is a cell reference but is empty
-          // Preview the drag item color in the cell
-
-          // Determine the cell id of the target item
-          let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
-          // Store the old fill data
-          SVG(targetCellID).data('ghost', 'true', true);
-          let oldTargetFillData = JSON.stringify({fill: SVG(targetCellID).attr('fill'), opacity: SVG(targetCellID).attr('fill-opacity')});
-          SVG(targetCellID).data('old-fill', oldTargetFillData, true);
-
-          // Determine the cell id of the drag item
-          let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
-          // Store the old fill data
-          SVG(dragCellID).data('ghost', 'true', true);
-          let oldDragFillData = JSON.stringify({fill: SVG(dragCellID).attr('fill'), opacity: SVG(dragCellID).attr('fill-opacity')});
-          SVG(dragCellID).data('old-fill', oldDragFillData, true);
-
-          // Set the preview fill
-          SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: .5});
-          SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: 0});
-
-          // Add swap arrows
-          let dragCellCenter = {x: SVG(dragCellID).bbox().cx, y: SVG(dragCellID).bbox().cy};
-          let targetCellCenter = {x: SVG(targetCellID).bbox().cx, y: SVG(targetCellID).bbox().cy};
-          generateSwapArrows(dragCellCenter, targetCellCenter)
-        }
-      } else {
-        // The drag item is not a cell reference
-        // Preview the drag item color in the cell
-
-        // Determine the cell id of the target item
-        let cellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
-        // Store the old fill data
-        SVG(cellID).data('ghost', 'true', true);
-        let oldFillData = JSON.stringify({fill: SVG(cellID).attr('fill'), opacity: SVG(cellID).attr('fill-opacity')});
-        SVG(cellID).data('old-fill', oldFillData, true);
-
-        // Set the preview fill
-        SVG(cellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: .5});
-      }
-    }
-  }
-}
-
-function handleDragLeave(ev) {
-  ev.preventDefault();
-  // A dragging item has left a target
-
-  // Add the target item's data to the drag-info div
-  let dragInfoElement = document.querySelector('#drag-info');
-
-  dragInfoElement.removeAttribute('data-target');
-
-  // If any items in the viewport have a data-ghost tag on them, set their fills to their old fill data
-  if(document.querySelectorAll('rect[data-ghost="true"]').length !== null || document.querySelectorAll('rect[data-ghost="true"]').length !== 0) {
-    console.log('Clearing ghost items');
-    // Iterate over the items
-    document.querySelectorAll('rect[data-ghost="true"]').forEach(function(e) {
-      let currentID = '#' + e.id;
-
-      // Set the fill back to the old fill
-      let fillData = SVG(currentID).data('old-fill');
-      SVG(currentID).animate(250, 0, 'now').ease('<>').fill({color: fillData.fill, opacity: fillData.opacity});
-
-      // Remove the ghost and old fill attributes
-      document.querySelector(currentID).removeAttribute('data-ghost');
-      document.querySelector(currentID).removeAttribute('data-old-fill');
-    })
-  }
-
-  // Remove swap arrows
-  if(SVG('#swap_arrows') !== null) {
-    SVG('#swap_arrows').remove();
-  }
-
-  // If remove x exists, remove it
-  if(SVG('#x_icon') !== null) {
-    SVG('#x_icon').remove();
-  }
-}
-
-// This function adds the standard set of event listeners to a drag and drop item
-function addDragAndDrop(elements) {
-  let dragableItems = document.querySelectorAll(elements);
-    dragableItems.forEach(function(item) {
-      item.addEventListener('dragstart', dragStart, false);
-      item.addEventListener('dragend', dragEnd, false);
-      item.addEventListener('dragenter', handleDragEnter, false);
-      item.addEventListener('dragover', allowDrop, false);
-      item.addEventListener('dragleave', handleDragLeave, false);
-      // item.addEventListener('drop', handleDrop, false);
-  });
-}
-
-// This function adds the standard set of event listeners to a drag and drop item
-function removeDragAndDrop(elements) {
-  let dragableItems = document.querySelectorAll(elements);
-    dragableItems.forEach(function(item) {
-      item.removeEventListener('dragstart', dragStart);
-      item.removeEventListener('dragend', dragEnd);
-      item.removeEventListener('dragenter', handleDragEnter);
-      item.removeEventListener('dragover', allowDrop);
-      item.removeEventListener('dragleave', handleDragLeave);
-  });
-}
-
-// This function styles the search area components into their standard or dragging states
-function styleSearch(state) {
-  // Test the state
-  if(state == 'dragging') {
-    // Display the drop area for search and the remove area
-    gsap.timeline()
-      .to('#search-container-dropzone', {duration: .375, ease: 'power2.inOut', height: 'calc(1.1em + 13px)', paddingTop: '8px', paddingBottom: '5px', marginTop: '12px'})
-      .to('#search-container-dropzone', {duration: .375, ease: 'power2.inOut', opacity: .2}, "-=.125")
-      .call(optionClassSwap, ['remove-option'])
-      .to('.search-box', {duration: .5, ease: 'power2.inOut', width: '0px', marginRight: '0px', opacity: 0}, "-=.25")
-      .to('.bed-area', {duration: .375, ease: 'power2.inOut', top: ((document.querySelector('.search-wrapper').offsetHeight + 30) + 'px'), height: ((document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 30)) + 'px')}, "-=1")
-  } else {
-    // Reset the search components
-    gsap.timeline()
-      .to('#search-container-dropzone', {duration: .375, ease: 'power2.inOut', opacity: .0})
-      .to('#search-container-dropzone', {duration: .375, ease: 'power2.inOut', height: '0px', paddingTop: '0px', paddingBottom: '0px', marginTop: '0px'}, "-=.125")
-      .call(optionClassSwap, ['default'])
-      .to('.search-box', {duration: .375, ease: 'power2.inOut', width: 'calc(100% - 38px)', marginRight: '8px', opacity: 1}, "-=.25")
-      .to('.bed-area', {duration: .375, ease: 'power2.inOut', top: ((document.querySelector('.search-wrapper').offsetHeight + 10) + 'px'), height: ((document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 10)) + 'px')}, "-=.5")
-  }
-
-  // This function swaps the classes of the add-option/remove option button
-  function optionClassSwap(swapTo) {
-    if(swapTo == 'remove-option') {
-      document.querySelector('.add-option').classList.add('remove-option');
-      document.querySelector('.add-option').classList.remove('add-option');
-      document.querySelector('.remove-option').textContent = 'Drop Here to Remove';
-    } else {
-      document.querySelector('.remove-option').classList.add('add-option');
-      document.querySelector('.remove-option').classList.remove('remove-option');
-      document.querySelector('.add-option').textContent = '';
-    }
-  }
-}
-
-
-// END PLANT SELECTION
-
-// Auto-save function
-function autoSave() {
-  // Display the autosave notification and hide it after save completion
-  gsap.timeline()
-    .to('.autosave-wrapper', {duration: .75, ease: 'power2.inOut', opacity: 1})
-    .to('.autosave-wrapper', {duration: 1, ease: 'power2.out', scale: 1}, "-=.75")
-    .to('.autosave-wrapper', {duration: .625, ease: 'power2.inOut', scale: .9}, "+=2.75")
-    .to('.autosave-wrapper', {duration: .375, ease: 'linear', opacity: 0}, "-=.5");
-
-
-  let saveData = saveState();
-
-  // Save the file to local storage as a temp file
-  // First determine how many auto saves exist
-  let autoSaveCount = -1;
-  for(var i=0; i < 3; i++) {
-    // If an autosave with the current name exists add to the auto-save count
-    if(checkLocalStorage('sqFtGdn_autoSave_' + i) == true) {
-      autoSaveCount = autoSaveCount+1;
-    }
-  }
-
-  if(autoSaveCount >= 2) {
-    // There are already 3 autosaves
-    // Find the oldest auto save and save over it with new data
-    // Add each exipry to an array
-    let autoSaveTimes = [];
-    for(var i=0; i < 3; i++) {
-      autoSaveTimes.push(readLocalStorage('sqFtGdn_autoSave_' + i).expiry);
-    }
-
-    // Determine which auto save is the oldest
-    autoSaveCount = indexOfSmallest(autoSaveTimes);
-
-    // This function returns the index of the lowest value in a given array
-    function indexOfSmallest(a) {
-     var lowest = 0;
-     for (var i = 1; i < a.length; i++) {
-      if (a[i] < a[lowest]) lowest = i;
-     }
-     return lowest;
-    }
-
-    // Save the new auto save over the oldest save
-    writeLocalStorage('sqFtGdn_autoSave_' + autoSaveCount, JSON.stringify(saveData), ['never'], 'Auto Save');
-    console.log('Auto-saved progress to: "autoSave_' + autoSaveCount + '" on ' + moment().format('L [at] h:mm:ssa'));
-  } else {
-    // There are less than 3 autosaves present, save to a new auto save slot
-    autoSaveCount = autoSaveCount+1;
-    writeLocalStorage('sqFtGdn_autoSave_' + autoSaveCount, JSON.stringify(saveData), ['never'], 'Auto Save');
-    console.log('Auto-saved progress to: "autoSave_' + autoSaveCount + '" on ' + moment().format('L [at] h:mm:ssa'));
-  }
-
-}
-
-var autoSaveInterval = setInterval(function() {
-  autoSave();
-}, 120000);
-
-// This function returns an object of save data
-function saveState(fileName) {
-  // Save Info
-  let save_date = moment().unix();
-  let save_name = '_autosave-1';
-  let autosave = true;
-  let saveObject = {
-    save_date,
-    save_name,
-    autosave
-  }
-  // Location Info
-  let type = 'lat/long';
-  let value = [-35.59673, 78.02848];
-  let hardiness = 4;
-  let locationObject = {
-    type,
-    value,
-    hardiness
-  }
-  // Current Step
-  let step = document.querySelector('body').getAttribute('data-step');
-  let view = '';
-  let currentStepObject = {
-    step,
-    view
-  }
-  // Crops
-  // CODE HERE
-
-  // Beds
-  let bedsArray = [];
-  // Iterate over each bed, adding a bed object to the bed array
-  document.querySelectorAll('.content-bed-item').forEach(function(e) {
-    let bed_id = e.getAttribute('data-bed-id');
-    let bed_name = document.querySelector('#' + bed_id + '_name').value;
-    let bed_width = document.querySelector('#' + bed_id + '_width').value;
-    let bed_height = document.querySelector('#' + bed_id + '_height').value;
-    let bed_cells = {};
-    // Iterate over each row, adding its rows to the cells object
-    for(var i=0; i < bed_height; i++) {
-      let row_name = 'row_' + (i+1);
-      let rowArray = [];
-      // Iterate over each cell within the row, adding its data to the row array
-      for(var j=0; j < bed_width; j++) {
-        let cell_id = i + j;
-        let cell_contents = [];
-        let cell_object = {
-          cell_id,
-          cell_contents
-        }
-
-        // Add the cell object to the row array
-        rowArray.push(cell_object);
-      }
-      bed_cells[row_name] = rowArray;
-    }
-
-    let bedObject = {
-      bed_id,
-      bed_name,
-      bed_width,
-      bed_height,
-      bed_cells
-    }
-
-    // Add the current bed object to the bed array
-    bedsArray.push(bedObject);
-  })
-
-  let saveFile = new SaveFile(saveObject, locationObject, currentStepObject, bedsArray)
-
-  return saveFile;
-}
+// END UI REFRESH
+
+
+//
+// // TEMP CODE
+// // When clicking the forward button move to the next step
+// document.querySelector('.button-forward').addEventListener('click', function() {
+//   // Test that the button is active
+//   if(this.classList.contains('button-no-select') !== true) {
+//     transitionStep(document.querySelector('body').getAttribute('data-step'), this.getAttribute('data-next-step'))
+//   }
+// }, true);
+//
+// // TEMP CODE
+// // When clicking the backward button move to the previous step
+// document.querySelector('.button-backward').addEventListener('click', function() {
+//   // Test that the button is active
+//   if(this.classList.contains('button-no-select') !== true) {
+//     transitionStep(document.querySelector('body').getAttribute('data-step'), this.getAttribute('data-last-step'))
+//   }
+// }, true);
+//
+// // This function removes a warning crumb based on the passed ID
+// function removeByAttr(attr, value) {
+//   document.querySelector(attr + value).remove();
+// }
+//
+// // This function transitions from one state to another
+// function transitionStep(stepFrom, stepTo) {
+//   switch(true) {
+//     // Forward to plant selection from bed layout
+//     case stepFrom=='bed-layout' && stepTo=='plant-selection':
+//       // From bed layout to plant selection
+//       // Set the body step to plant selection
+//       document.querySelector('body').setAttribute('data-step', 'plant-selection');
+//       gsap.timeline()
+//         .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '105%', opacity: 0})
+//         .to('.content-bed-item > .container', {duration: .4, ease: "power1.inOut", y: '110%', opacity: 0, stagger: {each: 0.075,from: "start",grid: "auto", ease: "power3.in"}}, "-=.25")
+//         .call(zoomViewboxOut, [500, 0, 'now', '<>'])
+//         .to('.content-bed-add *', {duration: .375, ease: "power1.inOut", y: '250%', opacity: 0}, "-=.3")
+//         .call(textChange, ['.side-panel > .container > h1', 'Choose Plants'])
+//         .call(removeElement, ['.panel-content > div'])
+//         .set('.forward-action', {overflow: 'hidden'})
+//         .set('.back-action', {overflow: 'hidden'})
+//         .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0})
+//         .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0}, "-=.25")
+//         .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '0%', opacity: 1})
+//         .call(generateCells)
+//         .call(cellTransition)
+//         .call(populatePanel, [stepTo])
+//         .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1})
+//         .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1}, "-=.25")
+//         .set('.back-action',  {clearProps: 'all'})
+//         .set('.forward-action',  {clearProps: 'all'})
+//
+//       break;
+//     // Back to bed layout from plant selection
+//     case stepFrom=='plant-selection' && stepTo=='bed-layout':
+//       // From bed layout to plant selection
+//       // Set the body step to plant selection
+//       document.querySelector('body').setAttribute('data-step', 'plant-selection');
+//       gsap.timeline()
+//         .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '105%', opacity: 0})
+//         .set('.panel-content > div', {overflow: 'hidden'})
+//         .to('.panel-content > div > div', {duration: .4, ease: "power1.inOut", y: '110%', opacity: 0, stagger: {each: 0.075,from: "start",grid: "auto", ease: "power3.in"}}, "-=.25")
+//         .call(zoomViewboxIn, [500, 0, 'now', '<>'])
+//         // .to('.content-bed-add *', {duration: .375, ease: "power1.inOut", y: '250%', opacity: 0}, "-=.3")
+//         .call(textChange, ['.side-panel > .container > h1', 'Bed Layout'])
+//         .call(removeElement, ['.panel-content > div'])
+//         .set('.forward-action', {overflow: 'hidden'})
+//         .set('.back-action', {overflow: 'hidden'})
+//         .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0})
+//         .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0}, "-=.25")
+//         .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '0%', opacity: 1})
+//         // .call(generateCells)
+//         .call(cellTransition)
+//         .call(populatePanel, [stepTo])
+//         .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1})
+//         .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1}, "-=.25")
+//         .set('.back-action',  {clearProps: 'all'})
+//         .set('.forward-action',  {clearProps: 'all'})
+//
+//       break;
+//
+//     // Forward to plant-planner from plant selection
+//     case stepFrom=='plant-selection' && stepTo=='plant-planner':
+//       // Set the body step to plant planner
+//       document.querySelector('body').setAttribute('data-step', 'plant-planner');
+//       gsap.timeline()
+//         .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '105%', opacity: 0})
+//         .set('.search-wrapper', {overflow: 'hidden'})
+//         .to('.search-wrapper > .container', {duration: .4, ease: "power1.inOut", y: '110%', opacity: 0}, "-=.25")
+//         .to('.bed-area', {duration: .375, ease: "power1.inOut", top: 0, clearProps: 'height'}, "-=.3")
+//         .call(textChange, ['.side-panel > .container > h1', 'Planner'])
+//         .set('.forward-action', {overflow: 'hidden'})
+//         .set('.back-action', {overflow: 'hidden'})
+//         .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0})
+//         .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '150%', opacity: 0}, "-=.25")
+//         .to('.side-panel > .container > h1', {duration: .375, delay: .125, ease: "power2.inOut", y: '0%', opacity: 1})
+//         .call(populatePanel, [stepTo])
+//         .to('.back-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1})
+//         .to('.forward-action > div',  {duration: .375, ease: 'power2.inOut', y: '0%', opacity: 1}, "-=.25")
+//         .set('.back-action',  {clearProps: 'all'})
+//         .set('.forward-action',  {clearProps: 'all'})
+//
+//       break;
+//     default:
+//       // code block
+//   }
+// }
+//
+// // This function generates a set of swap arrows between two points
+// function generateSwapArrows(p1, p2) {
+//   let cellSize = 100;
+//   // If swap arrows exist, remove them
+//   if(SVG('#swap_arrows') !== null) {
+//     SVG('#swap_arrows').remove();
+//   }
+//
+//   // Calculate distance between the two points
+//   let dist = Math.sqrt(Math.pow((p1.x-p2.x), 2) + Math.pow((p1.y-p2.y), 2));
+//
+//   // Draw two 'lines' (rect) from p1 to p2, shortened by half the cell size, offset to the right by 1/4th the cell size, also offset it down/up by 3.5, also offset it left/right by 4px
+//   let lineThickness = 3;
+//   let topPoints = [(p1.x + cellSize/4) + ',' + (p1.y - (3.5+(lineThickness/2))), (p1.x + (dist-((cellSize/4) + 4))) + ',' + (p1.y - (3.5+(lineThickness/2))), (p1.x + (dist-((cellSize/4) + 4))) + ',' + (p1.y - (3.5-(lineThickness/2))), (p1.x + cellSize/4) + ',' + (p1.y - (3.5-(lineThickness/2)))];
+//   let lineTop = draw.polygon(topPoints.join(' ')).attr({id: 'top_line'});
+//   let lineTopStroke = draw.polygon(topPoints.join(' ')).attr({id: 'top_line_stroke'});
+//   let bottomPoints = [(p1.x + ((cellSize/4)+4)) + ',' + (p1.y + (3.5+(lineThickness/2))), (p1.x + (dist-(cellSize/4))) + ',' + (p1.y + (3.5+(lineThickness/2))), (p1.x + (dist-(cellSize/4))) + ',' + (p1.y + (3.5-(lineThickness/2))), (p1.x + ((cellSize/4)+4)) + ',' + (p1.y + (3.5-(lineThickness/2)))];
+//   let lineBottom = draw.polygon(bottomPoints.join(' ')).attr({id: 'bottom_line'});
+//   let lineBottomStroke = draw.polygon(bottomPoints.join(' ')).attr({id: 'bottom_line_stroke'});
+//
+//   // Draw two arrowheads and position them at the ends of the lines
+//   let arrowheadTopPoints = [(p1.x + ((dist-(cellSize/4))-8)) + ',' + (p1.y - (3.5 + 4.5)), (p1.x + (dist-(cellSize/4))+1) + ',' + (p1.y - 3.5), (p1.x + ((dist-(cellSize/4))-8)) + ',' + (p1.y - (3.5 - 4.5))];
+//   let arrowheadTop = draw.polygon(arrowheadTopPoints.join(' ')).attr({id: 'top_arrow'});
+//   let arrowheadTopStroke = draw.polygon(arrowheadTopPoints.join(' ')).attr({id: 'top_arrow_stroke'});
+//   let arrowheadBottomPoints = [(p1.x + ((cellSize/4)+8)) + ',' + (p1.y + (3.5 + 4.5)), (p1.x + ((cellSize/4)-1)) + ',' + (p1.y + 3.5), (p1.x + ((cellSize/4)+8)) + ',' + (p1.y + (3.5 - 4.5))];
+//   let arrowheadBottom = draw.polygon(arrowheadBottomPoints.join(' ')).attr({id: 'bottom_arrow'});
+//   let arrowheadBottomStroke = draw.polygon(arrowheadBottomPoints.join(' ')).attr({id: 'bottom_arrow_stroke'});
+//
+//   // Group the objects
+//   let swapGroup = draw.group().attr({id: 'swap_arrows', opacity: 0});
+//   let swapGroupStroke = draw.group().attr({id: 'swap_stroke'});
+//   let swapGroupFill = draw.group().attr({id: 'swap_fill'});
+//   // Stroke
+//   lineTopStroke.putIn(swapGroupStroke);
+//   lineBottomStroke.putIn(swapGroupStroke);
+//   arrowheadTopStroke.putIn(swapGroupStroke);
+//   arrowheadBottomStroke.putIn(swapGroupStroke);
+//   // Fill
+//   lineTop.putIn(swapGroupFill);
+//   lineBottom.putIn(swapGroupFill);
+//   arrowheadTop.putIn(swapGroupFill);
+//   arrowheadBottom.putIn(swapGroupFill);
+//   // Group
+//   swapGroupStroke.putIn(swapGroup);
+//   swapGroupFill.putIn(swapGroup);
+//
+//   // Style
+//   swapGroupFill.fill("#2D936C");
+//   swapGroupStroke.stroke({width: 6, color: '#ffffff', linejoin: 'round'});
+//
+//   // Calculate rotation
+//   let rot = Math.atan2((p2.y - p1.y),( p2.x - p1.x)) * 180 / Math.PI;
+//   swapGroup.rotate(rot, p1.x, p1.y);
+//
+//   // Animate in
+//   swapGroup.animate(200, '<>', 0).attr({opacity: 1})
+// }
+//
+// // This function generates a set of swap arrows between two points
+// function generateRemoveX(p1) {
+//   let cellSize = 100;
+//   // If remove x exists, remove it
+//   if(SVG('#x_icon') !== null) {
+//     SVG('#x_icon').remove();
+//   }
+//
+//   // Draw a polgon x
+//   let lineThickness = 3;
+//   let lineLength = 14;
+//   let xValues = {
+//     xMin: p1.x-lineLength,
+//     xInMin: p1.x-(lineThickness/2),
+//     xInMax: p1.x+(lineThickness/2),
+//     xMax: p1.x+lineLength
+//   }
+//   let yValues = {
+//     yMin: p1.y-lineLength,
+//     yInMin: p1.y-(lineThickness/2),
+//     yInMax: p1.y+(lineThickness/2),
+//     yMax: p1.y+lineLength
+//   }
+//   let xPoints = [xValues.xInMax + ',' + yValues.yInMin, xValues.xMax + ',' + yValues.yInMin, xValues.xMax + ',' + yValues.yInMax, xValues.xInMax + ',' + yValues.yInMax, xValues.xInMax + ',' + yValues.yMax, xValues.xInMin + ',' + yValues.yMax, xValues.xInMin + ',' + yValues.yInMax, xValues.xMin + ',' + yValues.yInMax, xValues.xMin + ',' + yValues.yInMin, xValues.xInMin + ',' + yValues.yInMin, xValues.xInMin + ',' + yValues.yMin, xValues.xInMax + ',' + yValues.yMin];
+//   let xPoly = draw.polygon(xPoints.join(' ')).attr({id: 'x_poly_poly'});
+//   let xStroke = draw.polygon(xPoints.join(' ')).attr({id: 'x_stroke_poly'});
+//
+//   // Group the objects
+//   let xGroup = draw.group().attr({id: 'x_icon', opacity: 0});
+//   let xGroupStroke = draw.group().attr({id: 'x_stroke'});
+//   let xGroupFill = draw.group().attr({id: 'x_fill'});
+//   // Stroke
+//   xStroke.putIn(xGroupStroke);
+//   // Fill
+//   xPoly.putIn(xGroupFill);
+//   // Group
+//   xGroupStroke.putIn(xGroup);
+//   xGroupFill.putIn(xGroup);
+//
+//   // Style
+//   xGroupFill.fill("#DB4535");
+//   xGroupStroke.stroke({width: 6, color: '#ffffff', linejoin: 'round'});
+//
+//   // Calculate rotation
+//   let rot = 45;
+//   xGroup.rotate(rot, p1.x, p1.y);
+//
+//   // Animate in
+//   xGroup.animate(200, '<>', 0).attr({opacity: 1})
+// }
+//
+// // This function changes the text of a passed element to passed text
+// function textChange(selector, text) {
+//   document.querySelector(selector).textContent = text;
+// }
+//
+// // This function removes all matched passed elements
+// function removeElement(selector) {
+//   document.querySelectorAll(selector).forEach(function(e) {
+//     e.remove();
+//   })
+// }
+//
+// // This function zooms out the viewbox on the viewport SVG given passed values
+// function zoomViewboxOut(duration, delay, when, ease) {
+//   let cellSize = 100;
+//   // Zoom out a bit
+//   let currentViewbox = draw.viewbox()
+//   draw.animate(duration, delay, when).ease(ease).viewbox(currentViewbox.x-cellSize, currentViewbox.y-cellSize, currentViewbox.width+(cellSize*2) , currentViewbox.height+(cellSize*2));
+// }
+//
+// // This function zooms in the viewbox on the viewport SVG given passed values
+// function zoomViewboxIn(duration, delay, when, ease) {
+//   let cellSize = 100;
+//   // Zoom out a bit
+//   let currentViewbox = draw.viewbox()
+//   draw.animate(duration, delay, when).ease(ease).viewbox(currentViewbox.x+cellSize, currentViewbox.y+cellSize, currentViewbox.width-(cellSize*2) , currentViewbox.height-(cellSize*2));
+// }
+//
+// // This function creates cells and dividers for each bed
+// function generateCells() {
+//   let cellSize = 100;
+//   // Iterate over each row
+//   document.querySelectorAll('#bed-group > g').forEach(function(row) {
+//     let rowNumb = row.id.split('-')[1];
+//     // Iterate over each bed in this row
+//     document.querySelectorAll('#' + row.id + ' g').forEach(function(bed) {
+//       // Get the height and width of the current bed
+//       let thisHeight = SVG('#' + bed.id + '_base').height();
+//       let thisWidth = SVG('#' + bed.id + '_base').width();
+//
+//       // Create a group for the cells and dividers to go in
+//       let cellGroup = draw.group().attr({id: bed.id + '_cells'});
+//       let dividerGroup = draw.group().attr({id: bed.id + '_dividers'});
+//       let contentGroup = draw.group().attr({id: bed.id + '_content'});
+//
+//       // Place the groups in order
+//       cellGroup.putIn(contentGroup);
+//       dividerGroup.putIn(contentGroup);
+//       contentGroup.putIn(SVG('#' + bed.id));
+//
+//       // Store the bbox for the current bed
+//       let bedBBox = SVG('#' + bed.id + '_base').bbox();
+//       // Iterate over the width of the bed, creating vertical dividers
+//       for(var i=0; i < (thisWidth/cellSize)-1; i++) {
+//         // Start placement at x1 + cellSize
+//         let vDivider = draw.line(bedBBox.x+(cellSize*(i+1)), bedBBox.y, bedBBox.x+(cellSize*(i+1)), bedBBox.y2).stroke({width: 2, color: '#ffffff', dasharray: (bedBBox.y2 - bedBBox.y) + ' ' + ((bedBBox.y2 - bedBBox.y)+10), dashoffset: ((bedBBox.y2 - bedBBox.y)+10)}).attr({class: 'vert-divider'});
+//         // Place the divder in the divider group
+//         vDivider.putIn(dividerGroup);
+//       }
+//       // Iterate over the height of the bed, creating horizontal dividers
+//       for(var i=0; i < (thisHeight/cellSize)-1; i++) {
+//         // Start placement at x1 + cellSize
+//         let hDivider = draw.line(bedBBox.x, bedBBox.y+(cellSize*(i+1)), bedBBox.x2, bedBBox.y+(cellSize*(i+1))).stroke({width: 2, color: '#ffffff', dasharray: (bedBBox.x2 - bedBBox.x) + ' ' + ((bedBBox.x2 - bedBBox.x)+10), dashoffset: ((bedBBox.x2 - bedBBox.x)+10)}).attr({class: 'horz-divider'});
+//         hDivider.putIn(dividerGroup);
+//       }
+//
+//       // Add a border-rect to the divder group
+//       let border = draw.rect(bedBBox.width, bedBBox.height).cx(bedBBox.cx).cy(bedBBox.cy).attr({class: 'bed-border', fill: 'none'}).stroke({width: 6, color: '#ffffff'});
+//       border.putIn(dividerGroup);
+//
+//       // Create the cells
+//       // Iterate over the height
+//       let totalCellCount = 0;
+//       for(var h=0; h < (thisHeight/cellSize); h++) {
+//         // Iterate over the width
+//         for(var w=0; w < (thisWidth/cellSize); w++) {
+//           // Create a cell at the right height and width coordinate
+//           let cellID = 'cell_' + bed.id.split('_')[1] + '_' + totalCellCount;
+//           let cell = draw.rect(cellSize, cellSize).x((bedBBox.x + (w*cellSize))).y((bedBBox.y + (h*cellSize))).attr({id: cellID, class: 'bed-cell'}).fill({color: '#596475', opacity: 0});
+//
+//           cell.putIn(cellGroup);
+//           totalCellCount++;
+//         }
+//       }
+//
+//       // Move the cell group behind the divider group
+//       cellGroup.back();
+//     })
+//   })
+// }
+//
+// // This function transitions the beds from the bed view to the cell view
+// function cellTransition() {
+//   let cellSize = 100;
+//   // Order of timeline
+//   // Move each bed label up and change its color and opacity
+//   // Draw in each horizontal divider
+//   // Draw in each vertical divder
+//
+//   // Iterate over the beds, setting the y position of the text label to above the bed
+//   document.querySelectorAll('#bed-group > g > g').forEach(function(bed, i) {
+//     // Calculate what y position the label will be at
+//     let minBedY = SVG('#' + bed.id + '_base').bbox().y;
+//     let delay = 50 * i;
+//     // Animate the text label
+//     SVG('#' + bed.id + '_label').animate(500, delay, 'now').ease('<>').attr({fill: '#596475', opacity: .38, y: minBedY-(cellSize/2)});
+//   });
+//
+//   // Animate the dividers
+//   gsap.timeline()
+//     .to('#bed-group > g > g > g > g > line', {duration: .5, delay: .2, ease: 'power2.inOut', strokeDashoffset: 0, stagger: {each: .025, from: 'start', ease: 'power1.inOut'}})
+// }
+//
+// // PANEL STATE CHANGE
+//
+//
+// // This function populates the panel based on passed states
+// function populatePanel(state) {
+//   switch(true) {
+//     case state=='plant-selection':
+//       // Add Plant Search to panel content
+//       document.querySelector('.panel-content').insertAdjacentHTML('afterbegin', '<div class="search-wrapper"><div class="container"><div class="plant-search"><div class="search-box"><input type="text" placeholder="Start Typing" id="search-plants"><div class="search-suggestions"></div></div><div class="add-option" id="remove-zone"></div></div><div class="plant-items" id="no_bed_plants"><div id="search-container-dropzone"></div></div></div></div>');
+//
+//       // Event Listeners for Search
+//       // This adds an event listener to the search box so that when it is in focus the search results are open
+//       document.querySelector("#search-plants").addEventListener("focusin", function(e) {
+//         gsap.to('.search-suggestions', {duration: .1, ease: 'linear', height: 'auto', backgroundColor: '#ffffff', boxShadow: '0px 4px 16px 2px var(--secondary-color-min)', paddingTop: '36px'});
+//         let query = document.querySelector("#search-plants").value;
+//         updatePlantSearchResult(query)
+//       });
+//       // And when focus is out
+//       document.querySelector("#search-plants").addEventListener("focusout", function(e) {
+//         gsap.to('.search-suggestions', {duration: .1, ease: 'linear', clearProps: 'all'});
+//
+//         // When there is any value in the search box and it matches an item in the search array, color the add button
+//         let query = document.querySelector("#search-plants").value;
+//         if(query.length > 0 && plantSearchArray.indexOf(query) !== -1) {
+//           gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', backgroundColor: 'var(--primary-color)'})
+//         } else {
+//           gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
+//         }
+//       });
+//
+//       // Add plant item to no-parent area if the add icon is active
+//       document.querySelector(".plant-search > .add-option").addEventListener("click", function(e) {
+//         // Add the option to the no-parent area
+//         addPlantOption(plantData[plantSearchArray.indexOf(document.querySelector("#search-plants").value)])
+//
+//         // Clear search
+//         gsap.to('.add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
+//         document.querySelector("#search-plants").value = '';
+//       });
+//
+//       // Add the update plant search result to the plant search box
+//       document.querySelector("#search-plants").addEventListener("input", function() {
+//         let query = document.querySelector("#search-plants").value;
+//         updatePlantSearchResult(query);
+//
+//         // When there is any value in the search box and it matches an item in the search array, color the add button
+//         if(query.length > 0 && plantSearchArray.indexOf(query) !== -1) {
+//           gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', backgroundColor: 'var(--primary-color)'})
+//         } else {
+//           gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
+//         }
+//       });
+//
+//       // Set the panel content to overflow-y hidden
+//       gsap.set('.panel-content', {overflowY: 'hidden'});
+//
+//       // Add the bed wrapper
+//       document.querySelector('.panel-content').insertAdjacentHTML('beforeend', '<div class="bed-area"><div class="container"></div></div>');
+//
+//       // Iterate over each bed
+//       document.querySelectorAll('#bed-group > g > g').forEach(function(bed) {
+//         // Create a bed wrapper for the current bed in the panel content
+//         document.querySelector('.panel-content > .bed-area > .container').insertAdjacentHTML('beforeend', '<div class="bed-wrapper" id="' + bed.id + '_plants" data-name="' + bed.getAttribute('data-name') + '" data-bed-id="' + bed.id + '"></div>');
+//
+//         // Iterate over each cell in the bed
+//         document.querySelectorAll('#' + bed.id + '_cells > rect').forEach(function(cell) {
+//           // Store info about the current cell
+//           let cellBed = cell.id.split('_')[1];
+//           let cellNum = cell.id.split('_')[2];
+//
+//           // Insert an empty item into the bed wrapper for this cell
+//           document.querySelector('#' + bed.id + '_plants').insertAdjacentHTML('beforeend', '<div class="blank-item" data-cell="' + cellNum + '" id="empty_' + cellBed + '_' + cellNum + '"></div>');
+//
+//           // Add event listeners to the empty item for DnD functionality
+//           document.querySelector('#empty_' + cellBed + '_' + cellNum).addEventListener('dragenter', handleDragEnter, false);
+//           document.querySelector('#empty_' + cellBed + '_' + cellNum).addEventListener('dragover', allowDrop, false);
+//           document.querySelector('#empty_' + cellBed + '_' + cellNum).addEventListener('dragleave', handleDragLeave, false);
+//         })
+//       });
+//
+//       // Add the drag info div
+//       document.querySelector('.panel-content').insertAdjacentHTML('beforeend', '<div id="drag-info"></div>');
+//
+//       // Add event listeners to the remove item for DnD removal
+//       document.querySelector('#remove-zone').addEventListener('dragenter', handleDragEnter, false);
+//       document.querySelector('#remove-zone').addEventListener('dragover', allowDrop, false);
+//       document.querySelector('#remove-zone').addEventListener('dragleave', handleDragLeave, false);
+//
+//       // Add event listeners to the add item for DnD addition
+//       document.querySelector('#search-container-dropzone').addEventListener('dragenter', handleDragEnter, false);
+//       document.querySelector('#search-container-dropzone').addEventListener('dragover', allowDrop, false);
+//       document.querySelector('#search-container-dropzone').addEventListener('dragleave', handleDragLeave, false);
+//
+//       // Change out the step buttons
+//       document.querySelector('.forward-action > div').setAttribute('data-next-step', 'plan-creation');
+//       document.querySelector('.forward-action > div').classList.remove('button-primary');
+//       document.querySelector('.forward-action > div').classList.add('button-no-select')
+//       document.querySelector('.forward-action > div').childNodes[0].nodeValue = "Create Plan";
+//       document.querySelector('.back-action > div').setAttribute('data-last-step', 'bed-layout');
+//       document.querySelector('.back-action > div').childNodes[1].nodeValue = "Bed Layout";
+//
+//       break;
+//     default:
+//       // ADD DEFAULT HOME SCREEN HERE
+//   }
+// }
+//
+//
+// // PLANT SELECTION
+//
+//
+// // This function updates the search results
+// function updatePlantSearchResult(query) {
+//   let resultList = document.querySelector(".search-suggestions");
+//   resultList.innerHTML = "";
+//
+//   plantSearchArray.map(function(algo){
+//       query.split(" ").map(function (word){
+//           if(algo.toLowerCase().indexOf(word.toLowerCase()) != -1 && resultList.childNodes.length < 5){
+//               resultList.innerHTML += `<li>${algo}</li>`;
+//           }
+//       })
+//   });
+//
+//   // Add event listener to each search item
+//   document.querySelectorAll(".search-suggestions > li").forEach(function(e) {
+//     e.addEventListener("click", function() {
+//       // Fill the search box in with the clicked value
+//       document.querySelector("#search-plants").value = e.textContent;
+//
+//       // When there is any value in the search box and it matches an item in the search array, color the add button
+//       if(e.textContent.length > 0 && plantSearchArray.indexOf(e.textContent) !== -1) {
+//         gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', backgroundColor: 'var(--primary-color)'})
+//       } else {
+//         gsap.to('.plant-search > .add-option', {duration: .2, ease: 'power2.inOut', clearProps: 'backgroundColor'})
+//       }
+//     });
+//   })
+// };
+//
+// // This function adds a search item to the no-parent container for new search items
+// function addPlantOption(plantObj) {
+//   let itemCount = document.querySelectorAll('.grab-item').length;
+//
+//   // Select a color from the label color array given the total items % the number of items in the label color array
+//   let labelColor = labelColors[itemCount%labelColors.length];
+//
+//   // Add the item to the no-parent container
+//   let newPlantCount = document.querySelectorAll('.grab-item').length + 1;
+//   let newItem = '<div class="grab-item" data-label-color="' + labelColor + '" id="plant_' + newPlantCount + '" data-cell="-1" draggable="true">' + plantObj.plant_name + '</div>';
+//   console.log('plantCount: ' + newPlantCount)
+//   // Add the drag and drop event listeners to the new item
+//   document.querySelector('#no_bed_plants').insertAdjacentHTML('afterbegin', newItem);
+//   addDragAndDrop('#plant_' + newPlantCount);
+//
+//   // Move the bed area to just below the search results
+//   gsap.to('.bed-area',{duration: .125, ease: 'power2-inOut', top: ((document.querySelector('.search-wrapper').offsetHeight + 10) + 'px'), height: ((document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 10)) + 'px')});
+// }
+//
+// // This is the drag and drop data transfer format
+// class DnDItem {
+//   constructor(id, container, place, text, color) {
+//     this.id = id;
+//     this.container = container;
+//     this.place = place;
+//     this.text = text;
+//     this.color = color;
+//   }
+// }
+//
+// function dragStart(ev) {
+//   // Style this element to indicate it is being dragged
+//   gsap.to(this, {duration: .2, ease: 'power2.inOut', opacity: .5});
+//
+//   // Add the drag item's data to the drag-info div
+//   let dragInfoElement = document.querySelector('#drag-info');
+//
+//   let dragItem = new DnDItem(this.id, this.parentNode.id, this.getAttribute('data-cell'), this.textContent, this.getAttribute('data-label-color'));
+//   dragInfoElement.setAttribute('data-drag', JSON.stringify(dragItem));
+//
+//   // Style the search area components
+//   styleSearch('dragging');
+// }
+//
+// function dragEnd(ev) {
+//   // Style this element to indicate it is being dragged
+//   gsap.to(this, {duration: .2, ease: 'power2.inOut', clearProps: 'opacity'});
+//
+//   // Style the search area components
+//   styleSearch('default');
+//
+//   // Grab drag data
+//   let dragData = JSON.parse(document.querySelector('#drag-info').getAttribute('data-drag'));
+//   let targetData = document.querySelector('#drag-info').getAttribute('data-target');
+//
+//   // Determine what action will be taken
+//   // Check to see if anything happened
+//   if(targetData !== null) {
+//     // Something happened
+//     targetData = JSON.parse(document.querySelector('#drag-info').getAttribute('data-target'));
+//     if(targetData.id == 'remove-zone') {
+//       // The drag item should be removed
+//       if(dragData.place !== null && dragData.place !== '-1') {
+//         // The drag item is in a cell, replace it with an empty item
+//         // Replace the drag item with a blank item
+//         document.querySelector('#' + dragData.id).setAttribute('class', 'blank-item');
+//         document.querySelector('#' + dragData.id).removeAttribute('data-label-color');
+//         document.querySelector('#' + dragData.id).removeAttribute('draggable');
+//         document.querySelector('#' + dragData.id).textContent = '';
+//
+//         // Remove all event listeners
+//         removeDragAndDrop('#' + dragData.id);
+//
+//         // Add new event listeners
+//         addDragAndDrop('#' + dragData.id);
+//
+//         document.querySelector('#' + dragData.id).setAttribute('id', 'empty_' + dragData.container.split('_')[1] + '_' + dragData.place);
+//
+//         // Determine the cell id of the drag item
+//         let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
+//
+//         // Set the drag cell fill
+//         SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: '#596475', opacity: 0});
+//
+//         // If remove x exists, remove it
+//         if(SVG('#x_icon') !== null) {
+//           SVG('#x_icon').remove();
+//         }
+//
+//       } else {
+//         // Just remove the item
+//         document.querySelector('#' + dragData.id).remove();
+//       }
+//     }
+//
+//     if(targetData.id == 'search-container-dropzone') {
+//       // The drag item should be moved to the no bed list
+//       if(dragData.place !== null && dragData.place !== '-1') {
+//         // The drag item is in a cell, replace it with an empty item
+//         // Replace the drag item with an empty cell
+//         document.querySelector('#' + dragData.id).setAttribute('class', 'blank-item');
+//         document.querySelector('#' + dragData.id).removeAttribute('data-label-color');
+//         document.querySelector('#' + dragData.id).removeAttribute('draggable');
+//         document.querySelector('#' + dragData.id).textContent = '';
+//
+//         // Determine the cell id of the drag item
+//         let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
+//
+//         // Set the drag cell fill
+//         SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: '#596475', opacity: 0});
+//
+//         // Remove all event listeners
+//         removeDragAndDrop('#' + dragData.id);
+//
+//         // Add new event listeners
+//         addDragAndDrop('#' + dragData.id);
+//
+//         document.querySelector('#' + dragData.id).setAttribute('id', 'empty_' + dragData.container.split('_')[1] + '_' + dragData.place);
+//
+//         // Add the plant item back into the no bed list
+//         // Set the label color from the old drag item
+//         let labelColor = dragData.color;
+//
+//         // Add the item to the no-parent container
+//         let newPlantCount = (document.querySelector('#no_bed_plants').childElementCount-1) + 1;
+//         let newItem = '<div class="grab-item" data-label-color="' + labelColor + '" id="plant_' + newPlantCount + '" data-cell="-1" draggable="true">' + dragData.text + '</div>';
+//         // Add the drag and drop event listeners to the new item
+//         document.querySelector('#no_bed_plants').insertAdjacentHTML('afterbegin', newItem);
+//         addDragAndDrop('#plant_' + newPlantCount);
+//
+//         // Move the bed area to just below the search results
+//         gsap.to('.bed-area',{duration: .125, ease: 'power2-inOut', top: ((document.querySelector('.search-wrapper').offsetHeight + 10) + 'px'), height: ((document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 10)) + 'px')});
+//
+//         // If remove x exists, remove it
+//         if(SVG('#x_icon') !== null) {
+//           SVG('#x_icon').remove();
+//         }
+//
+//       } else {
+//         // Do nothing as the plant is already in the list
+//       }
+//     }
+//
+//     if(targetData.place !== null && targetData.place !== '-1') {
+//       // The target item is a cell reference
+//
+//       if(dragData.place !== null && dragData.place !== '-1') {
+//         // The drag item is also a cell reference
+//
+//         if(targetData.text !== '') {
+//           // The target is a cell reference and is not empty
+//           // Set the target cell color to the drag item color and the drag cell to the target item color
+//
+//           // Determine the cell id of the target item
+//           let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
+//           // Determine the cell id of the drag item
+//           let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
+//
+//           // Set the target cell fill
+//           SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: 1});
+//           // Set the drag cell fill
+//           SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: targetData.color, opacity: 1});
+//
+//           // Replace the target item with the drag item
+//           document.querySelector('#' + targetData.id).setAttribute('class', 'grab-item');
+//           document.querySelector('#' + targetData.id).setAttribute('data-label-color', dragData.color);
+//           document.querySelector('#' + targetData.id).setAttribute('draggable', 'true');
+//           document.querySelector('#' + targetData.id).textContent = dragData.text;
+//           document.querySelector('#' + targetData.id).setAttribute('id', 'NEWDRAG');
+//
+//           // Replace the drag item with the target item
+//           document.querySelector('#' + dragData.id).setAttribute('class', 'grab-item');
+//           document.querySelector('#' + dragData.id).setAttribute('data-label-color', targetData.color);
+//           document.querySelector('#' + dragData.id).setAttribute('draggable', 'true');
+//           document.querySelector('#' + dragData.id).textContent = targetData.text;
+//           document.querySelector('#' + dragData.id).setAttribute('id',  targetData.id);
+//
+//           document.querySelector('#NEWDRAG').setAttribute('id', dragData.id);
+//
+//           // Remove all event listeners
+//           removeDragAndDrop('#' + dragData.id)
+//           removeDragAndDrop('#' + targetData.id)
+//
+//           // Add new event listeners
+//           addDragAndDrop('#' + dragData.id)
+//           addDragAndDrop('#' + targetData.id)
+//
+//
+//           // Remove swap arrows
+//           if(SVG('#swap_arrows') !== null) {
+//             SVG('#swap_arrows').remove();
+//           }
+//
+//           // If remove x exists, remove it
+//           if(SVG('#x_icon') !== null) {
+//             SVG('#x_icon').remove();
+//           }
+//
+//         } else {
+//           // The target is a cell reference but is empty
+//           // Set the target cell color to the drag item color
+//
+//           // Determine the cell id of the target item
+//           let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
+//           // Determine the cell id of the drag item
+//           let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
+//
+//           // Set the target cell fill
+//           SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: 1});
+//           // Set the drag cell fill
+//           SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: '#596475', opacity: 0});
+//
+//           // Replace the target item with the drag item
+//           document.querySelector('#' + targetData.id).setAttribute('class', 'grab-item');
+//           document.querySelector('#' + targetData.id).setAttribute('data-label-color', dragData.color);
+//           document.querySelector('#' + targetData.id).setAttribute('draggable', 'true');
+//           document.querySelector('#' + targetData.id).textContent = dragData.text;
+//           document.querySelector('#' + targetData.id).setAttribute('id', 'NEWDRAG');
+//
+//           // Replace the drag item with the target item
+//           document.querySelector('#' + dragData.id).setAttribute('class', 'blank-item');
+//           document.querySelector('#' + dragData.id).removeAttribute('data-label-color');
+//           document.querySelector('#' + dragData.id).removeAttribute('draggable');
+//           document.querySelector('#' + dragData.id).textContent = '';
+//           document.querySelector('#' + dragData.id).setAttribute('id', 'empty_' + dragData.container.split('_')[1] + '_' + dragData.place);
+//
+//           document.querySelector('#NEWDRAG').setAttribute('id', dragData.id);
+//
+//           // Remove all event listeners
+//           removeDragAndDrop('#' + dragData.id)
+//           removeDragAndDrop('#' + targetData.id)
+//
+//           // Add new event listeners
+//           addDragAndDrop('#' + dragData.id)
+//           document.querySelector('#empty_' + dragData.container.split('_')[1] + '_' + dragData.place).addEventListener('dragenter', handleDragEnter, false);
+//           document.querySelector('#empty_' + dragData.container.split('_')[1] + '_' + dragData.place).addEventListener('dragover', allowDrop, false);
+//           document.querySelector('#empty_' + dragData.container.split('_')[1] + '_' + dragData.place).addEventListener('dragleave', handleDragLeave, false);
+//
+//           // Remove swap arrows
+//           if(SVG('#swap_arrows') !== null) {
+//             SVG('#swap_arrows').remove();
+//           }
+//
+//           // If remove x exists, remove it
+//           if(SVG('#x_icon') !== null) {
+//             SVG('#x_icon').remove();
+//           }
+//         }
+//
+//       } else {
+//         // The drag item is not a cell reference
+//         // Set the cell color to the drag item color
+//
+//         // Determine the cell id of the target item
+//         let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
+//
+//         // Set the cell fill
+//         SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: 1});
+//
+//         // Replace the target item with the drag item
+//         document.querySelector('#' + targetData.id).setAttribute('class', 'grab-item');
+//         document.querySelector('#' + targetData.id).setAttribute('data-label-color', dragData.color);
+//         document.querySelector('#' + targetData.id).setAttribute('draggable', 'true');
+//         document.querySelector('#' + targetData.id).textContent = dragData.text;
+//         document.querySelector('#' + targetData.id).setAttribute('id', 'NEWDRAG');
+//
+//         // Replace the drag item with the target item
+//         document.querySelector('#' + dragData.id).setAttribute('class', 'grab-item');
+//         document.querySelector('#' + dragData.id).setAttribute('data-label-color', targetData.color);
+//         document.querySelector('#' + dragData.id).setAttribute('draggable', 'true');
+//         document.querySelector('#' + dragData.id).textContent = targetData.text;
+//         document.querySelector('#' + dragData.id).setAttribute('id',  targetData.id);
+//
+//         document.querySelector('#NEWDRAG').setAttribute('id', dragData.id);
+//
+//         // Remove all event listeners
+//         removeDragAndDrop('#' + dragData.id)
+//         removeDragAndDrop('#' + targetData.id)
+//
+//         // Add new event listeners
+//         addDragAndDrop('#' + dragData.id)
+//         addDragAndDrop('#' + targetData.id)
+//
+//         // Remove swap arrows
+//         if(SVG('#swap_arrows') !== null) {
+//           SVG('#swap_arrows').remove();
+//         }
+//
+//         // If remove x exists, remove it
+//         if(SVG('#x_icon') !== null) {
+//           SVG('#x_icon').remove();
+//         }
+//
+//         if(targetData.id.split('_')[0] == 'empty') {
+//           // The target item was an empty cell, remove it from the no bed list
+//           document.querySelector('#' + targetData.id).remove();
+//         }
+//
+//       }
+//     }
+//
+//     // Once finished, remove all the drag and target data
+//     document.querySelector('#drag-info').removeAttribute('data-drag');
+//     document.querySelector('#drag-info').removeAttribute('data-target');
+//   }
+//
+//   // Once all is finished
+//   // If any items in the viewport have a data-ghost tag on them, set their fills to their old fill data
+//   if(document.querySelectorAll('rect[data-ghost="true"]').length !== null || document.querySelectorAll('rect[data-ghost="true"]').length !== 0) {
+//     console.log('Clearing ghost items');
+//     // Iterate over the items
+//     document.querySelectorAll('rect[data-ghost="true"]').forEach(function(e) {
+//       let currentID = '#' + e.id;
+//
+//       // Remove the ghost and old fill attributes
+//       document.querySelector(currentID).removeAttribute('data-ghost');
+//       document.querySelector(currentID).removeAttribute('data-old-fill');
+//     });
+//
+//     // Reset the search height offset for the beds
+//     styleSearch('default');
+//
+//     // If there are no plants in the beds, remove the primary forward style on the forward button
+//     if(document.querySelectorAll('.bed-wrapper > .grab-item').length == 0) {
+//       // Change the style of the forward button (Grey)
+//       document.querySelector('.button-forward').setAttribute('class', 'button-no-select button-forward');
+//     } else {
+//       // Change the style of the forward button (Green)
+//       document.querySelector('.button-forward').setAttribute('class', 'button-primary button-forward');
+//     }
+//   }
+// }
+//
+// function allowDrop(ev) {
+//   ev.preventDefault();
+//   return false;
+// }
+//
+// function handleDragEnter(ev) {
+//   ev.preventDefault();
+//   // A dragging item has entered a target
+//
+//   // Add the target item's data to the drag-info div
+//   let dragInfoElement = document.querySelector('#drag-info');
+//
+//   let targetItem = new DnDItem(this.id, this.parentNode.id, this.getAttribute('data-cell'), this.textContent, this.getAttribute('data-label-color'));
+//   dragInfoElement.setAttribute('data-target', JSON.stringify(targetItem));
+//
+//   // Here if the drag target is a cell reference, display the cell change in the viewport
+//   // If the drag item is also from a cell, include reference arrows and style the drag cell as well
+//   // If a cell is showing data preview, add a data-ghost tag to it
+//   // Store the old fill data to a fill data tag
+//
+//   // Grab drag data
+//   let dragData = JSON.parse(document.querySelector('#drag-info').getAttribute('data-drag'));
+//   let targetData = JSON.parse(document.querySelector('#drag-info').getAttribute('data-target'));
+//
+//   if(targetData.id == dragData.id && targetData.place == dragData.place) {
+//     // The items are the same, do nothing
+//   } else {
+//     // The items are not the same
+//     if(targetData.id == 'remove-zone') {
+//       // The drag item should be removed
+//       if(dragData.place !== null && dragData.place !== '-1') {
+//         // The drag item is in a cell, show a remove x
+//         // Add a remove x
+//         let cellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
+//         let cellCenter = {x: SVG(cellID).bbox().cx, y: SVG(cellID).bbox().cy};
+//         generateRemoveX(cellCenter);
+//       }
+//     }
+//
+//     if(targetData.id == 'search-container-dropzone') {
+//       // The drag item should be moved to the no bed list
+//       if(dragData.place !== null && dragData.place !== '-1') {
+//         // The drag item is in a cell, show a remove x
+//         // Add a remove x
+//         let cellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
+//         let cellCenter = {x: SVG(cellID).bbox().cx, y: SVG(cellID).bbox().cy};
+//         generateRemoveX(cellCenter);
+//       }
+//     }
+//
+//     if(targetData.place !== null && targetData.place !== '-1') {
+//       // The target item is a cell reference
+//       if(dragData.place !== null && dragData.place !== '-1') {
+//         // The drag item is also a cell reference
+//         if(targetData.text !== '') {
+//           // The target is a cell reference and is not empty
+//           // Preview the drag item color in the target cell and the target cell color in the drag cell
+//           // Determine the cell id of the target item
+//           let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
+//           // Store the old fill data
+//           SVG(targetCellID).data('ghost', 'true', true);
+//           let oldTargetFillData = JSON.stringify({fill: SVG(targetCellID).attr('fill'), opacity: SVG(targetCellID).attr('fill-opacity')});
+//           SVG(targetCellID).data('old-fill', oldTargetFillData, true);
+//
+//           // Determine the cell id of the drag item
+//           let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
+//           // Store the old fill data
+//           SVG(dragCellID).data('ghost', 'true', true);
+//           let oldDragFillData = JSON.stringify({fill: SVG(dragCellID).attr('fill'), opacity: SVG(dragCellID).attr('fill-opacity')});
+//           SVG(dragCellID).data('old-fill', oldDragFillData, true);
+//
+//           // Set the preview fill
+//           SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: .5});
+//           SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: targetData.color, opacity: .5});
+//
+//           // Add swap arrows
+//           let dragCellCenter = {x: SVG(dragCellID).bbox().cx, y: SVG(dragCellID).bbox().cy};
+//           let targetCellCenter = {x: SVG(targetCellID).bbox().cx, y: SVG(targetCellID).bbox().cy};
+//           generateSwapArrows(dragCellCenter, targetCellCenter)
+//
+//         } else {
+//           // The target is a cell reference but is empty
+//           // Preview the drag item color in the cell
+//
+//           // Determine the cell id of the target item
+//           let targetCellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
+//           // Store the old fill data
+//           SVG(targetCellID).data('ghost', 'true', true);
+//           let oldTargetFillData = JSON.stringify({fill: SVG(targetCellID).attr('fill'), opacity: SVG(targetCellID).attr('fill-opacity')});
+//           SVG(targetCellID).data('old-fill', oldTargetFillData, true);
+//
+//           // Determine the cell id of the drag item
+//           let dragCellID = '#cell_' + dragData.container.split('_')[1] + '_' + dragData.place;
+//           // Store the old fill data
+//           SVG(dragCellID).data('ghost', 'true', true);
+//           let oldDragFillData = JSON.stringify({fill: SVG(dragCellID).attr('fill'), opacity: SVG(dragCellID).attr('fill-opacity')});
+//           SVG(dragCellID).data('old-fill', oldDragFillData, true);
+//
+//           // Set the preview fill
+//           SVG(targetCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: .5});
+//           SVG(dragCellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: 0});
+//
+//           // Add swap arrows
+//           let dragCellCenter = {x: SVG(dragCellID).bbox().cx, y: SVG(dragCellID).bbox().cy};
+//           let targetCellCenter = {x: SVG(targetCellID).bbox().cx, y: SVG(targetCellID).bbox().cy};
+//           generateSwapArrows(dragCellCenter, targetCellCenter)
+//         }
+//       } else {
+//         // The drag item is not a cell reference
+//         // Preview the drag item color in the cell
+//
+//         // Determine the cell id of the target item
+//         let cellID = '#cell_' + targetData.container.split('_')[1] + '_' + targetData.place;
+//         // Store the old fill data
+//         SVG(cellID).data('ghost', 'true', true);
+//         let oldFillData = JSON.stringify({fill: SVG(cellID).attr('fill'), opacity: SVG(cellID).attr('fill-opacity')});
+//         SVG(cellID).data('old-fill', oldFillData, true);
+//
+//         // Set the preview fill
+//         SVG(cellID).animate(250, 0, 'now').ease('<>').fill({color: dragData.color, opacity: .5});
+//       }
+//     }
+//   }
+// }
+//
+// function handleDragLeave(ev) {
+//   ev.preventDefault();
+//   // A dragging item has left a target
+//
+//   // Add the target item's data to the drag-info div
+//   let dragInfoElement = document.querySelector('#drag-info');
+//
+//   dragInfoElement.removeAttribute('data-target');
+//
+//   // If any items in the viewport have a data-ghost tag on them, set their fills to their old fill data
+//   if(document.querySelectorAll('rect[data-ghost="true"]').length !== null || document.querySelectorAll('rect[data-ghost="true"]').length !== 0) {
+//     console.log('Clearing ghost items');
+//     // Iterate over the items
+//     document.querySelectorAll('rect[data-ghost="true"]').forEach(function(e) {
+//       let currentID = '#' + e.id;
+//
+//       // Set the fill back to the old fill
+//       let fillData = SVG(currentID).data('old-fill');
+//       SVG(currentID).animate(250, 0, 'now').ease('<>').fill({color: fillData.fill, opacity: fillData.opacity});
+//
+//       // Remove the ghost and old fill attributes
+//       document.querySelector(currentID).removeAttribute('data-ghost');
+//       document.querySelector(currentID).removeAttribute('data-old-fill');
+//     })
+//   }
+//
+//   // Remove swap arrows
+//   if(SVG('#swap_arrows') !== null) {
+//     SVG('#swap_arrows').remove();
+//   }
+//
+//   // If remove x exists, remove it
+//   if(SVG('#x_icon') !== null) {
+//     SVG('#x_icon').remove();
+//   }
+// }
+//
+// // This function adds the standard set of event listeners to a drag and drop item
+// function addDragAndDrop(elements) {
+//   let dragableItems = document.querySelectorAll(elements);
+//     dragableItems.forEach(function(item) {
+//       item.addEventListener('dragstart', dragStart, false);
+//       item.addEventListener('dragend', dragEnd, false);
+//       item.addEventListener('dragenter', handleDragEnter, false);
+//       item.addEventListener('dragover', allowDrop, false);
+//       item.addEventListener('dragleave', handleDragLeave, false);
+//       // item.addEventListener('drop', handleDrop, false);
+//   });
+// }
+//
+// // This function adds the standard set of event listeners to a drag and drop item
+// function removeDragAndDrop(elements) {
+//   let dragableItems = document.querySelectorAll(elements);
+//     dragableItems.forEach(function(item) {
+//       item.removeEventListener('dragstart', dragStart);
+//       item.removeEventListener('dragend', dragEnd);
+//       item.removeEventListener('dragenter', handleDragEnter);
+//       item.removeEventListener('dragover', allowDrop);
+//       item.removeEventListener('dragleave', handleDragLeave);
+//   });
+// }
+//
+// // This function styles the search area components into their standard or dragging states
+// function styleSearch(state) {
+//   // Test the state
+//   if(state == 'dragging') {
+//     // Display the drop area for search and the remove area
+//     gsap.timeline()
+//       .to('#search-container-dropzone', {duration: .375, ease: 'power2.inOut', height: 'calc(1.1em + 13px)', paddingTop: '8px', paddingBottom: '5px', marginTop: '12px'})
+//       .to('#search-container-dropzone', {duration: .375, ease: 'power2.inOut', opacity: .2}, "-=.125")
+//       .call(optionClassSwap, ['remove-option'])
+//       .to('.search-box', {duration: .5, ease: 'power2.inOut', width: '0px', marginRight: '0px', opacity: 0}, "-=.25")
+//       .to('.bed-area', {duration: .375, ease: 'power2.inOut', top: ((document.querySelector('.search-wrapper').offsetHeight + 30) + 'px'), height: ((document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 30)) + 'px')}, "-=1")
+//   } else {
+//     // Reset the search components
+//     gsap.timeline()
+//       .to('#search-container-dropzone', {duration: .375, ease: 'power2.inOut', opacity: .0})
+//       .to('#search-container-dropzone', {duration: .375, ease: 'power2.inOut', height: '0px', paddingTop: '0px', paddingBottom: '0px', marginTop: '0px'}, "-=.125")
+//       .call(optionClassSwap, ['default'])
+//       .to('.search-box', {duration: .375, ease: 'power2.inOut', width: 'calc(100% - 38px)', marginRight: '8px', opacity: 1}, "-=.25")
+//       .to('.bed-area', {duration: .375, ease: 'power2.inOut', top: ((document.querySelector('.search-wrapper').offsetHeight + 10) + 'px'), height: ((document.querySelector('.panel-content').offsetHeight - (document.querySelector('.search-wrapper').offsetHeight + 10)) + 'px')}, "-=.5")
+//   }
+//
+//   // This function swaps the classes of the add-option/remove option button
+//   function optionClassSwap(swapTo) {
+//     if(swapTo == 'remove-option') {
+//       document.querySelector('.add-option').classList.add('remove-option');
+//       document.querySelector('.add-option').classList.remove('add-option');
+//       document.querySelector('.remove-option').textContent = 'Drop Here to Remove';
+//     } else {
+//       document.querySelector('.remove-option').classList.add('add-option');
+//       document.querySelector('.remove-option').classList.remove('remove-option');
+//       document.querySelector('.add-option').textContent = '';
+//     }
+//   }
+// }
+//
+//
+// // END PLANT SELECTION
+//
+// // Auto-save function
+// function autoSave() {
+//   // Display the autosave notification and hide it after save completion
+//   gsap.timeline()
+//     .to('.autosave-wrapper', {duration: .75, ease: 'power2.inOut', opacity: 1})
+//     .to('.autosave-wrapper', {duration: 1, ease: 'power2.out', scale: 1}, "-=.75")
+//     .to('.autosave-wrapper', {duration: .625, ease: 'power2.inOut', scale: .9}, "+=2.75")
+//     .to('.autosave-wrapper', {duration: .375, ease: 'linear', opacity: 0}, "-=.5");
+//
+//
+//   let saveData = saveState();
+//
+//   // Save the file to local storage as a temp file
+//   // First determine how many auto saves exist
+//   let autoSaveCount = -1;
+//   for(var i=0; i < 3; i++) {
+//     // If an autosave with the current name exists add to the auto-save count
+//     if(checkLocalStorage('sqFtGdn_autoSave_' + i) == true) {
+//       autoSaveCount = autoSaveCount+1;
+//     }
+//   }
+//
+//   if(autoSaveCount >= 2) {
+//     // There are already 3 autosaves
+//     // Find the oldest auto save and save over it with new data
+//     // Add each exipry to an array
+//     let autoSaveTimes = [];
+//     for(var i=0; i < 3; i++) {
+//       autoSaveTimes.push(readLocalStorage('sqFtGdn_autoSave_' + i).expiry);
+//     }
+//
+//     // Determine which auto save is the oldest
+//     autoSaveCount = indexOfSmallest(autoSaveTimes);
+//
+//     // This function returns the index of the lowest value in a given array
+//     function indexOfSmallest(a) {
+//      var lowest = 0;
+//      for (var i = 1; i < a.length; i++) {
+//       if (a[i] < a[lowest]) lowest = i;
+//      }
+//      return lowest;
+//     }
+//
+//     // Save the new auto save over the oldest save
+//     writeLocalStorage('sqFtGdn_autoSave_' + autoSaveCount, JSON.stringify(saveData), ['never'], 'Auto Save');
+//     console.log('Auto-saved progress to: "autoSave_' + autoSaveCount + '" on ' + moment().format('L [at] h:mm:ssa'));
+//   } else {
+//     // There are less than 3 autosaves present, save to a new auto save slot
+//     autoSaveCount = autoSaveCount+1;
+//     writeLocalStorage('sqFtGdn_autoSave_' + autoSaveCount, JSON.stringify(saveData), ['never'], 'Auto Save');
+//     console.log('Auto-saved progress to: "autoSave_' + autoSaveCount + '" on ' + moment().format('L [at] h:mm:ssa'));
+//   }
+//
+// }
+//
+// var autoSaveInterval = setInterval(function() {
+//   autoSave();
+// }, 120000);
+//
+// // This function returns an object of save data
+// function saveState(fileName) {
+//   // Save Info
+//   let save_date = moment().unix();
+//   let save_name = '_autosave-1';
+//   let autosave = true;
+//   let saveObject = {
+//     save_date,
+//     save_name,
+//     autosave
+//   }
+//   // Location Info
+//   let type = 'lat/long';
+//   let value = [-35.59673, 78.02848];
+//   let hardiness = 4;
+//   let locationObject = {
+//     type,
+//     value,
+//     hardiness
+//   }
+//   // Current Step
+//   let step = document.querySelector('body').getAttribute('data-step');
+//   let view = '';
+//   let currentStepObject = {
+//     step,
+//     view
+//   }
+//   // Crops
+//   // CODE HERE
+//
+//   // Beds
+//   let bedsArray = [];
+//   // Iterate over each bed, adding a bed object to the bed array
+//   document.querySelectorAll('.content-bed-item').forEach(function(e) {
+//     let bed_id = e.getAttribute('data-bed-id');
+//     let bed_name = document.querySelector('#' + bed_id + '_name').value;
+//     let bed_width = document.querySelector('#' + bed_id + '_width').value;
+//     let bed_height = document.querySelector('#' + bed_id + '_height').value;
+//     let bed_cells = {};
+//     // Iterate over each row, adding its rows to the cells object
+//     for(var i=0; i < bed_height; i++) {
+//       let row_name = 'row_' + (i+1);
+//       let rowArray = [];
+//       // Iterate over each cell within the row, adding its data to the row array
+//       for(var j=0; j < bed_width; j++) {
+//         let cell_id = i + j;
+//         let cell_contents = [];
+//         let cell_object = {
+//           cell_id,
+//           cell_contents
+//         }
+//
+//         // Add the cell object to the row array
+//         rowArray.push(cell_object);
+//       }
+//       bed_cells[row_name] = rowArray;
+//     }
+//
+//     let bedObject = {
+//       bed_id,
+//       bed_name,
+//       bed_width,
+//       bed_height,
+//       bed_cells
+//     }
+//
+//     // Add the current bed object to the bed array
+//     bedsArray.push(bedObject);
+//   })
+//
+//   let saveFile = new SaveFile(saveObject, locationObject, currentStepObject, bedsArray)
+//
+//   return saveFile;
+// }
 
 // This function writes data to local storage
 // Expire time is an array which contains an operation cue and a value given the operation
