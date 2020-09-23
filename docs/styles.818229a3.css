@@ -270,26 +270,16 @@ h3 {
 	grid-column-end: 1;
 	grid-row-start: view-actions;
 	grid-row-end: view-actions;
-	display: grid;
-	grid-template-columns: [back-action] auto [gap] 20px [file-actions] 1fr [gap] 20px [forward-action] auto;
-	grid-template-rows: 1fr;
-	column-gap: 40px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	gap: 40px;
 	align-items: stretch;
 	align-content: stretch;
 }
 
-.back-action {
-	grid-column-start: back-action;
-	grid-column-end: back-action;
-	grid-row-start: 1;
-	grid-row-end: 1;
-}
-
 .file-actions {
-	grid-column-start: file-actions;
-	grid-column-end: file-actions;
-	grid-row-start: 1;
-	grid-row-end: 1;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
@@ -325,13 +315,6 @@ h3 {
 	background-image: url('button-save.affa4e56.svg');
 }
 
-.forward-action {
-	grid-column-start: forward-action;
-	grid-column-end: forward-action;
-	grid-row-start: 1;
-	grid-row-end: 1;
-}
-
 .button-no-select, .button-primary, .button-secondary {
 	position: relative;
 	height: 100%;
@@ -349,6 +332,7 @@ h3 {
 	flex-wrap: nowrap;
 	justify-content: space-between;
 	align-content: center;
+	white-space: nowrap;
 	transition: .25s ease;
 }
 
@@ -744,6 +728,7 @@ datalist option {
 	height: 100%;
 	overflow-y: scroll;
 	overflow-x: visible;
+	padding-bottom: 20px;
 }
 
 .side-panel > .container {
@@ -879,7 +864,6 @@ datalist option {
 	width: 100%;
 	height: auto;
 	box-sizing: border-box;
-	padding-bottom: 8px;
 	background-color: #ffffff;
 	border-radius: 4px;
 	z-index: 5;
@@ -1041,6 +1025,8 @@ datalist option {
 	border: 2px var(--secondary-color) dashed;
 	opacity: .2;
 	background-color: #ffffff;
+	flex-shrink: 0;
+	transform-origin: center center;
 }
 
 .blank-item::before {
@@ -1239,8 +1225,8 @@ datalist option {
 }
 
 .bed-wrapper {
-	padding-top: 3.25em;
-	margin-bottom: 16px;
+	padding-top: 0em;
+	margin-bottom: 0px;
 }
 
 .bed-wrapper::before {
@@ -1260,14 +1246,9 @@ datalist option {
 	transform: translateY(.15em);
 }
 
-.bed-wrapper:last-child {
-	/* This adds a margin to the bottom of the last bed wrapper in the panel so that the scroll still leaves whitespace at the bottom */
-	margin-bottom: 80px;
-}
-
 #drag-info {
 	display: none;
 }
 
 
-/*# sourceMappingURL=styles.4b34f0e4.css.map */
+/*# sourceMappingURL=styles.818229a3.css.map */
